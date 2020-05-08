@@ -22,7 +22,7 @@ architecture ALU_arc of ALU is
         );
     end component;
 
-signal temp_out, arthimatic_out, tows_complement, ones_complement, sec_operand : STD_LOGIC_VECTOR (31 DOWNTO 0);
+signal temp_out, arthimatic_out, tows_complement, ones_complement, sec_operand, first_operand : STD_LOGIC_VECTOR (31 DOWNTO 0);
 signal ones : STD_LOGIC_VECTOR (31 DOWNTO 0) := (others => '1');
 signal one, zeros : STD_LOGIC_VECTOR (31 DOWNTO 0) := (others => '0');
 signal carry_operation, temp_c, op : std_logic;
@@ -39,7 +39,12 @@ begin
     else ones when ALU_signals = "0111"                  -- dec
     else b;                                                  -- add (0100)
 
-    a1: ripple_adder port map (a, sec_operand, arthimatic_out, carry_operation);
+    first_operand <= a when ALU_signals = "0101" -- sub
+    else b when ALU_signals = "0110"                   -- inc
+    else b when ALU_signals = "0111"                  -- dec
+    else a;                                                  -- add (0100)
+
+    a1: ripple_adder port map (first_operand, sec_operand, arthimatic_out, carry_operation);
 
     op <= '1' when (ALU_signals(3 downto 2) = "01")or(ALU_signals(3 downto 1) = "100")or((ALU_signals(3 downto 2) = "00") and ALU_signals(1 downto 0) /= "00")
     else '0';
