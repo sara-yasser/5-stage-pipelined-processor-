@@ -32,7 +32,7 @@ signal carry_operation, temp_c, op : std_logic;
 begin
     one(0) <= '1';
     ones_complement <= not b;
-    a0: ripple_adder port map(b, one, tows_complement, temp_c);
+    a0: ripple_adder port map(ones_complement, one, tows_complement, temp_c);
 
     sec_operand <= tows_complement when ALU_signals = "0101" -- sub
     else one when ALU_signals = "0110"                   -- inc
