@@ -69,25 +69,25 @@ begin
 	elsif first_four_bits = "0010" then src <= '1'; E <= '1'; T <= '1';                                           -- STD 1
 	elsif first_four_bits = "0011" then MW <= '1'; E <= '1'; T <= '1'; C <= '1';                                  -- STD 2
 	elsif first_four_bits = "0100" then src <= '1'; E <= '1'; T <= '1';                                           -- SHL 1
-	elsif first_four_bits = "0101" then ALU <= "0001"; src1 <= '1'; E <= '1'; T <= '1'; C <= '1';                 -- SHL 2
+	elsif first_four_bits = "0101" then ALU <= "1000"; src1 <= '1'; E <= '1'; T <= '1'; C <= '1';                 -- SHL 2
 	elsif first_four_bits = "0110" then src <= '1'; E <= '1'; T <= '1';                                           -- SHR 1
-	elsif first_four_bits = "0111" then ALU <= "0010"; src1 <= '1'; E <= '1'; T <= '1'; C <= '1';                 -- SHR 2
+	elsif first_four_bits = "0111" then ALU <= "1001"; src1 <= '1'; E <= '1'; T <= '1'; C <= '1';                 -- SHR 2
 	elsif first_four_bits = "1000" then E <= '1'; T <= '1';                                                       -- LDM 1
 	elsif first_four_bits = "1001" then RW <= '1'; WB <= "11"; E <= '1'; T <= '1'; C <= '1';                      -- LDM 2
 	elsif first_four_bits = "1010" then E <= '1';                                                                 -- IADD 1
-	elsif first_four_bits = "1011" then src2 <= '1'; ALU <= "0011"; RW <= '1'; WB <= "01"; E <= '1'; C <= '1';    -- IADD 2
-	elsif first_four_bits = "1100" then ALU <= "0100"; RW <= '1'; WB <= "01";                                     -- OR
-	elsif first_four_bits = "1101" then ALU <= "0101"; RW <= '1'; WB <= "01";                                     -- AND
-	elsif first_four_bits = "1110" then src <= '1'; swap <= '1'; ALU <= "0111"; WB <= "01";                       -- SWAP
+	elsif first_four_bits = "1011" then src2 <= '1'; ALU <= "0100"; RW <= '1'; WB <= "01"; E <= '1'; C <= '1';    -- IADD 2
+	elsif first_four_bits = "1100" then ALU <= "0010"; RW <= '1'; WB <= "01";                                     -- OR
+	elsif first_four_bits = "1101" then ALU <= "0001"; RW <= '1'; WB <= "01";                                     -- AND
+	elsif first_four_bits = "1110" then src <= '1'; swap <= '1'; ALU <= "1010"; WB <= "01";                       -- SWAP
 
 	elsif first_four_bits = "1111" then
 
-	    if last_six_bits = "000010" then ALU <= "0110"; RW <= '1'; WB <= "01";                      -- SUB
-	    elsif last_six_bits = "000011" then ALU <= "0011"; RW <= '1'; WB <= "01";                      -- ADD
+	    if last_six_bits = "000010" then ALU <= "0101"; RW <= '1'; WB <= "01";                      -- SUB
+	    elsif last_six_bits = "000011" then ALU <= "0100"; RW <= '1'; WB <= "01";                      -- ADD
 
-	    elsif last_six_bits = "000000" then src <= '1'; ALU <= "1000"; RW <= '1'; WB <= "01";          -- NOT
-	    elsif last_six_bits = "000100" then src <= '1'; ALU <= "1001"; RW <= '1'; WB <= "01";          -- INC
-	    elsif last_six_bits = "001000" then src <= '1'; ALU <= "1010"; RW <= '1'; WB <= "01";          -- DEC
+	    elsif last_six_bits = "000000" then src <= '1'; ALU <= "0011"; RW <= '1'; WB <= "01";          -- NOT
+	    elsif last_six_bits = "000100" then src <= '1'; ALU <= "0110"; RW <= '1'; WB <= "01";          -- INC
+	    elsif last_six_bits = "001000" then src <= '1'; ALU <= "0111"; RW <= '1'; WB <= "01";          -- DEC
 	    elsif last_six_bits = "001100" then src <= '1'; out_seg <= '1';                                -- OUT
 	    elsif last_six_bits = "010000" then in_seg <= '1'; RW <= '1';                                  -- IN
 	    elsif last_six_bits = "010100" then res_f <= '1'; read_from_stack <= '1'; WD_sel <= "01";      -- NOP/ RTI 1
