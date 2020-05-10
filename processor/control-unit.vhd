@@ -9,9 +9,9 @@ entity control_unit IS
 		last_six_bits :      in  STD_LOGIC_VECTOR(5 DOWNTO 0);
 		insert_zeros :       in  STD_LOGIC;
 		decode_signals :     out STD_LOGIC_VECTOR(4 DOWNTO 0);
-		excute_signals :     out STD_LOGIC_VECTOR(10 DOWNTO 0);
+		excute_signals :     out STD_LOGIC_VECTOR(9 DOWNTO 0);
 		memory_signals :     out STD_LOGIC_VECTOR(5 DOWNTO 0);
-		write_back_signals : out STD_LOGIC_VECTOR(2 DOWNTO 0)
+		write_back_signals : out STD_LOGIC_VECTOR(3 DOWNTO 0)
         );
 end entity;
 
@@ -19,11 +19,11 @@ architecture control_unit_arc OF control_unit IS
 
 signal BE, src, E, T, C:                        STD_LOGIC := '0';                                 -- decode signals
 signal WD_sel:                                  STD_LOGIC_VECTOR(1 DOWNTO 0) := (others => '0');  -- excute signals
-signal out_seg, in_seg, src1, src2, res_f:      STD_LOGIC := '0';                                 -- excute signals
+signal out_seg, in_seg, src1, src2:             STD_LOGIC := '0';                                 -- excute signals
 signal ALU:                                     STD_LOGIC_VECTOR(3 DOWNTO 0) := (others => '0');  -- excute signals
 signal MR, MW, write_in_stack, read_from_stack: STD_LOGIC := '0';                                 --mem signals
 signal WB:                                      STD_LOGIC_VECTOR(1 DOWNTO 0) := (others => '0');  --mem signals
-signal write_in_pc, RW, swap:                   STD_LOGIC := '0';                                 --write back signals
+signal write_in_pc, RW, swap, res_f:            STD_LOGIC := '0';                                 --write back signals
 
 begin
 	-- initializing decode signals
@@ -33,12 +33,11 @@ begin
 	decode_signals(1)          <= T;
 	decode_signals(0)          <= C;
 	-- initializing excute signals
-	excute_signals(10)         <= in_seg;
-	excute_signals(9)          <= out_seg;
-	excute_signals(8 downto 7) <= WD_sel;
-	excute_signals(6)          <= src1;
-	excute_signals(5)          <= src2;
-	excute_signals(4)          <= res_F;
+	excute_signals(9)         <= in_seg;
+	excute_signals(8)          <= out_seg;
+	excute_signals(7 downto 6) <= WD_sel;
+	excute_signals(5)          <= src1;
+	excute_signals(4)          <= src2;
 	excute_signals(3 downto 0) <= ALU;
 	-- initializing mem signals
 	memory_signals(5)          <= MR;
@@ -47,10 +46,10 @@ begin
 	memory_signals(2)          <= read_from_stack;
 	memory_signals(1 downto 0) <= WB;
 	-- initializing write back signals
+	write_back_signals(3)      <= res_F;
 	write_back_signals(2)      <= write_in_pc;
 	write_back_signals(1)      <= RW;
 	write_back_signals(0)      <= swap;
-
 
 
 process (first_four_bits, last_six_bits, insert_zeros, clk)

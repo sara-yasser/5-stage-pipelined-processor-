@@ -17,13 +17,13 @@ architecture decode_arc of decode is
     component control_unit IS
     port(
         clk :                in  STD_LOGIC;
-        first_four_bits :    in  STD_LOGIC_VECTOR(3 DOWNTO 0);
-        last_six_bits :      in  STD_LOGIC_VECTOR(5 DOWNTO 0);
-        insert_zeros :       in  STD_LOGIC;
-        decode_signals :     out STD_LOGIC_VECTOR(4 DOWNTO 0);
-        excute_signals :     out STD_LOGIC_VECTOR(10 DOWNTO 0);
-        memory_signals :     out STD_LOGIC_VECTOR(5 DOWNTO 0);
-        write_back_signals : out STD_LOGIC_VECTOR(2 DOWNTO 0)
+		first_four_bits :    in  STD_LOGIC_VECTOR(3 DOWNTO 0);
+		last_six_bits :      in  STD_LOGIC_VECTOR(5 DOWNTO 0);
+		insert_zeros :       in  STD_LOGIC;
+		decode_signals :     out STD_LOGIC_VECTOR(4 DOWNTO 0);
+		excute_signals :     out STD_LOGIC_VECTOR(9 DOWNTO 0);
+		memory_signals :     out STD_LOGIC_VECTOR(5 DOWNTO 0);
+		write_back_signals : out STD_LOGIC_VECTOR(3 DOWNTO 0)
         );
     end component;
 
@@ -52,9 +52,9 @@ signal IMM_EA : STD_LOGIC_VECTOR(11 DOWNTO 0);
 signal insert_zeros, src, BE : STD_LOGIC:= '0';  -- need to look at later
 
 signal decode_signals :      STD_LOGIC_VECTOR(4 DOWNTO 0);
-signal excute_signals :      STD_LOGIC_VECTOR(10 DOWNTO 0);
+signal excute_signals :      STD_LOGIC_VECTOR(9 DOWNTO 0);
 signal memory_signals :      STD_LOGIC_VECTOR(5 DOWNTO 0);
-signal write_back_signals :  STD_LOGIC_VECTOR(2 DOWNTO 0);
+signal write_back_signals :  STD_LOGIC_VECTOR(3 DOWNTO 0);
 
 signal decoder_out :  STD_LOGIC_VECTOR(19 DOWNTO 0);
 
@@ -83,18 +83,25 @@ begin
     else dst_src;
 
     -- out buff
-    ID_EX(2 downto 0) <= dst_src;
-    ID_EX(5 downto 3) <= src2;
-    ID_EX(8 downto 6) <= src1;
-    ID_EX(28 downto 9) <= decoder_out;
-    ID_EX(60 downto 29) <= rd_data2;
-    ID_EX(92 downto 61) <= rd_data1;
-    ID_EX(124 downto 93) <= sp;
-    ID_EX(156 downto 125) <= pc;
-    ID_EX(159 downto 157) <= write_back_signals;
-    ID_EX(165 downto 160) <= memory_signals;
-    ID_EX(176 downto 166) <= excute_signals;
-
-
+    process (clk) is
+    begin
+        if if rst = '1' then
+            ID_EX <= (others => '0');
+        else
+            if falling_edge(clk) then
+                ID_EX(2 downto 0) <= dst_src;
+                ID_EX(5 downto 3) <= src2;
+                ID_EX(8 downto 6) <= src1;
+                ID_EX(28 downto 9) <= decoder_out;
+                ID_EX(60 downto 29) <= rd_data2;
+                ID_EX(92 downto 61) <= rd_data1;
+                ID_EX(124 downto 93) <= sp;
+                ID_EX(156 downto 125) <= pc;
+                ID_EX(160 downto 157) <= write_back_signals;
+                ID_EX(166 downto 161) <= memory_signals;
+                ID_EX(176 downto 167) <= excute_signals;
+            end if;
+        end if;
+    end process;
 
 end architecture;
