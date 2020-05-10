@@ -3,12 +3,10 @@ USE IEEE.std_logic_1164.all;
 USE ieee.numeric_std.all; 
 
 entity decoder IS
-    generic (n : integer := 16);
-    port
-	(
-	clk, E, T, C :          in  STD_LOGIC;
-	data_in :      in  STD_LOGIC_VECTOR(11 DOWNTO 0);
-	data_out :     out STD_LOGIC_VECTOR(19 DOWNTO 0)
+    port(
+		clk, E, T, C :          in  STD_LOGIC;
+		data_in :      in  STD_LOGIC_VECTOR(11 DOWNTO 0);
+		data_out :     out STD_LOGIC_VECTOR(19 DOWNTO 0)
         );
 end entity;
 

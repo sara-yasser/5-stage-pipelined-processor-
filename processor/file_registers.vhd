@@ -3,14 +3,12 @@ USE IEEE.std_logic_1164.all;
 USE ieee.numeric_std.all; 
 
 entity file_reg IS
-generic (n : integer := 16);
-port
-(
-clk, wr_in_pc_sig, reg_wr_sig, swap_sig, rst :          in  STD_LOGIC;
-rd_address1, rd_address2    :   in std_logic_vector(2 downto 0);
-wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
-wr_data, swap_data2 :   in std_logic_vector(31 downto 0);
-rd_data1, rd_data2, sp  :   out std_logic_vector(31 downto 0)
+port(
+    clk, wr_in_pc_sig, reg_wr_sig, swap_sig, rst :          in  STD_LOGIC;
+    rd_address1, rd_address2    :   in std_logic_vector(2 downto 0);
+    wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
+    wr_data, swap_data2 :   in std_logic_vector(31 downto 0);
+    rd_data1, rd_data2, sp  :   out std_logic_vector(31 downto 0)
     );
 end entity;
 
@@ -38,7 +36,7 @@ architecture file_reg_arc of file_reg is
                         -- this two lines might need some look
                         rd_data1 <= registers(to_integer(unsigned(rd_address1)));
                         rd_data2 <= registers(to_integer(unsigned(rd_address2)));
-
+                        -- every write must be in rising edge -- modifie this
                         if reg_wr_sig = '1' then
                             registers(to_integer(unsigned(wr_address1))) <= wr_data;
 
@@ -46,8 +44,6 @@ architecture file_reg_arc of file_reg is
                             registers(8) <= wr_data;
 
                         elsif swap_sig = '1' then
-                            -- swap_data2 => address1
-                            -- wr_data => address2
                             registers(to_integer(unsigned(wr_address1))) <= swap_data2;
                             registers(to_integer(unsigned(wr_address2))) <= wr_data;
 

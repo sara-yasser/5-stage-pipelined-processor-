@@ -3,17 +3,15 @@ USE IEEE.std_logic_1164.all;
 USE ieee.numeric_std.all; 
 
 entity control_unit IS
-    generic (n : integer := 16);
-    port
-	(
-	clk :                in  STD_LOGIC;
-	first_four_bits :    in  STD_LOGIC_VECTOR(3 DOWNTO 0);
-	last_six_bits :      in  STD_LOGIC_VECTOR(5 DOWNTO 0);
-	insert_zeros :       in  STD_LOGIC;
-	decode_signals :     out STD_LOGIC_VECTOR(4 DOWNTO 0);
-	excute_signals :     out STD_LOGIC_VECTOR(10 DOWNTO 0);
-	memory_signals :     out STD_LOGIC_VECTOR(5 DOWNTO 0);
-	write_back_signals : out STD_LOGIC_VECTOR(2 DOWNTO 0)
+    port(
+		clk :                in  STD_LOGIC;
+		first_four_bits :    in  STD_LOGIC_VECTOR(3 DOWNTO 0);
+		last_six_bits :      in  STD_LOGIC_VECTOR(5 DOWNTO 0);
+		insert_zeros :       in  STD_LOGIC;
+		decode_signals :     out STD_LOGIC_VECTOR(4 DOWNTO 0);
+		excute_signals :     out STD_LOGIC_VECTOR(10 DOWNTO 0);
+		memory_signals :     out STD_LOGIC_VECTOR(5 DOWNTO 0);
+		write_back_signals : out STD_LOGIC_VECTOR(2 DOWNTO 0)
         );
 end entity;
 
