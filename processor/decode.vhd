@@ -7,8 +7,8 @@ entity decode IS
         IF_ID :              in STD_LOGIC_VECTOR (47  DOWNTO 0);
         rst :                in STD_LOGIC;
         WB_signals:          in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
-        w_addr1, w_addr2     in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
-        w_data1, w_data2     in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
+        w_addr1, w_addr2:     in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
+        w_data1, w_data2:     in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
         ID_EX :              out STD_LOGIC_VECTOR (176 DOWNTO 0)
         );
 end entity;
@@ -85,7 +85,7 @@ begin
     -- out buff
     process (clk) is
     begin
-        if if rst = '1' then
+        if rst = '1' then
             ID_EX <= (others => '0');
         else
             if falling_edge(clk) then

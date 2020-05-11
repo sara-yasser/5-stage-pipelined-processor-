@@ -23,6 +23,7 @@ architecture IF_ID_buff_arc of IF_ID_buff is
                     output_vec(15 downto 0) <= nop_sig;
 
                 elsif rst = '0' then
+                    -- we need to fix rising edge with input, for not to waste a whole cycle to read data
                     if rising_edge(clk) then
                         if stall_sig = '0' then
                             output_vec <= input_vec;

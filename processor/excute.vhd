@@ -8,9 +8,9 @@ entity excute is
         ID_EX :              in STD_LOGIC_VECTOR (176  DOWNTO 0);
         rst :                in STD_LOGIC;
         res_f :              in STD_LOGIC;                      -- from write back
-        flag_reg             in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
-        in_port              in STD_LOGIC_VECTOR(31 DOWNTO 0);
-        out_port             out STD_LOGIC_VECTOR(31 DOWNTO 0);
+        flag_reg:             in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
+        in_port:              in STD_LOGIC_VECTOR(31 DOWNTO 0);
+        out_port:             out STD_LOGIC_VECTOR(31 DOWNTO 0);
         EX_MEM :             out STD_LOGIC_VECTOR (198 DOWNTO 0)
 	);
 end entity;
@@ -56,7 +56,7 @@ architecture excute_arc of excute is
     signal src1, src2 : std_logic;
     signal ALU_signals : std_logic_vector(3 downto 0);
     signal flag_in, flag_out, flag_reg_in : std_logic_vector(2 downto 0);
-    signal 20_bits : std_logic_vector(19 downto 0);
+    signal b_20_bits : std_logic_vector(19 downto 0);
 
     signal excute_signals :      STD_LOGIC_VECTOR(9 DOWNTO 0);
     signal memory_signals :      STD_LOGIC_VECTOR(5 DOWNTO 0);
@@ -67,11 +67,11 @@ architecture excute_arc of excute is
     
 begin
     sign_extend_com: sign_extend port map(sign_extend_in, sign_extend_out);
-    inc_dec_com: inc_dec port map(pc_inc, pc);
+    inc_dec_com: inc_dec port map('1',pc_inc, pc);
     ALU_com: ALU port map(ALU_signals, alu1_in, alu2_in, flag_in, alu_out, flag_out);
     CCR_com: CCR port map(clk, rst, flag_reg_in, flag_in);
     -- initializations
-    20_bits            <= ID_EX(28 downto 9);
+    b_20_bits            <= ID_EX(28 downto 9);
     r_data2_in         <= ID_EX(60 downto 29);
     r_data1_in         <= ID_EX(92 downto 61);
     sp                 <= ID_EX(124 downto 93);
@@ -80,7 +80,7 @@ begin
     memory_signals     <= ID_EX(166 downto 161);
     excute_signals     <= ID_EX(176 downto 167);
 
-    sign_extend_in <= 20_bits(19 downto 4);
+    sign_extend_in <= b_20_bits(19 downto 4);
     flag_reg_out(31 downto 3) <= (others => '0');
     flag_reg_out(2 downto 0) <= flag_in;
 
