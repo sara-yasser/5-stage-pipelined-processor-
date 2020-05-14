@@ -3,22 +3,19 @@ USE IEEE.std_logic_1164.all;
 USE ieee.numeric_std.all; 
 
 entity memory is
-    generic (
-        addr_width : integer := 2;
-        data_width : integer := 3 
-    );
+    generic (addr_width : integer := 2);
 
     port(
         clk, rst :   in std_logic;
         we : in std_logic;
-        addr : in std_logic_vector(addr_width-1 downto 0);
-        din : in std_logic_vector(data_width-1 downto 0);
-        dout : out std_logic_vector(data_width-1 downto 0)
+        addr : in std_logic_vector(31 downto 0);
+        din : in std_logic_vector(31 downto 0);
+        dout : out std_logic_vector(31 downto 0)
     );
 end entity;
 
 architecture memory_arch of memory is
-    type ram_type is array (2**addr_width-1 downto 0) of std_logic_vector (data_width-1 downto 0);
+    type ram_type is array (2**addr_width-1 downto 0) of std_logic_vector (31 downto 0);
     signal ram_single_port : ram_type;
 
     begin
