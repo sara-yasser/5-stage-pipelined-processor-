@@ -5,7 +5,7 @@ entity decode IS
     PORT(
         clk :                in  STD_LOGIC;
         IF_ID :              in STD_LOGIC_VECTOR (47  DOWNTO 0);
-        rst :                in STD_LOGIC;
+        rst, inc_sp, dec_sp :                in STD_LOGIC;
         WB_signals:          in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
         w_addr1, w_addr2:     in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
         w_data1, w_data2:     in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
@@ -36,7 +36,7 @@ architecture decode_arc of decode is
 
     component file_reg IS
     port(
-        clk, wr_in_pc_sig, reg_wr_sig, swap_sig, rst :          in  STD_LOGIC;
+        clk, wr_in_pc_sig, reg_wr_sig, swap_sig, rst, inc_sp, dec_sp :          in  STD_LOGIC;
         rd_address1, rd_address2    :   in STD_LOGIC_VECTOR(2 DOWNTO 0);
         wr_address1, wr_address2  :   in STD_LOGIC_VECTOR(2 DOWNTO 0);
         wr_data, swap_data2 :   in STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -63,7 +63,7 @@ signal rd_data1, rd_data2, sp, pc : STD_LOGIC_VECTOR(31 DOWNTO 0);
 begin
     control_unit_com: control_unit port map(clk, rst, op_code, last_6_bits, decode_signals, excute_signals, memory_signals, write_back_signals);
     decoder_com: decoder port map(clk, rst, ETC(2), ETC(1), ETC(0), IMM_EA, decoder_out);
-    file_reg_com: file_reg port map(clk, WB_signals(2), WB_signals(1), WB_signals(0), rst, src1, read_addr2, w_addr1, w_addr2, w_data1, w_data2, rd_data1, rd_data2, sp);
+    file_reg_com: file_reg port map(clk, WB_signals(2), WB_signals(1), WB_signals(0), rst, inc_sp, dec_sp, src1, read_addr2, w_addr1, w_addr2, w_data1, w_data2, rd_data1, rd_data2, sp);
     --intializations
     last_6_bits <=   IF_ID (5 downto 0);
     op_code     <=   IF_ID (15 downto 12);

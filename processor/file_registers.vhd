@@ -4,7 +4,7 @@ USE ieee.numeric_std.all;
 
 entity file_reg IS
 port(
-    clk, wr_in_pc_sig, reg_wr_sig, swap_sig, rst :          in  STD_LOGIC;
+    clk, wr_in_pc_sig, reg_wr_sig, swap_sig, rst, inc_sp, dec_sp :          in  STD_LOGIC;
     rd_address1, rd_address2    :   in std_logic_vector(2 downto 0);
     wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
     wr_data, swap_data2 :   in std_logic_vector(31 downto 0);
@@ -42,6 +42,12 @@ architecture file_reg_arc of file_reg is
 
                         elsif wr_in_pc_sig = '1' then
                             registers(8) <= wr_data;
+
+                        elsif inc_sp = '1' then
+                            registers(9) <= std_logic_vector(unsigned(registers(9))+1);
+
+                        elsif dec_sp = '1' then
+                            registers(9) <= std_logic_vector(unsigned(registers(9))-1);
 
                         elsif swap_sig = '1' then
                             registers(to_integer(unsigned(wr_address1))) <= swap_data2;

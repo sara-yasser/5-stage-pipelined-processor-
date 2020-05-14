@@ -8,9 +8,9 @@ entity excute is
         ID_EX :              in STD_LOGIC_VECTOR (176  DOWNTO 0);
         rst :                in STD_LOGIC;
         res_f :              in STD_LOGIC;                      -- from write back
-        flag_reg:             in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
-        in_port:              in STD_LOGIC_VECTOR(31 DOWNTO 0);
-        out_port:             out STD_LOGIC_VECTOR(31 DOWNTO 0);
+        flag_reg:            in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
+        in_port:             in STD_LOGIC_VECTOR(31 DOWNTO 0);
+        out_port:            out STD_LOGIC_VECTOR(31 DOWNTO 0);
         EX_MEM :             out STD_LOGIC_VECTOR (198 DOWNTO 0)
 	);
 end entity;
