@@ -2,10 +2,17 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE ieee.numeric_std.all; 
 
-entity excute is
+entity excuteTest is
 	port(
 		clk :                in  STD_LOGIC;
-        ID_EX :              in STD_LOGIC_VECTOR (176  DOWNTO 0);
+        -- ID_EX :              in STD_LOGIC_VECTOR (176  DOWNTO 0);
+        b_20_bits_in : in std_logic_vector(19 downto 0);
+        excute_signals_in : in     STD_LOGIC_VECTOR(9 DOWNTO 0);
+        memory_signals_in : in     STD_LOGIC_VECTOR(5 DOWNTO 0);
+        write_back_signals_in : in STD_LOGIC_VECTOR(3 DOWNTO 0);
+        r_data2_in_in, r_data1_in_in, pc_inc_in, sp_in: in STD_LOGIC_VECTOR(31 DOWNTO 0);
+        adresses : in STD_LOGIC_VECTOR(8 DOWNTO 0);
+
         rst :                in STD_LOGIC;
         res_f :              in STD_LOGIC;                      -- from write back
         flag_reg:             in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
@@ -15,7 +22,7 @@ entity excute is
 	);
 end entity;
 
-architecture excute_arc of excute is
+architecture excuteTest_arc of excuteTest is
 
     component ALU IS
         PORT(
@@ -71,14 +78,14 @@ begin
     ALU_com: ALU port map(ALU_signals, alu1_in, alu2_in, flag_in, alu_out, flag_out);
     CCR_com: CCR port map(clk, rst, flag_reg_in, flag_in);
     -- initializations
-    b_20_bits            <= ID_EX(28 downto 9);
-    r_data2_in         <= ID_EX(60 downto 29);
-    r_data1_in         <= ID_EX(92 downto 61);
-    sp                 <= ID_EX(124 downto 93);
-    pc_inc             <= ID_EX(156 downto 125);
-    write_back_signals <= ID_EX(160 downto 157);
-    memory_signals     <= ID_EX(166 downto 161);
-    excute_signals     <= ID_EX(176 downto 167);
+    b_20_bits            <= b_20_bits_in;
+    r_data2_in         <= r_data2_in_in;
+    r_data1_in         <= r_data1_in_in;
+    sp                 <= sp_in;
+    pc_inc             <= pc_inc_in;
+    write_back_signals <= write_back_signals_in;
+    memory_signals     <= memory_signals_in;
+    excute_signals     <= excute_signals_in;
 
     sign_extend_in <= b_20_bits(19 downto 4);
     flag_reg_out(31 downto 3) <= (others => '0');
@@ -114,6 +121,7 @@ begin
     out_data <= alu2_in when out_seg = '1'
     else (others => '0');
 
+    -- out buff
     process (clk) is
         begin
             if rst = '1' then
@@ -121,7 +129,7 @@ begin
                 out_port <= (others => '0');
             else
                 if falling_edge(clk) then
-                    EX_MEM(8 downto 0) <= ID_EX(8 downto 0);
+                    EX_MEM(8 downto 0) <= adresses;
                     EX_MEM(40 downto 9) <= r_data1_in;
                     EX_MEM(60 downto 41) <= b_20_bits;
                     EX_MEM(92 downto 61) <= write_data;

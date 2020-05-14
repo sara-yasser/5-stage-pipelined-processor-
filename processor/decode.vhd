@@ -16,10 +16,9 @@ end entity;
 architecture decode_arc of decode is
     component control_unit IS
     port(
-        clk :                in  STD_LOGIC;
+        clk, rst :           in  STD_LOGIC;
 		first_four_bits :    in  STD_LOGIC_VECTOR(3 DOWNTO 0);
 		last_six_bits :      in  STD_LOGIC_VECTOR(5 DOWNTO 0);
-		insert_zeros :       in  STD_LOGIC;
 		decode_signals :     out STD_LOGIC_VECTOR(4 DOWNTO 0);
 		excute_signals :     out STD_LOGIC_VECTOR(9 DOWNTO 0);
 		memory_signals :     out STD_LOGIC_VECTOR(5 DOWNTO 0);
@@ -29,7 +28,7 @@ architecture decode_arc of decode is
 
     component decoder IS
     port(
-		clk, E, T, C :          in  STD_LOGIC;
+		clk, rst, E, T, C :          in  STD_LOGIC;
 		data_in :      in  STD_LOGIC_VECTOR(11 DOWNTO 0);
 		data_out :     out STD_LOGIC_VECTOR(19 DOWNTO 0)
         );
@@ -49,7 +48,7 @@ signal last_6_bits : STD_LOGIC_VECTOR(5 DOWNTO 0);
 signal op_code : STD_LOGIC_VECTOR(3 DOWNTO 0);
 signal dst_src, src1, src2, ETC : STD_LOGIC_VECTOR(2 DOWNTO 0);
 signal IMM_EA : STD_LOGIC_VECTOR(11 DOWNTO 0);
-signal insert_zeros, src, BE : STD_LOGIC:= '0';  -- need to look at later
+signal src, BE : STD_LOGIC:= '0';  -- need to look at later
 
 signal decode_signals :      STD_LOGIC_VECTOR(4 DOWNTO 0);
 signal excute_signals :      STD_LOGIC_VECTOR(9 DOWNTO 0);
@@ -62,8 +61,8 @@ signal read_addr2 : STD_LOGIC_VECTOR(2 DOWNTO 0);
 signal rd_data1, rd_data2, sp, pc : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 begin
-    control_unit_com: control_unit port map(clk, op_code, last_6_bits, insert_zeros, decode_signals, excute_signals, memory_signals, write_back_signals);
-    decoder_com: decoder port map(clk, ETC(2), ETC(1), ETC(0), IMM_EA, decoder_out);
+    control_unit_com: control_unit port map(clk, rst, op_code, last_6_bits, decode_signals, excute_signals, memory_signals, write_back_signals);
+    decoder_com: decoder port map(clk, rst, ETC(2), ETC(1), ETC(0), IMM_EA, decoder_out);
     file_reg_com: file_reg port map(clk, WB_signals(2), WB_signals(1), WB_signals(0), rst, src1, read_addr2, w_addr1, w_addr2, w_data1, w_data2, rd_data1, rd_data2, sp);
     --intializations
     last_6_bits <=   IF_ID (5 downto 0);
