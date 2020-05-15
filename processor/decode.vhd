@@ -3,13 +3,26 @@ USE IEEE.STD_LOGIC_1164.all;
 
 entity decode IS
     PORT(
-        clk :                in  STD_LOGIC;
-        IF_ID :              in STD_LOGIC_VECTOR (47  DOWNTO 0);
-        rst, inc_sp, dec_sp :                in STD_LOGIC;
-        WB_signals:          in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
-        w_addr1, w_addr2:     in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
-        w_data1, w_data2:     in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
-        ID_EX :              out STD_LOGIC_VECTOR (176 DOWNTO 0)
+        clk                      : in  STD_LOGIC;
+        rst, inc_sp, dec_sp      : in STD_LOGIC;
+        WB_signals               : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
+        w_addr1, w_addr2         : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
+        w_data1, w_data2         : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
+
+        IF_ID_instruction        : in std_logic_vector(15 downto 0);
+        IF_ID_pc_incremented     : in std_logic_vector(31 downto 0);
+
+        ID_EX_dst_src            : out STD_LOGIC_VECTOR(2 downto 0);
+        ID_EX_src2               : out STD_LOGIC_VECTOR(2 downto 0);
+        ID_EX_src1               : out STD_LOGIC_VECTOR(2 downto 0);
+        ID_EX_decoder_out        : out STD_LOGIC_VECTOR(19 downto 0);
+        ID_EX_rd_data2           : out STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_rd_data1           : out STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_sp                 : out STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_pc                 : out STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_write_back_signals : out STD_LOGIC_VECTOR(3 downto 0);
+        ID_EX_memory_signals     : out STD_LOGIC_VECTOR(5 downto 0);
+        ID_EX_excute_signals     : out STD_LOGIC_VECTOR(9 downto 0)
         );
 end entity;
 
@@ -65,13 +78,13 @@ begin
     decoder_com: decoder port map(clk, rst, ETC(2), ETC(1), ETC(0), IMM_EA, decoder_out);
     file_reg_com: file_reg port map(clk, WB_signals(2), WB_signals(1), WB_signals(0), rst, inc_sp, dec_sp, src1, read_addr2, w_addr1, w_addr2, w_data1, w_data2, rd_data1, rd_data2, sp);
     --intializations
-    last_6_bits <=   IF_ID (5 downto 0);
-    op_code     <=   IF_ID (15 downto 12);
-    dst_src     <=   IF_ID (11 downto 9);
-    src1        <=   IF_ID (8 downto 6);
-    src2        <=   IF_ID (5 downto 3);
-    IMM_EA      <=   IF_ID (11 downto 0);
-    pc          <=   IF_ID (47 downto 16);
+    last_6_bits <=   IF_ID_instruction (5 downto 0);
+    op_code     <=   IF_ID_instruction (15 downto 12);
+    dst_src     <=   IF_ID_instruction (11 downto 9);
+    src1        <=   IF_ID_instruction (8 downto 6);
+    src2        <=   IF_ID_instruction (5 downto 3);
+    IMM_EA      <=   IF_ID_instruction (11 downto 0);
+    pc          <=   IF_ID_pc_incremented;
 
     ETC         <=   decode_signals (2 downto 0);
     src         <=   decode_signals (3);
@@ -82,25 +95,38 @@ begin
     else dst_src;
 
     -- out buff
-    process (clk) is
-    begin
-        if rst = '1' then
-            ID_EX <= (others => '0');
-        else
-            if falling_edge(clk) then
-                ID_EX(2 downto 0) <= dst_src;
-                ID_EX(5 downto 3) <= src2;
-                ID_EX(8 downto 6) <= src1;
-                ID_EX(28 downto 9) <= decoder_out;
-                ID_EX(60 downto 29) <= rd_data2;
-                ID_EX(92 downto 61) <= rd_data1;
-                ID_EX(124 downto 93) <= sp;
-                ID_EX(156 downto 125) <= pc;
-                ID_EX(160 downto 157) <= write_back_signals;
-                ID_EX(166 downto 161) <= memory_signals;
-                ID_EX(176 downto 167) <= excute_signals;
-            end if;
-        end if;
-    end process;
+
+    ID_EX_dst_src            <= dst_src;
+    ID_EX_src2               <= src2;
+    ID_EX_src1               <= src1;
+    ID_EX_decoder_out        <= decoder_out;
+    ID_EX_rd_data2           <= rd_data2;
+    ID_EX_rd_data1           <= rd_data1;
+    ID_EX_sp                 <= sp;
+    ID_EX_pc                 <= pc;
+    ID_EX_write_back_signals <= write_back_signals;
+    ID_EX_memory_signals     <= memory_signals;
+    ID_EX_excute_signals     <= excute_signals;
+
+    -- process (clk) is
+    -- begin
+    --     if rst = '1' then
+    --         ID_EX <= (others => '0');
+    --     else
+    --         if falling_edge(clk) then
+    --             ID_EX(2 downto 0) <= dst_src;
+    --             ID_EX(5 downto 3) <= src2;
+    --             ID_EX(8 downto 6) <= src1;
+    --             ID_EX(28 downto 9) <= decoder_out;
+    --             ID_EX(60 downto 29) <= rd_data2;
+    --             ID_EX(92 downto 61) <= rd_data1;
+    --             ID_EX(124 downto 93) <= sp;
+    --             ID_EX(156 downto 125) <= pc;
+    --             ID_EX(160 downto 157) <= write_back_signals;
+    --             ID_EX(166 downto 161) <= memory_signals;
+    --             ID_EX(176 downto 167) <= excute_signals;
+    --         end if;
+    --     end if;
+    -- end process;
 
 end architecture;
