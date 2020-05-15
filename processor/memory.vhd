@@ -3,11 +3,11 @@ USE IEEE.std_logic_1164.all;
 USE ieee.numeric_std.all; 
 
 entity memory is
-    generic (addr_width : integer := 2);
+    generic (addr_width : integer := 20);
 
     port(
-        clk, rst :   in std_logic;
-        we : in std_logic;
+        clk :   in std_logic;
+        R, W : in std_logic;
         addr : in std_logic_vector(31 downto 0);
         din : in std_logic_vector(31 downto 0);
         dout : out std_logic_vector(31 downto 0)
@@ -15,29 +15,23 @@ entity memory is
 end entity;
 
 architecture memory_arch of memory is
-    type ram_type is array (2**addr_width-1 downto 0) of std_logic_vector (31 downto 0);
+    type ram_type is array (2**addr_width-1 downto 0) of std_logic_vector (15 downto 0);
     signal ram_single_port : ram_type;
 
     begin
-        process(clk)
+        process(clk, W, R, addr)
         begin
-	    if (rst = '1') then
+	    
+            if (W = '1' and clk'event and clk='0') then
+                ram_single_port(to_integer(unsigned(addr))) <= din(15 downto 0);
+                ram_single_port(to_integer(unsigned(addr)) + 1) <= din(31 downto 16);
+                
+            elsif R = '1' then
+                dout(15 downto 0) <= ram_single_port(to_integer(unsigned(addr)));
+                dout(15 downto 0) <= ram_single_port(to_integer(unsigned(addr)) + 1);
 
-		for i in 2**addr_width-1 downto 0 loop            
-                    ram_single_port(i) <= (others => '0');
-                end loop;
-	    else
-                if (clk'event and clk='1') then
-                    if (we='1') then -- write data to address 'addr'
-                        --convert 'addr' type to integer from std_logic_vector
-                        ram_single_port(to_integer(unsigned(addr))) <= din;
-                    end if;
-                end if;
-	    end if;
+            end if;
+    
         end process;
-
-    -- read data from address 'addr'
-    -- convert 'addr' type to integer from std_logic_vector
-    dout<=ram_single_port(to_integer(unsigned(addr)));
 
 end architecture;
