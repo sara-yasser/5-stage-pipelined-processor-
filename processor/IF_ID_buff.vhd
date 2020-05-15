@@ -3,8 +3,7 @@ USE IEEE.std_logic_1164.all;
 USE ieee.numeric_std.all; 
 
 entity IF_ID_buff IS
-port
-(
+port(
     clk, rst, stall_sig :   in  STD_LOGIC;
     input_vec   :   in std_logic_vector(47 downto 0);
     output_vec  :   out std_logic_vector(47 downto 0)

@@ -44,10 +44,10 @@ architecture file_reg_arc of file_reg is
                             registers(8) <= wr_data;
 
                         elsif inc_sp = '1' then
-                            registers(9) <= std_logic_vector(unsigned(registers(9))+1);
+                            registers(9) <= std_logic_vector(unsigned(registers(9))+2);
 
                         elsif dec_sp = '1' then
-                            registers(9) <= std_logic_vector(unsigned(registers(9))-1);
+                            registers(9) <= std_logic_vector(unsigned(registers(9))-2);
 
                         elsif swap_sig = '1' then
                             registers(to_integer(unsigned(wr_address1))) <= swap_data2;
