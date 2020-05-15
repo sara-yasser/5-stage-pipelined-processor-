@@ -4,14 +4,33 @@ USE ieee.numeric_std.all;
 
 entity excute is
 	port(
-		clk :                in  STD_LOGIC;
-        ID_EX :              in STD_LOGIC_VECTOR (176  DOWNTO 0);
-        rst :                in STD_LOGIC;
-        res_f :              in STD_LOGIC;                      -- from write back
-        flag_reg:            in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
-        in_port:             in STD_LOGIC_VECTOR(31 DOWNTO 0);
-        out_port:            out STD_LOGIC_VECTOR(31 DOWNTO 0);
-        EX_MEM :             out STD_LOGIC_VECTOR (198 DOWNTO 0)
+        clk, rst                  : in  STD_LOGIC;
+        
+        ID_EX_registers_addr      : in STD_LOGIC_VECTOR (8  DOWNTO 0);
+        ID_EX_b_20_bits           : in STD_LOGIC_VECTOR(19 downto 0);
+        ID_EX_r_data2_in          : in STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_r_data1_in          : in STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_sp                  : in STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_pc_inc              : in STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_write_back_signals  : in STD_LOGIC_VECTOR(3 downto 0);
+        ID_EX_memory_signals      : in STD_LOGIC_VECTOR(5 downto 0);
+        ID_EX_excute_signals      : in STD_LOGIC_VECTOR(9 downto 0);
+
+        res_f                     : in STD_LOGIC;                      -- from write back
+        flag_reg                  : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
+        in_port                   : in STD_LOGIC_VECTOR(31 DOWNTO 0);
+        out_port                  : out STD_LOGIC_VECTOR(31 DOWNTO 0);
+        
+        EX_MEM_registers_addr     : out STD_LOGIC_VECTOR(8 downto 0);
+        EX_MEM_r_data1_in         : out STD_LOGIC_VECTOR(31 downto 0);
+        EX_MEM_b_20_bits          : out STD_LOGIC_VECTOR(19 downto 0);
+        EX_MEM_write_data         : out STD_LOGIC_VECTOR(31 downto 0);
+        EX_MEM_alu_out            : out STD_LOGIC_VECTOR(31 downto 0);
+        EX_MEM_sp                 : out STD_LOGIC_VECTOR(31 downto 0);
+        EX_MEM_in_data            : out STD_LOGIC_VECTOR(31 downto 0);
+        EX_MEM_write_back_signals : out STD_LOGIC_VECTOR(3 downto 0);
+        EX_MEM_memory_signals     : out STD_LOGIC_VECTOR(5 downto 0)
+
 	);
 end entity;
 
@@ -37,9 +56,10 @@ architecture excute_arc of excute is
     component inc_dec is
         port(
             sel : std_logic;   -- 0 inc, 1 dec
+            num : std_logic;   -- 0 by 1, 1 by 2
             A: in std_logic_vector(31 downto 0);
             c: out std_logic_vector(31 downto 0)
-        );
+            );
     end component;
 
     component CCR IS       -- flag reg
@@ -67,18 +87,18 @@ architecture excute_arc of excute is
     
 begin
     sign_extend_com: sign_extend port map(sign_extend_in, sign_extend_out);
-    inc_dec_com: inc_dec port map('1',pc_inc, pc);
+    inc_dec_com: inc_dec port map('1','0',pc_inc, pc);
     ALU_com: ALU port map(ALU_signals, alu1_in, alu2_in, flag_in, alu_out, flag_out);
     CCR_com: CCR port map(clk, rst, flag_reg_in, flag_in);
     -- initializations
-    b_20_bits            <= ID_EX(28 downto 9);
-    r_data2_in         <= ID_EX(60 downto 29);
-    r_data1_in         <= ID_EX(92 downto 61);
-    sp                 <= ID_EX(124 downto 93);
-    pc_inc             <= ID_EX(156 downto 125);
-    write_back_signals <= ID_EX(160 downto 157);
-    memory_signals     <= ID_EX(166 downto 161);
-    excute_signals     <= ID_EX(176 downto 167);
+    b_20_bits          <= ID_EX_b_20_bits;
+    r_data2_in         <= ID_EX_r_data2_in;
+    r_data1_in         <= ID_EX_r_data1_in;
+    sp                 <= ID_EX_sp;
+    pc_inc             <= ID_EX_pc_inc;
+    write_back_signals <= ID_EX_write_back_signals;
+    memory_signals     <= ID_EX_memory_signals;
+    excute_signals     <= ID_EX_excute_signals;
 
     sign_extend_in <= b_20_bits(19 downto 4);
     flag_reg_out(31 downto 3) <= (others => '0');
@@ -114,25 +134,36 @@ begin
     out_data <= alu2_in when out_seg = '1'
     else (others => '0');
 
-    process (clk) is
-        begin
-            if rst = '1' then
-                EX_MEM <= (others => '0');
-                out_port <= (others => '0');
-            else
-                if falling_edge(clk) then
-                    EX_MEM(8 downto 0) <= ID_EX(8 downto 0);
-                    EX_MEM(40 downto 9) <= r_data1_in;
-                    EX_MEM(60 downto 41) <= b_20_bits;
-                    EX_MEM(92 downto 61) <= write_data;
-                    EX_MEM(124 downto 93) <= alu_out;
-                    EX_MEM(156 downto 125) <= sp;
-                    EX_MEM(188 downto 157) <= in_data;
-                    EX_MEM(192 downto 189) <= write_back_signals;
-                    EX_MEM(198 downto 193) <= memory_signals;
-                    out_port <= out_data;
-                end if;
-            end if;
-        end process;
+    EX_MEM_registers_addr     <= ID_EX_registers_addr;
+    EX_MEM_r_data1_in         <= r_data1_in;
+    EX_MEM_b_20_bits          <= b_20_bits;
+    EX_MEM_write_data         <= write_data;
+    EX_MEM_alu_out            <= alu_out;
+    EX_MEM_sp                 <= sp;
+    EX_MEM_in_data            <= in_data;
+    EX_MEM_write_back_signals <= write_back_signals;
+    EX_MEM_memory_signals     <= memory_signals;
+    out_port <= out_data;
+
+    -- process (clk) is
+    --     begin
+    --         if rst = '1' then
+    --             EX_MEM <= (others => '0');
+    --             out_port <= (others => '0');
+    --         else
+    --             if falling_edge(clk) then
+    --                 EX_MEM_registers_addr <= ID_EX_registers_addr;
+    --                 EX_MEM(40 downto 9) <= r_data1_in;
+    --                 EX_MEM(60 downto 41) <= b_20_bits;
+    --                 EX_MEM(92 downto 61) <= write_data;
+    --                 EX_MEM(124 downto 93) <= alu_out;
+    --                 EX_MEM(156 downto 125) <= sp;
+    --                 EX_MEM(188 downto 157) <= in_data;
+    --                 EX_MEM(192 downto 189) <= write_back_signals;
+    --                 EX_MEM(198 downto 193) <= memory_signals;
+    --                 out_port <= out_data;
+    --             end if;
+    --         end if;
+    --     end process;
 
 end architecture;
