@@ -31,10 +31,10 @@ architecture mem_arc of mem is
         );
         port(
             clk, rst :   in std_logic;
-            we : in std_logic;
-            addr : in std_logic_vector(addr_width-1 downto 0);
-            din : in std_logic_vector(data_width-1 downto 0);
-            dout : out std_logic_vector(data_width-1 downto 0)
+            R, W     : in std_logic;
+            addr     : in std_logic_vector(addr_width-1 downto 0);
+            din      : in std_logic_vector(data_width-1 downto 0);
+            dout     : out std_logic_vector(data_width-1 downto 0)
         );
     end component;
 
@@ -50,8 +50,8 @@ architecture mem_arc of mem is
     
 
     begin
-        memory_com: memory generic map (5) port map(clk, rst, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
-        -- memory_com: memory generic map (32, 32) port map(clk, rst, write_in_mem, data_mem_in, data_mem_out);
+        memory_com: memory generic map (5) port map(clk, rst, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
+        -- memory_com: memory generic map (20) port map(clk, rst, write_in_mem, data_mem_in, data_mem_out);
 
         -- initializations
         b_20_bits          <= EX_MEM_b_20_bits;
@@ -75,6 +75,9 @@ architecture mem_arc of mem is
         else addr_imm;-- when MR = '1' or MW = '1'
 
         write_in_mem <= '1' when write_in_stack = '1' or MW = '1'
+        else '0';
+
+        read_from_mem <= '1' when read_from_stack = '1' or MR = '1'
         else '0';
 
         inc_sp <= '1' when read_from_stack = '1'
