@@ -6,7 +6,7 @@ entity mem is
     port(
         clk, rst                  :   in std_logic;
 
-        EX_MEM_first_40_bits      : in std_logic_vector(39 DOWNTO 0);
+        EX_MEM_first_40_bits      : in std_logic_vector(40 DOWNTO 0);
         EX_MEM_b_20_bits          : in std_logic_vector(19 downto 0);
         EX_MEM_data_mem_in        : in std_logic_vector(31 downto 0);
         EX_MEM_ALU_out            : in std_logic_vector(31 downto 0);
@@ -17,7 +17,7 @@ entity mem is
 
         inc_sp, dec_sp            : out std_logic;
         
-        MEM_WB_first_40_bits      : out std_logic_vector(39 downto 0);
+        MEM_WB_first_40_bits      : out std_logic_vector(40 downto 0);
         MEM_WB_wb_result          : out std_logic_vector(31 downto 0);
         MEM_WB_write_back_signals : out std_logic_vector(3 downto 0)
     );
