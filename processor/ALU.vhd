@@ -5,7 +5,6 @@ use ieee.numeric_std.all;
 entity ALU IS
     PORT(
         ALU_signals : in STD_LOGIC_VECTOR (3  DOWNTO 0);
-        rst : in std_logic;
         a,b : in STD_LOGIC_VECTOR (31  DOWNTO 0);
         flag_in : in STD_LOGIC_VECTOR (2  DOWNTO 0);
         ALU_out : out STD_LOGIC_VECTOR (31 DOWNTO 0);

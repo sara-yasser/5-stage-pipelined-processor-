@@ -25,16 +25,14 @@ end entity;
 
 architecture mem_arc of mem is
     component memory is
-        generic (
-            addr_width : integer := 2;
-            data_width : integer := 3 
-        );
+        generic (addr_width : integer := 20);
+
         port(
-            clk, rst :   in std_logic;
-            R, W     : in std_logic;
-            addr     : in std_logic_vector(addr_width-1 downto 0);
-            din      : in std_logic_vector(data_width-1 downto 0);
-            dout     : out std_logic_vector(data_width-1 downto 0)
+            clk :   in std_logic;
+            R, W : in std_logic;
+            addr : in std_logic_vector(31 downto 0);
+            din : in std_logic_vector(31 downto 0);
+            dout : out std_logic_vector(31 downto 0)
         );
     end component;
 
@@ -50,7 +48,7 @@ architecture mem_arc of mem is
     
 
     begin
-        memory_com: memory generic map (5) port map(clk, rst, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
+        memory_com: memory generic map (5) port map(clk, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
         -- memory_com: memory generic map (20) port map(clk, rst, write_in_mem, data_mem_in, data_mem_out);
 
         -- initializations
