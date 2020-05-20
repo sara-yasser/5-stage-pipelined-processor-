@@ -3,26 +3,29 @@ USE IEEE.STD_LOGIC_1164.all;
 
 entity decode IS
     PORT(
-        clk                      : in  STD_LOGIC;
-        rst, inc_sp, dec_sp      : in STD_LOGIC;
-        WB_signals               : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
-        w_addr1, w_addr2         : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
-        w_data1, w_data2         : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
+        clk                         : in  STD_LOGIC;
+        rst, inc_sp, dec_sp, z      : in STD_LOGIC;
+        WB_signals                  : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
+        w_addr1, w_addr2            : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
+        w_data1, w_data2            : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
 
-        IF_ID_instruction        : in std_logic_vector(15 downto 0);
-        IF_ID_pc_incremented     : in std_logic_vector(31 downto 0);
+        IF_ID_instruction           : in std_logic_vector(15 downto 0);
+        IF_ID_pc_incremented        : in std_logic_vector(31 downto 0);
 
-        ID_EX_dst_src            : out STD_LOGIC_VECTOR(2 downto 0);
-        ID_EX_src2               : out STD_LOGIC_VECTOR(2 downto 0);
-        ID_EX_src1               : out STD_LOGIC_VECTOR(2 downto 0);
-        ID_EX_decoder_out        : out STD_LOGIC_VECTOR(19 downto 0);
-        ID_EX_rd_data2           : out STD_LOGIC_VECTOR(31 downto 0);
-        ID_EX_rd_data1           : out STD_LOGIC_VECTOR(31 downto 0);
-        ID_EX_sp                 : out STD_LOGIC_VECTOR(31 downto 0);
-        ID_EX_pc                 : out STD_LOGIC_VECTOR(31 downto 0);
-        ID_EX_write_back_signals : out STD_LOGIC_VECTOR(3 downto 0);
-        ID_EX_memory_signals     : out STD_LOGIC_VECTOR(5 downto 0);
-        ID_EX_excute_signals     : out STD_LOGIC_VECTOR(9 downto 0)
+        pc_from_fetch               : in std_logic_vector(31 downto 0);
+        pc_to_fetch                 : out STD_LOGIC_VECTOR(31 downto 0);
+
+        ID_EX_dst_src               : out STD_LOGIC_VECTOR(2 downto 0);
+        ID_EX_src2                  : out STD_LOGIC_VECTOR(2 downto 0);
+        ID_EX_src1                  : out STD_LOGIC_VECTOR(2 downto 0);
+        ID_EX_decoder_out           : out STD_LOGIC_VECTOR(19 downto 0);
+        ID_EX_rd_data2              : out STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_rd_data1              : out STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_sp                    : out STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_pc                    : out STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_write_back_signals    : out STD_LOGIC_VECTOR(3 downto 0);
+        ID_EX_memory_signals        : out STD_LOGIC_VECTOR(5 downto 0);
+        ID_EX_excute_signals        : out STD_LOGIC_VECTOR(9 downto 0)
         );
 end entity;
 
@@ -49,11 +52,11 @@ architecture decode_arc of decode is
 
     component file_reg IS
     port(
-        clk, wr_in_pc_sig, reg_wr_sig, swap_sig, rst, inc_sp, dec_sp :          in  STD_LOGIC;
-        rd_address1, rd_address2    :   in STD_LOGIC_VECTOR(2 DOWNTO 0);
-        wr_address1, wr_address2  :   in STD_LOGIC_VECTOR(2 DOWNTO 0);
-        wr_data, swap_data2 :   in STD_LOGIC_VECTOR(31 DOWNTO 0);
-        rd_data1, rd_data2, sp  :   out STD_LOGIC_VECTOR(31 DOWNTO 0)
+        clk, wr_in_pc_sig, reg_wr_sig, swap_sig, rst, inc_sp, dec_sp : in  STD_LOGIC;
+        rd_address1, rd_address2    :   in std_logic_vector(2 downto 0);
+        wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
+        wr_data, swap_data2, pc_in :   in std_logic_vector(31 downto 0);
+        rd_data1, rd_data2, sp, pc_out  :   out std_logic_vector(31 downto 0)
         );
     end component;
 
@@ -61,7 +64,7 @@ signal last_6_bits : STD_LOGIC_VECTOR(5 DOWNTO 0);
 signal op_code : STD_LOGIC_VECTOR(3 DOWNTO 0);
 signal dst_src, src1, src2, ETC : STD_LOGIC_VECTOR(2 DOWNTO 0);
 signal IMM_EA : STD_LOGIC_VECTOR(11 DOWNTO 0);
-signal src, BE : STD_LOGIC:= '0';  -- need to look at later
+signal src, BE, branch_seg : STD_LOGIC:= '0';  -- need to look at later
 
 signal decode_signals :      STD_LOGIC_VECTOR(4 DOWNTO 0);
 signal excute_signals :      STD_LOGIC_VECTOR(9 DOWNTO 0);
@@ -71,12 +74,12 @@ signal write_back_signals :  STD_LOGIC_VECTOR(3 DOWNTO 0);
 signal decoder_out :  STD_LOGIC_VECTOR(19 DOWNTO 0);
 
 signal read_addr2 : STD_LOGIC_VECTOR(2 DOWNTO 0);
-signal rd_data1, rd_data2, sp, pc : STD_LOGIC_VECTOR(31 DOWNTO 0);
+signal rd_data1, rd_data2, sp, IF_ID_pc, ID_EX_pc_in : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 begin
     control_unit_com: control_unit port map(clk, rst, op_code, last_6_bits, decode_signals, excute_signals, memory_signals, write_back_signals);
     decoder_com: decoder port map(clk, rst, ETC(2), ETC(1), ETC(0), IMM_EA, decoder_out);
-    file_reg_com: file_reg port map(clk, WB_signals(2), WB_signals(1), WB_signals(0), rst, inc_sp, dec_sp, src1, read_addr2, w_addr1, w_addr2, w_data1, w_data2, rd_data1, rd_data2, sp);
+    file_reg_com: file_reg port map(clk, WB_signals(2), WB_signals(1), WB_signals(0), rst, inc_sp, dec_sp, src1, read_addr2, w_addr1, w_addr2, w_data1, w_data2, pc_from_fetch, rd_data1, rd_data2, sp, pc_to_fetch);
     --intializations
     last_6_bits <=   IF_ID_instruction (5 downto 0);
     op_code     <=   IF_ID_instruction (15 downto 12);
@@ -84,16 +87,21 @@ begin
     src1        <=   IF_ID_instruction (8 downto 6);
     src2        <=   IF_ID_instruction (5 downto 3);
     IMM_EA      <=   IF_ID_instruction (11 downto 0);
-    pc          <=   IF_ID_pc_incremented;
+    IF_ID_pc    <=   IF_ID_pc_incremented;
 
     ETC         <=   decode_signals (2 downto 0);
     src         <=   decode_signals (3);
     BE          <=   decode_signals (4);
 
-    -- mux
+    -- muxes
     read_addr2 <= src2 when src = '0'
     else dst_src;
 
+    ID_EX_pc_in <= rd_data2 when branch_seg = '1'
+    else IF_ID_pc;
+
+    -- and gate
+    branch_seg <= z and BE;
     -- out buff
 
     ID_EX_dst_src            <= dst_src;
@@ -103,7 +111,7 @@ begin
     ID_EX_rd_data2           <= rd_data2;
     ID_EX_rd_data1           <= rd_data1;
     ID_EX_sp                 <= sp;
-    ID_EX_pc                 <= pc;
+    ID_EX_pc                 <= ID_EX_pc_in;
     ID_EX_write_back_signals <= write_back_signals;
     ID_EX_memory_signals     <= memory_signals;
     ID_EX_excute_signals     <= excute_signals;
