@@ -6,9 +6,10 @@ entity fetch is
     port(
         clk, rst :   in std_logic;
         curr_pc : in std_logic_vector(31 downto 0);
-        R_dst, comp_logic : in std_logic_vector(31 downto 0);
+        data_branch, comp_logic : in std_logic_vector(31 downto 0);
         initial_pc, int_address: out std_logic_vector(31 downto 0);
         pc_out : out std_logic_vector(31 downto 0);
+        R_dst : out std_logic_vector(2 downto 0);
         IF_ID_instruction : out std_logic_vector(15 downto 0);
         IF_ID_pc_incremented : out std_logic_vector(31 downto 0)
     );
@@ -51,14 +52,15 @@ architecture fetch_arc of fetch is
 
     begin
         inst_mem_com: inst_mem port map(clk, rst, curr_pc, instruction, init_pc, int_addr);
-        branch_p_com: branch_p port map(clk, rst, instruction(15 downto 12), instruction(5 downto 0), curr_pc, R_dst, branch_seg);
+        branch_p_com: branch_p port map(clk, rst, instruction(15 downto 12), instruction(5 downto 0), curr_pc, data_branch, branch_seg);
         inc_dec_com: inc_dec port map('0', '0', curr_pc, pc_incremented);
 
-        pc_val <= R_dst when branch_seg = '1' 
+        pc_val <= data_branch when branch_seg = '1' 
         else comp_logic;
 
         initial_pc <= init_pc;
         int_address <= int_addr;
+        R_dst <= instruction(11 downto 9);
         
         -- process(clk)
         -- begin
