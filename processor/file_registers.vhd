@@ -24,6 +24,7 @@ architecture file_reg_arc of file_reg is
     begin
         -- registers(8) <= wr_data when 
         -- registers(8) <= pc_content;
+        pc_out <= registers(8);
         process (clk) is
             begin
                 if rst = '1' then
