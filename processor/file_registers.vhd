@@ -5,10 +5,10 @@ USE ieee.numeric_std.all;
 entity file_reg IS
 port(
     clk, wr_in_pc_sig, reg_wr_sig, swap_sig, rst, inc_sp, dec_sp : in  STD_LOGIC;
-    rd_address1, rd_address2    :   in std_logic_vector(2 downto 0);
+    rd_address1, rd_address2, R_dst    :   in std_logic_vector(2 downto 0);
     wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
     wr_data, swap_data2, pc_in :   in std_logic_vector(31 downto 0);
-    rd_data1, rd_data2, sp, pc_out  :   out std_logic_vector(31 downto 0)
+    rd_data1, rd_data2, data_branch, sp, pc_out  :   out std_logic_vector(31 downto 0)
     );
 end entity;
 
@@ -26,6 +26,7 @@ architecture file_reg_arc of file_reg is
         -- registers(8) <= pc_content;
         sp <= sp_content;
         pc_out <= pc_content;
+        data_branch <= registers(to_integer(unsigned(R_dst)));
         process (clk) is
             begin
                 if rst = '1' then
