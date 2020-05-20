@@ -8,7 +8,8 @@ entity inst_mem is
     port(
         clk, rst :   in std_logic;
         addr : in std_logic_vector(31 downto 0);
-        dout : out std_logic_vector(15 downto 0)
+        dout : out std_logic_vector(15 downto 0);
+        initial_pc, int_address: out std_logic_vector(31 downto 0)
     );
 end entity;
 
@@ -51,5 +52,7 @@ architecture inst_mem_arc of inst_mem is
 
         temp_addr <= addr;
     dout<=ram_single_port(to_integer(unsigned(temp_addr)));
+    initial_pc <= ram_single_port(0) & ram_single_port(1);
+    int_address <= ram_single_port(2) & ram_single_port(3);
 
 end architecture;
