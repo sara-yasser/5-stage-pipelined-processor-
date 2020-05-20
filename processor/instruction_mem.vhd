@@ -52,7 +52,7 @@ architecture inst_mem_arc of inst_mem is
 
         temp_addr <= addr;
     dout<=ram_single_port(to_integer(unsigned(temp_addr)));
-    initial_pc <= ram_single_port(0) & ram_single_port(1);
-    int_address <= ram_single_port(2) & ram_single_port(3);
+    initial_pc <= ram_single_port(1) & ram_single_port(0);
+    int_address <= ram_single_port(3) & ram_single_port(2);
 
 end architecture;
