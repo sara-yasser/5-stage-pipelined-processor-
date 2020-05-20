@@ -55,8 +55,8 @@ architecture decode_arc of decode is
         clk, reg_wr_sig, swap_sig, rst, inc_sp, dec_sp : in  STD_LOGIC;
         rd_address1, rd_address2, R_dst    :   in std_logic_vector(2 downto 0);
         wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
-        wr_data, swap_data2, pc_in :   in std_logic_vector(31 downto 0);
-        rd_data1, rd_data2, data_branch, sp, pc_out  :   out std_logic_vector(31 downto 0)
+        wr_data, swap_data2 :   in std_logic_vector(31 downto 0);
+        rd_data1, rd_data2, data_branch, sp  :   out std_logic_vector(31 downto 0)
         );
     end component;
 
