@@ -4,22 +4,22 @@ USE ieee.numeric_std.all;
 
 entity fetch is
     port(
-        clk, rst, write_in_pc :   in std_logic;
+        clk, rst, write_in_pc   : in std_logic;
         data_branch, write_data : in std_logic_vector(31 downto 0);
-        int_address: out std_logic_vector(31 downto 0);
-        R_dst : out std_logic_vector(2 downto 0);
-        IF_ID_instruction : out std_logic_vector(15 downto 0);
-        IF_ID_pc_incremented : out std_logic_vector(31 downto 0)
+        int_address             : out std_logic_vector(31 downto 0);
+        R_dst                   : out std_logic_vector(2 downto 0);
+        IF_ID_instruction       : out std_logic_vector(15 downto 0);
+        IF_ID_pc_incremented    : out std_logic_vector(31 downto 0)
     );
 end entity;
 
 architecture fetch_arc of fetch is
     component inst_mem is
         port(
-            clk, rst :   in std_logic;
-            addr : in std_logic_vector(31 downto 0);
-            dout : out std_logic_vector(15 downto 0);
-            initial_pc, int_address: out std_logic_vector(31 downto 0)
+            clk, rst                : in std_logic;
+            addr                    : in std_logic_vector(31 downto 0);
+            dout                    : out std_logic_vector(15 downto 0);
+            initial_pc, int_address : out std_logic_vector(31 downto 0)
         );
     end component;
 

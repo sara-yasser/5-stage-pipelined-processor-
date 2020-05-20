@@ -7,8 +7,8 @@ port(
     clk, rst :                   in  STD_LOGIC;
     -- in_port : in STD_LOGIC_VECTOR(31 DOWNTO 0);
     -- out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0)
-    inc_sp_in, dec_sp_in, z : in STD_LOGIC;        -- remove this
-    WB_signals_in : in STD_LOGIC_VECTOR(2 DOWNTO 0);      -- from write back
+    inc_sp_in, dec_sp_in, z, write_in_pc_in : in STD_LOGIC;        -- remove this
+    WB_signals_in : in STD_LOGIC_VECTOR(1 DOWNTO 0);      -- from write back
     w_addr1_in, w_addr2_in : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
     w_data1_in, w_data2_in : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
     interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0)  -- remove this
@@ -18,14 +18,12 @@ end entity;
 architecture pipeline_arc of pipeline is
     component fetch is
         port(
-            clk, rst :   in std_logic;
-            curr_pc : in std_logic_vector(31 downto 0);
-            data_branch, comp_logic : in std_logic_vector(31 downto 0);
-            initial_pc, int_address: out std_logic_vector(31 downto 0);
-            pc_out : out std_logic_vector(31 downto 0);
-            R_dst : out std_logic_vector(2 downto 0);
-            IF_ID_instruction : out std_logic_vector(15 downto 0);
-            IF_ID_pc_incremented : out std_logic_vector(31 downto 0)
+            clk, rst, write_in_pc   : in std_logic;
+            data_branch, write_data : in std_logic_vector(31 downto 0);
+            int_address             : out std_logic_vector(31 downto 0);
+            R_dst                   : out std_logic_vector(2 downto 0);
+            IF_ID_instruction       : out std_logic_vector(15 downto 0);
+            IF_ID_pc_incremented    : out std_logic_vector(31 downto 0)
         );
     end component;
 
@@ -41,7 +39,7 @@ architecture pipeline_arc of pipeline is
         PORT(
             clk                         : in  STD_LOGIC;
             rst, inc_sp, dec_sp, z      : in STD_LOGIC;
-            WB_signals                  : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
+            WB_signals                  : in STD_LOGIC_VECTOR(1 DOWNTO 0);   -- from write back
             w_addr1, w_addr2            : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
             w_data1, w_data2            : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
             R_dst                       : in STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -49,9 +47,7 @@ architecture pipeline_arc of pipeline is
             IF_ID_instruction           : in std_logic_vector(15 downto 0);
             IF_ID_pc_incremented        : in std_logic_vector(31 downto 0);
 
-            pc_from_fetch               : in std_logic_vector(31 downto 0);
-            pc_to_fetch                 : out STD_LOGIC_VECTOR(31 downto 0);
-            data_branch, cmp_logic_out  : out STD_LOGIC_VECTOR(31 downto 0);
+            data_branch                 : out STD_LOGIC_VECTOR(31 downto 0);
 
             ID_EX_dst_src               : out STD_LOGIC_VECTOR(2 downto 0);
             ID_EX_src2                  : out STD_LOGIC_VECTOR(2 downto 0);
@@ -203,20 +199,19 @@ architecture pipeline_arc of pipeline is
         signal w_data1, w_data2 : STD_LOGIC_VECTOR(31 DOWNTO 0):=(others => '0');
 
     -- general
-        signal stall, inc_sp, dec_sp : std_logic:='0';
-        signal pc_from_IF_to_ID, pc_from_ID_to_IF, curr_pc_ID, curr_pc_IF : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
-        signal data_branch, initial_pc, int_address, comp_logic  : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
+        signal stall, inc_sp, dec_sp, write_in_pc : std_logic:='0';
+        signal curr_pc_ID, curr_pc_IF : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
+        signal data_branch, int_address, write_data  : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal R_dst : STD_LOGIC_VECTOR(2 downto 0);
-        signal WB_signals : STD_LOGIC_VECTOR(2 downto 0);
+        signal WB_signals : STD_LOGIC_VECTOR(1 downto 0);
 
     begin
-        fetch_com      : fetch                          port map(clk, rst, curr_pc_IF, data_branch, comp_logic, initial_pc, int_address,
-                                                        pc_from_IF_to_ID, R_dst, IF_ID_in_instruction, IF_ID_in_pc_incremented);
+        fetch_com      : fetch                          port map(clk, rst, write_in_pc, data_branch, write_data, int_address,
+                                                        R_dst, IF_ID_in_instruction, IF_ID_in_pc_incremented);
         IF_ID_buff_com : IF_ID_buff                     port map(clk, rst, stall_IF_ID, IF_ID_in, IF_ID_out);
         decode_com     : decode                         port map(clk, rst, inc_sp, dec_sp, z, WB_signals, w_addr1, w_addr2, 
                                                         w_data1, w_data2, R_dst,
-                                                        IF_ID_out_instruction, IF_ID_out_pc_incremented,
-                                                        curr_pc_ID, pc_from_ID_to_IF, data_branch, comp_logic,
+                                                        IF_ID_out_instruction, IF_ID_out_pc_incremented, data_branch,
                                                         ID_EX_in_dst_src, ID_EX_in_src2, ID_EX_in_src1, ID_EX_in_decoder_out,
                                                         ID_EX_in_rd_data2, ID_EX_in_rd_data1, ID_EX_in_sp, ID_EX_in_pc,
                                                         ID_EX_in_write_back_signals, ID_EX_in_memory_signals, ID_EX_in_excute_signals);
@@ -300,18 +295,17 @@ architecture pipeline_arc of pipeline is
             --     MEM_WB_in(72 downto 41) <= MEM_WB_in_wb_result;
             --     MEM_WB_in(76 downto 73) <= MEM_WB_in_write_back_signals;
 
-        -- pc between fetch and decode
-        curr_pc_IF <= initial_pc when rst = '1'
-        else pc_from_ID_to_IF;
 
-        curr_pc_ID <= initial_pc when rst = '1'
-        else pc_from_IF_to_ID;
+        
 
+
+        
         -- testing part will be removed
         interrupt <= int_address;
         inc_sp <= inc_sp_in;
         dec_sp <= dec_sp_in;
         WB_signals <= WB_signals_in;
+        write_in_pc <= write_in_pc_in;
 
         w_addr1 <= w_addr1_in;
         w_addr2 <= w_addr2_in;
