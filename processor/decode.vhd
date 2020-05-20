@@ -8,12 +8,14 @@ entity decode IS
         WB_signals                  : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
         w_addr1, w_addr2            : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
         w_data1, w_data2            : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
+        R_dst                       : in STD_LOGIC_VECTOR(2 DOWNTO 0);
 
         IF_ID_instruction           : in std_logic_vector(15 downto 0);
         IF_ID_pc_incremented        : in std_logic_vector(31 downto 0);
 
         pc_from_fetch               : in std_logic_vector(31 downto 0);
         pc_to_fetch                 : out STD_LOGIC_VECTOR(31 downto 0);
+        data_branch, cmp_logic_out  : out STD_LOGIC_VECTOR(31 downto 0);
 
         ID_EX_dst_src               : out STD_LOGIC_VECTOR(2 downto 0);
         ID_EX_src2                  : out STD_LOGIC_VECTOR(2 downto 0);
@@ -53,10 +55,10 @@ architecture decode_arc of decode is
     component file_reg IS
     port(
         clk, wr_in_pc_sig, reg_wr_sig, swap_sig, rst, inc_sp, dec_sp : in  STD_LOGIC;
-        rd_address1, rd_address2    :   in std_logic_vector(2 downto 0);
+        rd_address1, rd_address2, R_dst    :   in std_logic_vector(2 downto 0);
         wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
         wr_data, swap_data2, pc_in :   in std_logic_vector(31 downto 0);
-        rd_data1, rd_data2, sp, pc_out  :   out std_logic_vector(31 downto 0)
+        rd_data1, rd_data2, data_branch, sp, pc_out  :   out std_logic_vector(31 downto 0)
         );
     end component;
 
@@ -77,9 +79,15 @@ signal read_addr2 : STD_LOGIC_VECTOR(2 DOWNTO 0);
 signal rd_data1, rd_data2, sp, IF_ID_pc, ID_EX_pc_in : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 begin
-    control_unit_com: control_unit port map(clk, rst, op_code, last_6_bits, decode_signals, excute_signals, memory_signals, write_back_signals);
-    decoder_com: decoder port map(clk, rst, ETC(2), ETC(1), ETC(0), IMM_EA, decoder_out);
-    file_reg_com: file_reg port map(clk, WB_signals(2), WB_signals(1), WB_signals(0), rst, inc_sp, dec_sp, src1, read_addr2, w_addr1, w_addr2, w_data1, w_data2, pc_from_fetch, rd_data1, rd_data2, sp, pc_to_fetch);
+    control_unit_com: control_unit port map (clk, rst, op_code, last_6_bits, decode_signals, excute_signals, memory_signals, 
+                                            write_back_signals);
+
+    decoder_com: decoder port map           (clk, rst, ETC(2), ETC(1), ETC(0), IMM_EA, decoder_out);
+    
+    file_reg_com: file_reg port map         (clk, WB_signals(2), WB_signals(1), WB_signals(0), rst, inc_sp, dec_sp, src1, read_addr2, 
+                                            R_dst, w_addr1, w_addr2, w_data1, w_data2, pc_from_fetch, rd_data1, rd_data2, 
+                                            data_branch, sp, pc_to_fetch);
+
     --intializations
     last_6_bits <=   IF_ID_instruction (5 downto 0);
     op_code     <=   IF_ID_instruction (15 downto 12);
@@ -92,6 +100,9 @@ begin
     ETC         <=   decode_signals (2 downto 0);
     src         <=   decode_signals (3);
     BE          <=   decode_signals (4);
+
+    -- will remove this and replace it with compare logic
+    cmp_logic_out <= ID_EX_pc_in;
 
     -- muxes
     read_addr2 <= src2 when src = '0'
