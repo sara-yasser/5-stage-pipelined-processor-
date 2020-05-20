@@ -19,7 +19,7 @@ architecture CCR_arc of CCR is
                 if rst = '1' then
                     output_vec <= (others => '0');
 
-                elsif rst = '0' then
+                else
                     if rising_edge(clk) then
                         output_vec <= input_vec;
                     end if;
