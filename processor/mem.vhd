@@ -48,8 +48,8 @@ architecture mem_arc of mem is
     
 
     begin
-        memory_com: memory generic map (5) port map(clk, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
-        -- memory_com: memory generic map (20) port map(clk, rst, write_in_mem, data_mem_in, data_mem_out);
+        -- memory_com: memory generic map (5) port map(clk, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
+        memory_com: memory generic map (12) port map(clk, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out);
 
         -- initializations
         b_20_bits          <= EX_MEM_b_20_bits;

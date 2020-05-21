@@ -7,7 +7,7 @@ port(
     clk, rst :                   in  STD_LOGIC;
     -- in_port : in STD_LOGIC_VECTOR(31 DOWNTO 0);
     -- out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0)
-    inc_sp_in, dec_sp_in, write_in_pc_in : in STD_LOGIC;        -- remove this
+    write_in_pc_in : in STD_LOGIC;        -- remove this
     WB_signals_in : in STD_LOGIC_VECTOR(1 DOWNTO 0);      -- from write back
     w_addr1_in, w_addr2_in : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
     w_data1_in, w_data2_in : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
@@ -209,6 +209,7 @@ architecture pipeline_arc of pipeline is
         fetch_com      : fetch                          port map(clk, rst, write_in_pc, data_branch, w_data1, int_address,
                                                         R_dst, IF_ID_in_instruction, IF_ID_in_pc_incremented);
         IF_ID_buff_com : IF_ID_buff                     port map(clk, rst, stall_IF_ID, IF_ID_in, IF_ID_out);
+
         decode_com     : decode                         port map(clk, rst, inc_sp, dec_sp, z, WB_signals, w_addr1, w_addr2, 
                                                         w_data1, w_data2, R_dst,
                                                         IF_ID_out_instruction, IF_ID_out_pc_incremented, data_branch,
@@ -216,7 +217,6 @@ architecture pipeline_arc of pipeline is
                                                         ID_EX_in_rd_data2, ID_EX_in_rd_data1, ID_EX_in_sp, ID_EX_in_pc,
                                                         ID_EX_in_write_back_signals, ID_EX_in_memory_signals, ID_EX_in_excute_signals);
         ID_EX_buff_com : stage_buff generic map (177)   port map(clk, rst, stall, ID_EX_in, ID_EX_out);
-        
         
         excute_com     : excute                         port map(clk, rst, ID_EX_out_registers_addr, ID_EX_out_b_20_bits, ID_EX_out_r_data2_in,
                                                         ID_EX_out_r_data1_in, ID_EX_out_sp, ID_EX_out_pc_inc, ID_EX_out_write_back_signals,
@@ -227,15 +227,14 @@ architecture pipeline_arc of pipeline is
                                                         EX_MEM_in_write_back_signals, EX_MEM_in_memory_signals);
         EX_MEM_buff_com: stage_buff generic map (199)   port map(clk, rst, stall, EX_MEM_in, EX_MEM_out);
 
-        -- comminting the rest to test fetch and decode only
             
-            -- mem_com        : mem                            port map(clk, rst, EX_MEM_out_first_40_bits, EX_MEM_out_b_20_bits,
-            --                                                 EX_MEM_out_data_mem_in, EX_MEM_out_ALU_out, EX_MEM_out_sp, EX_MEM_out_in_port_data,
-            --                                                 EX_MEM_out_write_back_signals, EX_MEM_out_memory_signals,
-            --                                                 inc_sp, dec_sp,
-            --                                                 MEM_WB_in_first_40_bits, MEM_WB_in_wb_result, MEM_WB_in_write_back_signals);
+        mem_com        : mem                            port map(clk, rst, EX_MEM_out_first_40_bits, EX_MEM_out_b_20_bits,
+                                                        EX_MEM_out_data_mem_in, EX_MEM_out_ALU_out, EX_MEM_out_sp, EX_MEM_out_in_port_data,
+                                                        EX_MEM_out_write_back_signals, EX_MEM_out_memory_signals,
+                                                        inc_sp, dec_sp,
+                                                        MEM_WB_in_first_40_bits, MEM_WB_in_wb_result, MEM_WB_in_write_back_signals);
 
-            -- MEM_WB_buff_com: stage_buff generic map (77)    port map(clk, rst, stall, MEM_WB_in, MEM_WB_out);
+        MEM_WB_buff_com: stage_buff generic map (77)    port map(clk, rst, stall, MEM_WB_in, MEM_WB_out);
         
         -- IF_ID in buff
             IF_ID_in(15 downto 0) <= IF_ID_in_instruction;
@@ -283,38 +282,33 @@ architecture pipeline_arc of pipeline is
             EX_MEM_in(192 downto 189)       <= EX_MEM_in_write_back_signals;
             EX_MEM_in(198 downto 193)       <= EX_MEM_in_memory_signals;
 
-        -- comminting the rest to test fetch and decode only
-            -- -- EX_MEM out buff
-            --     EX_MEM_out_first_40_bits        <= EX_MEM_out(40 downto 0);
-            --     EX_MEM_out_b_20_bits            <= EX_MEM_out(60 downto 41);
-            --     EX_MEM_out_data_mem_in          <= EX_MEM_out(92 downto 61);
-            --     EX_MEM_out_ALU_out              <= EX_MEM_out(124 downto 93);
-            --     EX_MEM_out_sp                   <= EX_MEM_out(156 downto 125);
-            --     EX_MEM_out_in_port_data         <= EX_MEM_out(188 downto 157);
-            --     EX_MEM_out_write_back_signals   <= EX_MEM_out(192 downto 189);
-            --     EX_MEM_out_memory_signals       <= EX_MEM_out(198 downto 193);
+        -- EX_MEM out buff
+            EX_MEM_out_first_40_bits        <= EX_MEM_out(40 downto 0);
+            EX_MEM_out_b_20_bits            <= EX_MEM_out(60 downto 41);
+            EX_MEM_out_data_mem_in          <= EX_MEM_out(92 downto 61);
+            EX_MEM_out_ALU_out              <= EX_MEM_out(124 downto 93);
+            EX_MEM_out_sp                   <= EX_MEM_out(156 downto 125);
+            EX_MEM_out_in_port_data         <= EX_MEM_out(188 downto 157);
+            EX_MEM_out_write_back_signals   <= EX_MEM_out(192 downto 189);
+            EX_MEM_out_memory_signals       <= EX_MEM_out(198 downto 193);
 
-            -- -- MEM_WB in buff
-            --     MEM_WB_in(40 downto 0) <= MEM_WB_in_first_40_bits;
-            --     MEM_WB_in(72 downto 41) <= MEM_WB_in_wb_result;
-            --     MEM_WB_in(76 downto 73) <= MEM_WB_in_write_back_signals;
+        -- MEM_WB in buff
+            MEM_WB_in(40 downto 0)          <= MEM_WB_in_first_40_bits;
+            MEM_WB_in(72 downto 41)         <= MEM_WB_in_wb_result;
+            MEM_WB_in(76 downto 73)         <= MEM_WB_in_write_back_signals;
 
+        -- MEM_WB out buff
+            w_addr1                         <= MEM_WB_out(2 downto 0);
+            w_addr2                         <= MEM_WB_out(8 downto 6);
+            w_data2                         <= MEM_WB_out(40 downto 9);
+            w_data1                         <= MEM_WB_out(72 downto 41);
+            WB_signals                      <= MEM_WB_out(74 downto 73);
+            write_in_pc                     <= MEM_WB_out(75);
+            res_f                           <= MEM_WB_out(76);
 
-        
-
-
-        
+            
         -- testing part will be removed
-        interrupt <= int_address;
-        inc_sp <= inc_sp_in;
-        dec_sp <= dec_sp_in;
-        WB_signals <= WB_signals_in;
-        write_in_pc <= write_in_pc_in;
-
-        w_addr1 <= w_addr1_in;
-        w_addr2 <= w_addr2_in;
-        w_data1 <= w_data1_in;
-        w_data2 <= w_data2_in;
+        interrupt <= int_address; --output
 
 end architecture;
 
