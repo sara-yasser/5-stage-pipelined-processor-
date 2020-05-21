@@ -30,7 +30,9 @@ entity excute is
         EX_MEM_sp                   : out STD_LOGIC_VECTOR(31 downto 0);
         EX_MEM_in_data              : out STD_LOGIC_VECTOR(31 downto 0);
         EX_MEM_write_back_signals   : out STD_LOGIC_VECTOR(3 downto 0);
-        EX_MEM_memory_signals       : out STD_LOGIC_VECTOR(5 downto 0)
+        EX_MEM_memory_signals       : out STD_LOGIC_VECTOR(5 downto 0);
+        -- these just for testing, delet them after finishing
+        flags_z_n_c : out STD_LOGIC_VECTOR(2 downto 0) ------------------ testing
 
 	);
 end entity;
@@ -87,6 +89,9 @@ architecture excute_arc of excute is
     
     
 begin
+    -------------------------------- testing ---------------------------------------
+    flags_z_n_c <= flag_out;
+    -------------------------------- testing ---------------------------------------
     sign_extend_com: sign_extend port map(sign_extend_in, sign_extend_out);
     inc_dec_com: inc_dec port map('1','0',pc_inc, pc);
     ALU_com: ALU port map(ALU_signals, alu1_in, alu2_in, flag_in, alu_out, flag_out);

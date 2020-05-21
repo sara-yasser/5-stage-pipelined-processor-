@@ -9,7 +9,8 @@ port(
     out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0);
     interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0);  -- remove this
     -- these just for testing, delet them after finishing
-    R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0) ------------------ testing
+    R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0); ------------------ testing
+    flags_z_n_c : out STD_LOGIC_VECTOR(2 downto 0) ------------------ testing
     );
 end entity;
 
@@ -100,7 +101,9 @@ architecture pipeline_arc of pipeline is
             EX_MEM_sp                   : out STD_LOGIC_VECTOR(31 downto 0);
             EX_MEM_in_data              : out STD_LOGIC_VECTOR(31 downto 0);
             EX_MEM_write_back_signals   : out STD_LOGIC_VECTOR(3 downto 0);
-            EX_MEM_memory_signals       : out STD_LOGIC_VECTOR(5 downto 0)
+            EX_MEM_memory_signals       : out STD_LOGIC_VECTOR(5 downto 0);
+            -- these just for testing, delet them after finishing
+            flags_z_n_c : out STD_LOGIC_VECTOR(2 downto 0) ------------------ testing
         );
     end component;
 
@@ -227,7 +230,10 @@ architecture pipeline_arc of pipeline is
                                                         res_f, flag_reg, in_port_data, out_port_data, z,
                                                         EX_MEM_in_registers_addr, EX_MEM_in_r_data1_in, EX_MEM_in_b_20_bits,
                                                         EX_MEM_in_write_data, EX_MEM_in_alu_out, EX_MEM_in_sp, EX_MEM_in_in_data,
-                                                        EX_MEM_in_write_back_signals, EX_MEM_in_memory_signals);
+                                                        EX_MEM_in_write_back_signals, EX_MEM_in_memory_signals,
+                                                        -- these just for testing, delet them after finishing
+                                                        flags_z_n_c  ------------------ testing
+                                                        );
         EX_MEM_buff_com: stage_buff generic map (199)   port map(clk, rst, stall, EX_MEM_in, EX_MEM_out);
 
             
