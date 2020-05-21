@@ -25,7 +25,9 @@ entity decode IS
         ID_EX_pc                    : out STD_LOGIC_VECTOR(31 downto 0);
         ID_EX_write_back_signals    : out STD_LOGIC_VECTOR(3 downto 0);
         ID_EX_memory_signals        : out STD_LOGIC_VECTOR(5 downto 0);
-        ID_EX_excute_signals        : out STD_LOGIC_VECTOR(9 downto 0)
+        ID_EX_excute_signals        : out STD_LOGIC_VECTOR(9 downto 0);
+        -- these just for testing, delet them after finishing
+        R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0) ------------------ testing
         );
 end entity;
 
@@ -56,7 +58,9 @@ architecture decode_arc of decode is
         rd_address1, rd_address2, R_dst    :   in std_logic_vector(2 downto 0);
         wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
         wr_data, swap_data2 :   in std_logic_vector(31 downto 0);
-        rd_data1, rd_data2, data_branch, sp  :   out std_logic_vector(31 downto 0)
+        rd_data1, rd_data2, data_branch, sp  :   out std_logic_vector(31 downto 0);
+        -- these just for testing, delet them after finishing
+        R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0) ------------------ testing
         );
     end component;
 
@@ -84,7 +88,10 @@ begin
     
     file_reg_com: file_reg port map         (clk, WB_signals(1), WB_signals(0), rst, inc_sp, dec_sp, src1, read_addr2, 
                                             R_dst, w_addr1, w_addr2, w_data1, w_data2, rd_data1, rd_data2, 
-                                            data_branch, sp);
+                                            data_branch, sp,
+                                            -- these just for testing, delet them after finishing
+                                            R0, R1, R2, R3, R4, R5, R6, R7 ------------------ testing
+                                            );
 
     --intializations
     last_6_bits <=   IF_ID_instruction (5 downto 0);

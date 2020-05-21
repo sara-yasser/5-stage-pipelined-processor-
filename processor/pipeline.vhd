@@ -7,7 +7,9 @@ port(
     clk, rst :                   in  STD_LOGIC;
     in_port : in STD_LOGIC_VECTOR(31 DOWNTO 0);
     out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0);
-    interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0)  -- remove this
+    interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0);  -- remove this
+    -- these just for testing, delet them after finishing
+    R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0) ------------------ testing
     );
 end entity;
 
@@ -55,7 +57,9 @@ architecture pipeline_arc of pipeline is
             ID_EX_pc                    : out STD_LOGIC_VECTOR(31 downto 0);
             ID_EX_write_back_signals    : out STD_LOGIC_VECTOR(3 downto 0);
             ID_EX_memory_signals        : out STD_LOGIC_VECTOR(5 downto 0);
-            ID_EX_excute_signals        : out STD_LOGIC_VECTOR(9 downto 0)
+            ID_EX_excute_signals        : out STD_LOGIC_VECTOR(9 downto 0);
+            -- these just for testing, delet them after finishing
+            R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0) ------------------ testing
             );
     end component;
 
@@ -211,7 +215,10 @@ architecture pipeline_arc of pipeline is
                                                         IF_ID_out_instruction, IF_ID_out_pc_incremented, data_branch,
                                                         ID_EX_in_dst_src, ID_EX_in_src2, ID_EX_in_src1, ID_EX_in_decoder_out,
                                                         ID_EX_in_rd_data2, ID_EX_in_rd_data1, ID_EX_in_sp, ID_EX_in_pc,
-                                                        ID_EX_in_write_back_signals, ID_EX_in_memory_signals, ID_EX_in_excute_signals);
+                                                        ID_EX_in_write_back_signals, ID_EX_in_memory_signals, ID_EX_in_excute_signals,
+                                                        -- these just for testing, delet them after finishing
+                                                        R0, R1, R2, R3, R4, R5, R6, R7 ------------------ testing
+                                                        );
         ID_EX_buff_com : stage_buff generic map (177)   port map(clk, rst, stall, ID_EX_in, ID_EX_out);
         
         excute_com     : excute                         port map(clk, rst, ID_EX_out_registers_addr, ID_EX_out_b_20_bits, ID_EX_out_r_data2_in,

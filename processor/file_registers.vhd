@@ -8,7 +8,9 @@ port(
     rd_address1, rd_address2, R_dst    :   in std_logic_vector(2 downto 0);
     wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
     wr_data, swap_data2 :   in std_logic_vector(31 downto 0);
-    rd_data1, rd_data2, data_branch, sp :   out std_logic_vector(31 downto 0)
+    rd_data1, rd_data2, data_branch, sp :   out std_logic_vector(31 downto 0);
+    -- these just for testing, delet them after finishing
+    R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0) ------------------ testing
     );
 end entity;
 
@@ -23,6 +25,16 @@ architecture file_reg_arc of file_reg is
     begin
         sp <= sp_content;
         data_branch <= registers(to_integer(unsigned(R_dst)));
+        ---------------------- testing ---------------------------------
+        R0 <= registers(0);
+        R1 <= registers(1);
+        R2 <= registers(2);
+        R3 <= registers(3);
+        R4 <= registers(4);
+        R5 <= registers(5);
+        R6 <= registers(6);
+        R7 <= registers(7);
+        ---------------------- testing ---------------------------------
         process (clk) is
             begin
                 if rst = '1' then
