@@ -5,12 +5,8 @@ USE ieee.numeric_std.all;
 entity pipeline IS
 port(
     clk, rst :                   in  STD_LOGIC;
-    -- in_port : in STD_LOGIC_VECTOR(31 DOWNTO 0);
-    -- out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0)
-    write_in_pc_in : in STD_LOGIC;        -- remove this
-    WB_signals_in : in STD_LOGIC_VECTOR(1 DOWNTO 0);      -- from write back
-    w_addr1_in, w_addr2_in : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
-    w_data1_in, w_data2_in : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
+    in_port : in STD_LOGIC_VECTOR(31 DOWNTO 0);
+    out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0);
     interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0)  -- remove this
     );
 end entity;
