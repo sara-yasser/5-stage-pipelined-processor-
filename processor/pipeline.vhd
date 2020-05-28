@@ -7,10 +7,7 @@ port(
     clk, rst :                   in  STD_LOGIC;
     in_port : in STD_LOGIC_VECTOR(31 DOWNTO 0);
     out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0);
-    interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0);  -- remove this
-    -- these just for testing, delet them after finishing
-    R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0); ------------------ testing
-    flags_z_n_c : out STD_LOGIC_VECTOR(2 downto 0) ------------------ testing
+    interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0)  -- remove this
     );
 end entity;
 
@@ -128,6 +125,17 @@ architecture pipeline_arc of pipeline is
         );
     end component;
 
+    component MEM_WB_buff IS
+    generic (n : integer := 32);
+    port
+    (
+        clk, rst, stall_sig :   in  STD_LOGIC;
+        input_vec   :   in std_logic_vector(n - 1 downto 0);
+        output_vec  :   out std_logic_vector(n - 1 downto 0)
+
+        );
+    end component;
+
     -- buffers
         signal IF_ID_in, IF_ID_out   : std_logic_vector(47 downto 0):=(others => '0');
         signal ID_EX_in, ID_EX_out   : std_logic_vector(176  DOWNTO 0):=(others => '0');
@@ -207,6 +215,9 @@ architecture pipeline_arc of pipeline is
         signal data_branch, int_address  : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal R_dst : STD_LOGIC_VECTOR(2 downto 0);
         signal WB_signals : STD_LOGIC_VECTOR(1 downto 0);
+    -- these just for testing, delet them after finishing
+        signal R0, R1, R2, R3, R4, R5, R6, R7 : std_logic_vector(31 downto 0); ------------------ testing
+        signal flags_z_n_c : STD_LOGIC_VECTOR(2 downto 0); ------------------ testing
 
     begin
         fetch_com      : fetch                          port map(clk, rst, write_in_pc, data_branch, w_data1, int_address,
@@ -243,7 +254,7 @@ architecture pipeline_arc of pipeline is
                                                         inc_sp, dec_sp,
                                                         MEM_WB_in_first_40_bits, MEM_WB_in_wb_result, MEM_WB_in_write_back_signals);
 
-        MEM_WB_buff_com: stage_buff generic map (77)    port map(clk, rst, stall, MEM_WB_in, MEM_WB_out);
+        MEM_WB_buff_com: MEM_WB_buff generic map (77)    port map(clk, rst, stall, MEM_WB_in, MEM_WB_out);
         
         -- IF_ID in buff
             IF_ID_in(15 downto 0) <= IF_ID_in_instruction;
@@ -315,7 +326,9 @@ architecture pipeline_arc of pipeline is
             write_in_pc                     <= MEM_WB_out(75);
             res_f                           <= MEM_WB_out(76);
 
-            
+        -- genral
+        in_port_data    <= in_port;
+        out_port        <= out_port_data;
         -- testing part will be removed
         interrupt <= int_address; --output
 

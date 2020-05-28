@@ -15,7 +15,7 @@ end entity;
 
 architecture inst_mem_arc of inst_mem is
 
-    type ram_type is array (15 downto 0) of std_logic_vector (15 downto 0);
+    type ram_type is array (4095 downto 0) of std_logic_vector (15 downto 0);
     signal ram_single_port : ram_type;
     signal temp_addr : std_logic_vector(31 downto 0);
 
