@@ -85,14 +85,14 @@ begin
 				decode_s <= "01110"; excute_s <= "0000000000"; memory_s <= "000000"; write_back_s <= "0000";
 			elsif first_four_bits = "0011" then MW <= '1'; E <= '1'; T <= '1'; C <= '1';                                  -- STD 2
 				decode_s <= "00111"; excute_s <= "0000000000"; memory_s <= "010000"; write_back_s <= "0000";
-			elsif first_four_bits = "0100" then src <= '1'; E <= '1'; T <= '1';                                           -- SHL 1
-				decode_s <= "01110"; excute_s <= "0000000000"; memory_s <= "000000"; write_back_s <= "0000";
-			elsif first_four_bits = "0101" then ALU <= "1000"; src1 <= '1'; E <= '1'; T <= '1'; C <= '1';                 -- SHL 2
-				decode_s <= "00111"; excute_s <= "0000101000"; memory_s <= "000000"; write_back_s <= "0010";
-			elsif first_four_bits = "0110" then src <= '1'; E <= '1'; T <= '1';                                           -- SHR 1
-				decode_s <= "01110"; excute_s <= "0000000000"; memory_s <= "000000"; write_back_s <= "0000";
-			elsif first_four_bits = "0111" then ALU <= "1001"; src1 <= '1'; E <= '1'; T <= '1'; C <= '1';                 -- SHR 2
-				decode_s <= "00111"; excute_s <= "0000101001"; memory_s <= "000000"; write_back_s <= "0010";
+			elsif first_four_bits = "0100" then E <= '1'; T <= '1';                                                       -- SHL 1
+				decode_s <= "00110"; excute_s <= "0000000000"; memory_s <= "000000"; write_back_s <= "0000";
+			elsif first_four_bits = "0101" then src <= '1'; ALU <= "1000"; src1 <= '1'; E <= '1'; T <= '1'; C <= '1';     -- SHL 2
+				decode_s <= "01111"; excute_s <= "0000101000"; memory_s <= "000000"; write_back_s <= "0010";
+			elsif first_four_bits = "0110" then E <= '1'; T <= '1';                                                       -- SHR 1
+				decode_s <= "00110"; excute_s <= "0000000000"; memory_s <= "000000"; write_back_s <= "0000";
+			elsif first_four_bits = "0111" then src <= '1'; ALU <= "1001"; src1 <= '1'; E <= '1'; T <= '1'; C <= '1';     -- SHR 2
+				decode_s <= "01111"; excute_s <= "0000101001"; memory_s <= "000000"; write_back_s <= "0010";
 			elsif first_four_bits = "1000" then E <= '1'; T <= '1';                                                       -- LDM 1
 				decode_s <= "00110"; excute_s <= "0000000000"; memory_s <= "000000"; write_back_s <= "0000";
 			elsif first_four_bits = "1001" then RW <= '1'; WB <= "11"; E <= '1'; T <= '1'; C <= '1';                      -- LDM 2
@@ -110,9 +110,9 @@ begin
 
 			elsif first_four_bits = "1111" then
 
-				if last_six_bits(1 downto 0) = "10" then ALU <= "0101"; RW <= '1'; WB <= "01";                 -- SUB
+				if last_six_bits(1 downto 0) = "11" then ALU <= "0101"; RW <= '1'; WB <= "01";                 -- SUB
 					decode_s <= "00000"; excute_s <= "0000000101"; memory_s <= "000001"; write_back_s <= "0010";
-				elsif last_six_bits(1 downto 0) = "11" then ALU <= "0100"; RW <= '1'; WB <= "01";              -- ADD
+				elsif last_six_bits(1 downto 0) = "10" then ALU <= "0100"; RW <= '1'; WB <= "01";              -- ADD
 					decode_s <= "00000"; excute_s <= "0000000100"; memory_s <= "000001"; write_back_s <= "0010";
 
 				elsif last_six_bits = "000000" then src <= '1'; ALU <= "0011"; RW <= '1'; WB <= "01";          -- NOT
@@ -129,7 +129,7 @@ begin
 					decode_s <= "00000"; excute_s <= "0001000000"; memory_s <= "000100"; write_back_s <= "1000";
 				elsif last_six_bits = "011000" then read_from_stack <= '1'; write_in_pc <= '1'; WB <= "01";    -- NOP/ RTI 2
 					decode_s <= "00000"; excute_s <= "0000000000"; memory_s <= "000101"; write_back_s <= "0100";
-				else if last_six_bits = "011100" then                                                            -- NOP
+				elsif last_six_bits = "011100" then                                                            -- NOP
 					decode_s <= "00000"; excute_s <= "0000000000"; memory_s <= "000000"; write_back_s <= "0000";
 				elsif last_six_bits = "100000" then src <= '1'; write_in_stack <= '1';                         -- PUSH
 					decode_s <= "01000"; excute_s <= "0000000000"; memory_s <= "001000"; write_back_s <= "0000";
