@@ -28,7 +28,7 @@ architecture mem_arc of mem is
         generic (addr_width : integer := 20);
 
         port(
-            clk :   in std_logic;
+            clk, rst :   in std_logic;
             R, W : in std_logic;
             addr : in std_logic_vector(31 downto 0);
             din : in std_logic_vector(31 downto 0);
@@ -48,8 +48,8 @@ architecture mem_arc of mem is
     
 
     begin
-        -- memory_com: memory generic map (5) port map(clk, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
-        memory_com: memory generic map (12) port map(clk, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out);
+        -- memory_com: memory generic map (12) port map(clk, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
+        memory_com: memory generic map (12) port map(clk, rst, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out);
 
         -- initializations
         b_20_bits          <= EX_MEM_b_20_bits;

@@ -88,11 +88,11 @@ begin
 			elsif first_four_bits = "0100" then E <= '1'; T <= '1';                                                       -- SHL 1
 				decode_s <= "00110"; excute_s <= "0000000000"; memory_s <= "000000"; write_back_s <= "0000";
 			elsif first_four_bits = "0101" then src <= '1'; ALU <= "1000"; src1 <= '1'; E <= '1'; T <= '1'; C <= '1';     -- SHL 2
-				decode_s <= "01111"; excute_s <= "0000101000"; memory_s <= "000000"; write_back_s <= "0010";
+				decode_s <= "01111"; excute_s <= "0000101000"; memory_s <= "000001"; write_back_s <= "0010";
 			elsif first_four_bits = "0110" then E <= '1'; T <= '1';                                                       -- SHR 1
 				decode_s <= "00110"; excute_s <= "0000000000"; memory_s <= "000000"; write_back_s <= "0000";
 			elsif first_four_bits = "0111" then src <= '1'; ALU <= "1001"; src1 <= '1'; E <= '1'; T <= '1'; C <= '1';     -- SHR 2
-				decode_s <= "01111"; excute_s <= "0000101001"; memory_s <= "000000"; write_back_s <= "0010";
+				decode_s <= "01111"; excute_s <= "0000101001"; memory_s <= "000001"; write_back_s <= "0010";
 			elsif first_four_bits = "1000" then E <= '1'; T <= '1';                                                       -- LDM 1
 				decode_s <= "00110"; excute_s <= "0000000000"; memory_s <= "000000"; write_back_s <= "0000";
 			elsif first_four_bits = "1001" then RW <= '1'; WB <= "11"; E <= '1'; T <= '1'; C <= '1';                      -- LDM 2

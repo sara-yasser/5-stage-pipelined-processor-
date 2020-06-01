@@ -43,7 +43,7 @@ architecture file_reg_arc of file_reg is
                     end loop;
                     rd_data1 <= (others => '0');
                     rd_data2 <= (others => '0');
-                    registers(8) <= (others => '1');
+                    registers(8) <= "00000000000000000000111111111110";
 
                 elsif rst = '0' then
                     if (clk'event and clk='0') then
