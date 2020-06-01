@@ -10,7 +10,7 @@ entity excute is
         ID_EX_b_20_bits             : in STD_LOGIC_VECTOR(19 downto 0);
         ID_EX_r_data2_in            : in STD_LOGIC_VECTOR(31 downto 0);
         ID_EX_r_data1_in            : in STD_LOGIC_VECTOR(31 downto 0);
-        ID_EX_sp                    : in STD_LOGIC_VECTOR(31 downto 0);
+        -- ID_EX_sp                    : in STD_LOGIC_VECTOR(31 downto 0);
         ID_EX_pc_inc                : in STD_LOGIC_VECTOR(31 downto 0);
         ID_EX_write_back_signals    : in STD_LOGIC_VECTOR(3 downto 0);
         ID_EX_memory_signals        : in STD_LOGIC_VECTOR(5 downto 0);
@@ -27,7 +27,7 @@ entity excute is
         EX_MEM_b_20_bits            : out STD_LOGIC_VECTOR(19 downto 0);
         EX_MEM_write_data           : out STD_LOGIC_VECTOR(31 downto 0);
         EX_MEM_alu_out              : out STD_LOGIC_VECTOR(31 downto 0);
-        EX_MEM_sp                   : out STD_LOGIC_VECTOR(31 downto 0);
+        -- EX_MEM_sp                   : out STD_LOGIC_VECTOR(31 downto 0);
         EX_MEM_in_data              : out STD_LOGIC_VECTOR(31 downto 0);
         EX_MEM_write_back_signals   : out STD_LOGIC_VECTOR(3 downto 0);
         EX_MEM_memory_signals       : out STD_LOGIC_VECTOR(5 downto 0);
@@ -100,7 +100,7 @@ begin
     b_20_bits          <= ID_EX_b_20_bits;
     r_data2_in         <= ID_EX_r_data2_in;
     r_data1_in         <= ID_EX_r_data1_in;
-    sp                 <= ID_EX_sp;
+    -- sp                 <= ID_EX_sp;
     pc_inc             <= ID_EX_pc_inc;
     write_back_signals <= ID_EX_write_back_signals;
     memory_signals     <= ID_EX_memory_signals;
@@ -148,7 +148,7 @@ begin
     EX_MEM_b_20_bits          <= b_20_bits;
     EX_MEM_write_data         <= write_data;
     EX_MEM_alu_out            <= alu_out;
-    EX_MEM_sp                 <= sp;
+    -- EX_MEM_sp                 <= sp;
     EX_MEM_in_data            <= in_data;
     EX_MEM_write_back_signals <= write_back_signals;
     EX_MEM_memory_signals     <= memory_signals;

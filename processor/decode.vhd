@@ -4,7 +4,7 @@ USE IEEE.STD_LOGIC_1164.all;
 entity decode IS
     PORT(
         clk                         : in  STD_LOGIC;
-        rst, inc_sp, dec_sp, z      : in STD_LOGIC;
+        rst, z      : in STD_LOGIC;
         WB_signals                  : in STD_LOGIC_VECTOR(1 DOWNTO 0);   -- from write back
         w_addr1, w_addr2            : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
         w_data1, w_data2            : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
@@ -21,7 +21,7 @@ entity decode IS
         ID_EX_decoder_out           : out STD_LOGIC_VECTOR(19 downto 0);
         ID_EX_rd_data2              : out STD_LOGIC_VECTOR(31 downto 0);
         ID_EX_rd_data1              : out STD_LOGIC_VECTOR(31 downto 0);
-        ID_EX_sp                    : out STD_LOGIC_VECTOR(31 downto 0);
+        -- ID_EX_sp                    : out STD_LOGIC_VECTOR(31 downto 0);
         ID_EX_pc                    : out STD_LOGIC_VECTOR(31 downto 0);
         ID_EX_write_back_signals    : out STD_LOGIC_VECTOR(3 downto 0);
         ID_EX_memory_signals        : out STD_LOGIC_VECTOR(5 downto 0);
@@ -53,14 +53,14 @@ architecture decode_arc of decode is
     end component;
 
     component file_reg IS
-    port(
-        clk, reg_wr_sig, swap_sig, rst, inc_sp, dec_sp : in  STD_LOGIC;
-        rd_address1, rd_address2, R_dst    :   in std_logic_vector(2 downto 0);
-        wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
-        wr_data, swap_data2 :   in std_logic_vector(31 downto 0);
-        rd_data1, rd_data2, data_branch, sp  :   out std_logic_vector(31 downto 0);
-        -- these just for testing, delet them after finishing
-        R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0) ------------------ testing
+        port(
+            clk, reg_wr_sig, swap_sig, rst : in  STD_LOGIC;
+            rd_address1, rd_address2, R_dst    :   in std_logic_vector(2 downto 0);
+            wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
+            wr_data, swap_data2 :   in std_logic_vector(31 downto 0);
+            rd_data1, rd_data2, data_branch :   out std_logic_vector(31 downto 0);
+            -- these just for testing, delet them after finishing
+            R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0) ------------------ testing
         );
     end component;
 
@@ -86,9 +86,9 @@ begin
 
     decoder_com: decoder port map           (clk, rst, ETC(2), ETC(1), ETC(0), IMM_EA, decoder_out);
     
-    file_reg_com: file_reg port map         (clk, WB_signals(1), WB_signals(0), rst, inc_sp, dec_sp, src1, read_addr2, 
+    file_reg_com: file_reg port map         (clk, WB_signals(1), WB_signals(0), rst, src1, read_addr2, 
                                             R_dst, w_addr1, w_addr2, w_data1, w_data2, rd_data1, rd_data2, 
-                                            data_branch, sp,
+                                            data_branch,
                                             -- these just for testing, delet them after finishing
                                             R0, R1, R2, R3, R4, R5, R6, R7 ------------------ testing
                                             );
@@ -124,7 +124,7 @@ begin
     ID_EX_decoder_out        <= decoder_out;
     ID_EX_rd_data2           <= rd_data2;
     ID_EX_rd_data1           <= rd_data1;
-    ID_EX_sp                 <= sp;
+    -- ID_EX_sp                 <= sp;
     ID_EX_pc                 <= ID_EX_pc_in;
     ID_EX_write_back_signals <= write_back_signals;
     ID_EX_memory_signals     <= memory_signals;

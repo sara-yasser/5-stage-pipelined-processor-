@@ -32,8 +32,10 @@ architecture memory_arch of memory is
                     ram_single_port(to_integer(unsigned(addr)) + 1) <= din(31 downto 16);
                     
                 elsif R = '1' then
-                    dout(15 downto 0) <= ram_single_port(to_integer(unsigned(addr)));
-                    dout(15 downto 0) <= ram_single_port(to_integer(unsigned(addr)) + 1);
+                    if falling_edge(clk) then
+                        dout(15 downto 0) <= ram_single_port(to_integer(unsigned(addr)));
+                        dout(31 downto 16) <= ram_single_port(to_integer(unsigned(addr)) + 1);
+                    end if;
 
                 end if;
             end if;

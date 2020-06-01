@@ -10,12 +10,10 @@ entity mem is
         EX_MEM_b_20_bits          : in std_logic_vector(19 downto 0);
         EX_MEM_data_mem_in        : in std_logic_vector(31 downto 0);
         EX_MEM_ALU_out            : in std_logic_vector(31 downto 0);
-        EX_MEM_sp                 : in std_logic_vector(31 downto 0);
+        -- EX_MEM_sp                 : in std_logic_vector(31 downto 0);
         EX_MEM_in_port_data       : in std_logic_vector(31 downto 0);
         EX_MEM_write_back_signals : in std_logic_vector(3 downto 0);
         EX_MEM_memory_signals     : in std_logic_vector(5 downto 0);
-
-        inc_sp, dec_sp            : out std_logic;
         
         MEM_WB_first_40_bits      : out std_logic_vector(40 downto 0);
         MEM_WB_wb_result          : out std_logic_vector(31 downto 0);
@@ -36,11 +34,17 @@ architecture mem_arc of mem is
         );
     end component;
 
+    component sp IS
+        PORT( clk, rst, inc, dec : IN std_logic;
+                q : OUT std_logic_vector(31 DOWNTO 0)
+        );
+    end component;
+
     
     -- signal instruction : std_logic_vector(15 downto 0);
-    signal write_in_mem, read_from_mem, MR, MW, write_in_stack, read_from_stack, inc_sp_seg, dec_sp_seg : std_logic;
+    signal write_in_mem, read_from_mem, MR, MW, write_in_stack, read_from_stack, inc_sp, dec_sp : std_logic;
     signal WB : STD_LOGIC_VECTOR(1 downto 0);
-    signal data_mem_in, data_mem_out, wb_result, addr_imm, ALU_out, sp, in_port_data, mem_addr : std_logic_vector(31 downto 0);
+    signal data_mem_in, data_mem_out, wb_result, addr, imm, ALU_out, sp_pointer, in_port_data, mem_addr : std_logic_vector(31 downto 0);
     signal memory_signals :      STD_LOGIC_VECTOR(5 DOWNTO 0);
     signal write_back_signals :  STD_LOGIC_VECTOR(3 DOWNTO 0);
     signal b_20_bits : std_logic_vector(19 downto 0);
@@ -50,17 +54,19 @@ architecture mem_arc of mem is
     begin
         -- memory_com: memory generic map (12) port map(clk, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
         memory_com: memory generic map (12) port map(clk, rst, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out);
+        sp_com: sp port map(clk, rst, inc_sp, dec_sp, sp_pointer);
 
         -- initializations
         b_20_bits          <= EX_MEM_b_20_bits;
         data_mem_in        <= EX_MEM_data_mem_in;
         ALU_out            <= EX_MEM_ALU_out;
-        sp                 <= EX_MEM_sp;
+        -- sp                 <= EX_MEM_sp;         --remove
         in_port_data       <= EX_MEM_in_port_data;
         write_back_signals <= EX_MEM_write_back_signals;
         memory_signals     <= EX_MEM_memory_signals;
 
-        addr_imm <= "000000000000" & b_20_bits;
+        addr <= "000000000000" & b_20_bits;
+        imm <= "0000000000000000" & b_20_bits(19 downto 4);
 
         MR <= memory_signals(5);
         MW <= memory_signals(4);
@@ -69,8 +75,8 @@ architecture mem_arc of mem is
         WB <= memory_signals(1 downto 0);
         
         --muxes
-        mem_addr <= sp when write_in_stack = '1' or read_from_stack = '1'
-        else addr_imm;-- when MR = '1' or MW = '1'
+        mem_addr <= sp_pointer when write_in_stack = '1' or read_from_stack = '1'
+        else addr;-- when MR = '1' or MW = '1'
 
         write_in_mem <= '1' when write_in_stack = '1' or MW = '1'
         else '0';
@@ -87,7 +93,7 @@ architecture mem_arc of mem is
         wb_result <= in_port_data when WB = "00"
         else ALU_out when WB = "01"
         else data_mem_out when WB = "10"
-        else addr_imm; --when WB = "11"
+        else imm; --when WB = "11"
 
         MEM_WB_first_40_bits          <= EX_MEM_first_40_bits;
         MEM_WB_wb_result              <= wb_result;
