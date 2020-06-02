@@ -13,7 +13,7 @@ signal temp : std_logic_vector(31 DOWNTO 0);
     q <= temp;
     PROCESS (clk,rst)
         BEGIN
-            if rst = '0' then
+            if rst = '1' then
                 temp <= "00000000000000000000111111111110";
             else
                 if inc = '1' then
