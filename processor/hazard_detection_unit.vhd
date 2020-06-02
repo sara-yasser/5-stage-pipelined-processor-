@@ -9,7 +9,7 @@ entity hazard_detection_unit is
     ID_EX_out_RW,
     read_from_stack,
     ID_EX_out_MR,
-    write_back_signals_1,
+    write_back_signals_RW_1,
     control_unit_MR,
     control_unit_RW,
     EX_MEM_out_RW ,
@@ -45,7 +45,7 @@ begin
         -- jump
         if (fitch_op_code = "1111" and last_6_bits = "11110") then
           -- jump after R-type
-          if write_back_signals_1 = '1' and control_unit_MR = '0' and IF_ID_out_Rdst = jump_Rdst then
+          if write_back_signals_RW_1 = '1' and control_unit_MR = '0' and IF_ID_out_Rdst = jump_Rdst then
             stall_sig <= 2;
           end if ;
 
