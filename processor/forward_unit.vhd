@@ -94,7 +94,7 @@ begin
                 
                 -------------------------------------------------------------------
                 -- ALU to ALU
-                elsif (EX_MEM_out_memory_signals_MR_5 = '0') and (EX_MEM_out_write_back_signals_RW_1 = '1') then
+                elsif (EX_MEM_out_write_back_signals_RW_1 = '1') then
                     -- ex_mem_out_Rdst = id_ex_out_Rsrc2
                     if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                         forward_ex_mem_out_to_ex2 <= '1';

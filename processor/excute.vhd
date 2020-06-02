@@ -76,7 +76,8 @@ architecture excute_arc of excute is
     end component;
 
     signal sign_extend_in : std_logic_vector(15 downto 0);
-    signal sign_extend_out, r_data1_in, r_data2_in, alu1_in, alu2_in, alu_data1_in, alu_data2_in, alu_out, sp, pc_inc, pc, write_data, flag_reg_out, in_data, out_data : std_logic_vector(31 downto 0);
+    signal  sign_extend_out, r_data1_in, r_data2_in, alu1_in, alu2_in, alu_data1_in, alu_data2_in, alu_out, sp, pc_inc, pc, write_data,
+            flag_reg_out, in_data, out_data, memoey_data : std_logic_vector(31 downto 0);
     signal src1, src2, in_seg, out_seg : std_logic;
     signal ALU_signals : std_logic_vector(3 downto 0);
     signal flag_in, flag_out, flag_reg_in : std_logic_vector(2 downto 0);
@@ -128,7 +129,7 @@ begin
     flag_reg_in <= flag_out when res_f = '0'
     else flag_reg(2 downto 0);
 
-    write_data <= r_data2_in when WDS = "00"
+    write_data <= alu2_in when WDS = "00"
     else pc when WDS = "01"
     else pc_inc when WDS = "10"
     else flag_reg_out;
@@ -143,6 +144,7 @@ begin
     else F_data_mem when F_src2_sel = "01"
     else F_data_WB when F_src2_sel = "10"
     else r_data2_in;
+
 
     -- in port
     in_data <= in_port when in_seg = '1'

@@ -14,7 +14,7 @@ Z0 w1589911536
 Z1 DPx4 ieee 11 numeric_std 0 22 aU^R8eGcicLcUFIaBQSL>3
 Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
 Z3 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
-!i122 1272
+!i122 1295
 Z4 dE:/arc2pro/5-stage pipelined processor/processor
 Z5 8E:/arc2pro/5-stage pipelined processor/processor/ALU.vhd
 Z6 FE:/arc2pro/5-stage pipelined processor/processor/ALU.vhd
@@ -24,9 +24,9 @@ VL3A:kNJ[<;S4no`EWQDD31
 !s100 nA`U;l_KDOl16Pf6ba9]I2
 Z7 OV;C;2020.1;71
 32
-Z8 !s110 1591095131
+Z8 !s110 1591099241
 !i10b 1
-Z9 !s108 1591095131.000000
+Z9 !s108 1591099240.000000
 Z10 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/ALU.vhd|
 Z11 !s107 E:/arc2pro/5-stage pipelined processor/processor/ALU.vhd|
 !i113 1
@@ -37,7 +37,7 @@ R1
 R2
 R3
 DEx4 work 3 alu 0 22 L3A:kNJ[<;S4no`EWQDD31
-!i122 1272
+!i122 1295
 l33
 L16 61
 VP5iRSJh<<JDaJK=`IAW?V1
@@ -57,7 +57,7 @@ Z14 w1589938252
 R1
 R2
 R3
-!i122 1286
+!i122 1309
 R4
 Z15 8E:/arc2pro/5-stage pipelined processor/processor/branch_prediction.vhd
 Z16 FE:/arc2pro/5-stage pipelined processor/processor/branch_prediction.vhd
@@ -67,9 +67,9 @@ VnUSza2<8nndX>4hPNKMXV0
 !s100 oN`LnK5<GoG1`44zJPSXO2
 R7
 32
-Z17 !s110 1591095136
+Z17 !s110 1591099245
 !i10b 1
-Z18 !s108 1591095136.000000
+Z18 !s108 1591099245.000000
 Z19 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/branch_prediction.vhd|
 Z20 !s107 E:/arc2pro/5-stage pipelined processor/processor/branch_prediction.vhd|
 !i113 1
@@ -80,7 +80,7 @@ R1
 R2
 R3
 DEx4 work 8 branch_p 0 22 nUSza2<8nndX>4hPNKMXV0
-!i122 1286
+!i122 1309
 l18
 L16 38
 VUc0?4b;d2Bkc<d`l<V=P42
@@ -100,7 +100,7 @@ Z21 w1589959116
 R1
 R2
 R3
-!i122 1275
+!i122 1298
 R4
 Z22 8E:/arc2pro/5-stage pipelined processor/processor/CCR.vhd
 Z23 FE:/arc2pro/5-stage pipelined processor/processor/CCR.vhd
@@ -110,9 +110,9 @@ VTdI1gSRMhY^H2fg=;nYY13
 !s100 @zhcJQgkz=nczLl;;;1Jd0
 R7
 32
-Z24 !s110 1591095132
+Z24 !s110 1591099242
 !i10b 1
-Z25 !s108 1591095132.000000
+Z25 !s108 1591099241.000000
 Z26 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/CCR.vhd|
 Z27 !s107 E:/arc2pro/5-stage pipelined processor/processor/CCR.vhd|
 !i113 1
@@ -123,7 +123,7 @@ R1
 R2
 R3
 DEx4 work 3 ccr 0 22 TdI1gSRMhY^H2fg=;nYY13
-!i122 1275
+!i122 1298
 l16
 L14 17
 V^WcU?3_fISXC:SZEbK=gQ1
@@ -143,7 +143,7 @@ Z28 w1591058128
 R1
 R2
 R3
-!i122 1270
+!i122 1293
 R4
 Z29 8E:/arc2pro/5-stage pipelined processor/processor/control-unit.vhd
 Z30 FE:/arc2pro/5-stage pipelined processor/processor/control-unit.vhd
@@ -153,11 +153,11 @@ VFTGCF0IoXRdURnlN21dn[2
 !s100 F:9in>bg7P6C3bnB:IAXJ0
 R7
 32
-R8
+Z31 !s110 1591099240
 !i10b 1
-Z31 !s108 1591095130.000000
-Z32 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/control-unit.vhd|
-Z33 !s107 E:/arc2pro/5-stage pipelined processor/processor/control-unit.vhd|
+Z32 !s108 1591099239.000000
+Z33 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/control-unit.vhd|
+Z34 !s107 E:/arc2pro/5-stage pipelined processor/processor/control-unit.vhd|
 !i113 1
 R12
 R13
@@ -166,40 +166,40 @@ R1
 R2
 R3
 DEx4 work 12 control_unit 0 22 FTGCF0IoXRdURnlN21dn[2
-!i122 1270
+!i122 1293
 l32
 L17 139
 VeZ`c4]RzBi73O05ha>>S60
 !s100 Q0N<3[kkkElW:AG=L`KY92
 R7
 32
-R8
-!i10b 1
 R31
+!i10b 1
 R32
 R33
+R34
 !i113 1
 R12
 R13
 Edecode
-Z34 w1591089392
+Z35 w1591089392
 R2
 R3
-!i122 1276
+!i122 1299
 R4
-Z35 8E:/arc2pro/5-stage pipelined processor/processor/decode.vhd
-Z36 FE:/arc2pro/5-stage pipelined processor/processor/decode.vhd
+Z36 8E:/arc2pro/5-stage pipelined processor/processor/decode.vhd
+Z37 FE:/arc2pro/5-stage pipelined processor/processor/decode.vhd
 l0
 L4 1
 V@T1]HzN=VgfQz7O<QVX^F1
 !s100 []_HXV0g5RNd6Bm;YcRbM3
 R7
 32
-Z37 !s110 1591095133
+R24
 !i10b 1
-R25
-Z38 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/decode.vhd|
-Z39 !s107 E:/arc2pro/5-stage pipelined processor/processor/decode.vhd|
+Z38 !s108 1591099242.000000
+Z39 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/decode.vhd|
+Z40 !s107 E:/arc2pro/5-stage pipelined processor/processor/decode.vhd|
 !i113 1
 R12
 R13
@@ -207,41 +207,41 @@ Adecode_arc
 R2
 R3
 DEx4 work 6 decode 0 22 @T1]HzN=VgfQz7O<QVX^F1
-!i122 1276
+!i122 1299
 l83
 L34 121
 VcgHQ=cHVdDRRX7k7V=;Ez2
 !s100 KK5azAY`camO_jT`3GRcF3
 R7
 32
-R37
+R24
 !i10b 1
-R25
 R38
 R39
+R40
 !i113 1
 R12
 R13
 Edecoder
-Z40 w1591017017
+Z41 w1591017017
 R1
 R2
 R3
-!i122 1271
+!i122 1294
 R4
-Z41 8E:/arc2pro/5-stage pipelined processor/processor/decoder.vhd
-Z42 FE:/arc2pro/5-stage pipelined processor/processor/decoder.vhd
+Z42 8E:/arc2pro/5-stage pipelined processor/processor/decoder.vhd
+Z43 FE:/arc2pro/5-stage pipelined processor/processor/decoder.vhd
 l0
 L5 1
 VJnM>[lW2]?F<S=CImeMCQ3
 !s100 Em;oSLXYj^ICj=6PLkQ=M2
 R7
 32
-R8
+R31
 !i10b 1
 R9
-Z43 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/decoder.vhd|
-Z44 !s107 E:/arc2pro/5-stage pipelined processor/processor/decoder.vhd|
+Z44 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/decoder.vhd|
+Z45 !s107 E:/arc2pro/5-stage pipelined processor/processor/decoder.vhd|
 !i113 1
 R12
 R13
@@ -250,39 +250,39 @@ R1
 R2
 R3
 DEx4 work 7 decoder 0 22 JnM>[lW2]?F<S=CImeMCQ3
-!i122 1271
+!i122 1294
 l19
 L13 37
 VF;n?D@0?IITIi1ZO[OYlM3
 !s100 Gi=O>JzTnn75c2iz`?X630
 R7
 32
-R8
+R31
 !i10b 1
 R9
-R43
 R44
+R45
 !i113 1
 R12
 R13
 Eexcute
-Z45 w1591093592
+Z46 w1591098806
 R1
 R2
 R3
-!i122 1277
+!i122 1300
 R4
-Z46 8E:/arc2pro/5-stage pipelined processor/processor/excute.vhd
-Z47 FE:/arc2pro/5-stage pipelined processor/processor/excute.vhd
+Z47 8E:/arc2pro/5-stage pipelined processor/processor/excute.vhd
+Z48 FE:/arc2pro/5-stage pipelined processor/processor/excute.vhd
 l0
 L5 1
 VL9X_5kdMHi;T0[3HFeSW:1
 !s100 Sl2_4LRPI:@8P1>LiJ92L1
 R7
 32
-R37
+R24
 !i10b 1
-Z48 !s108 1591095133.000000
+R38
 Z49 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/excute.vhd|
 Z50 !s107 E:/arc2pro/5-stage pipelined processor/processor/excute.vhd|
 !i113 1
@@ -293,16 +293,16 @@ R1
 R2
 R3
 DEx4 work 6 excute 0 22 L9X_5kdMHi;T0[3HFeSW:1
-!i122 1277
-l92
-L41 150
-VfTj8Y0zDan6>0;?gPUG430
-!s100 ILQa;06cniaQ8?g9Nk;Re3
+!i122 1300
+l93
+L41 152
+VXE>[>?mTD>6bV[14>C1ga3
+!s100 PF1X_iS9bkOJH68o<cR413
 R7
 32
-R37
+R24
 !i10b 1
-R48
+R38
 R49
 R50
 !i113 1
@@ -313,7 +313,7 @@ Z51 w1589381373
 R1
 R2
 R3
-!i122 1283
+!i122 1306
 R4
 Z52 8E:/arc2pro/5-stage pipelined processor/processor/excuteTest.vhd
 Z53 FE:/arc2pro/5-stage pipelined processor/processor/excuteTest.vhd
@@ -323,9 +323,9 @@ V^dlXl3N^1B<oim5:gRm8O1
 !s100 bW><SKnP;SdcEO9<D1hLT2
 R7
 32
-Z54 !s110 1591095135
+Z54 !s110 1591099244
 !i10b 1
-Z55 !s108 1591095135.000000
+Z55 !s108 1591099244.000000
 Z56 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/excuteTest.vhd|
 Z57 !s107 E:/arc2pro/5-stage pipelined processor/processor/excuteTest.vhd|
 !i113 1
@@ -336,7 +336,7 @@ R1
 R2
 R3
 DEx4 work 10 excutetest 0 22 ^dlXl3N^1B<oim5:gRm8O1
-!i122 1283
+!i122 1306
 l75
 L25 122
 V8P0FbChPc3z]zQoFYlQ@z2
@@ -356,7 +356,7 @@ Z58 w1590016325
 R1
 R2
 R3
-!i122 1285
+!i122 1308
 R4
 Z59 8E:/arc2pro/5-stage pipelined processor/processor/fetch.vhd
 Z60 FE:/arc2pro/5-stage pipelined processor/processor/fetch.vhd
@@ -368,7 +368,7 @@ R7
 32
 R17
 !i10b 1
-R18
+R55
 Z61 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/fetch.vhd|
 Z62 !s107 E:/arc2pro/5-stage pipelined processor/processor/fetch.vhd|
 !i113 1
@@ -379,7 +379,7 @@ R1
 R2
 R3
 DEx4 work 5 fetch 0 22 gZeH@6MbQJaT4_IoEPECQ3
-!i122 1285
+!i122 1308
 l58
 L16 78
 VY7oDzM<:E_UY3_TAfI4h41
@@ -388,7 +388,7 @@ R7
 32
 R17
 !i10b 1
-R18
+R55
 R61
 R62
 !i113 1
@@ -399,7 +399,7 @@ Z63 w1591048319
 R1
 R2
 R3
-!i122 1278
+!i122 1301
 R4
 Z64 8E:/arc2pro/5-stage pipelined processor/processor/file_registers.vhd
 Z65 FE:/arc2pro/5-stage pipelined processor/processor/file_registers.vhd
@@ -409,11 +409,11 @@ V;helgJHZ7T;;LLoYZf^zR0
 !s100 BTHAoB@Qh`Eg?]6nd9@kz2
 R7
 32
-Z66 !s110 1591095134
+R24
 !i10b 1
-R48
-Z67 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/file_registers.vhd|
-Z68 !s107 E:/arc2pro/5-stage pipelined processor/processor/file_registers.vhd|
+R38
+Z66 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/file_registers.vhd|
+Z67 !s107 E:/arc2pro/5-stage pipelined processor/processor/file_registers.vhd|
 !i113 1
 R12
 R13
@@ -422,41 +422,41 @@ R1
 R2
 R3
 DEx4 work 8 file_reg 0 22 ;helgJHZ7T;;LLoYZf^zR0
-!i122 1278
+!i122 1301
 l24
 L17 50
 VMY^<<LA_k50YWj;io^D0o2
 !s100 GO6cSkSKT@>@``Gl0:i8m2
 R7
 32
-R66
+R24
 !i10b 1
-R48
+R38
+R66
 R67
-R68
 !i113 1
 R12
 R13
 Eforward_unit
-Z69 w1591095048
+Z68 w1591099232
 R1
 R2
 R3
-!i122 1292
+!i122 1315
 R4
-Z70 8E:/arc2pro/5-stage pipelined processor/processor/forward_unit.vhd
-Z71 FE:/arc2pro/5-stage pipelined processor/processor/forward_unit.vhd
+Z69 8E:/arc2pro/5-stage pipelined processor/processor/forward_unit.vhd
+Z70 FE:/arc2pro/5-stage pipelined processor/processor/forward_unit.vhd
 l0
 L8 1
 V;D]ETnF`Min?b?KhHaV>K0
 !s100 UX59FljnTl:gbcZ0X]IPI1
 R7
 32
-Z72 !s110 1591095138
+Z71 !s110 1591099247
 !i10b 1
-Z73 !s108 1591095138.000000
-Z74 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/forward_unit.vhd|
-Z75 !s107 E:/arc2pro/5-stage pipelined processor/processor/forward_unit.vhd|
+Z72 !s108 1591099247.000000
+Z73 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/forward_unit.vhd|
+Z74 !s107 E:/arc2pro/5-stage pipelined processor/processor/forward_unit.vhd|
 !i113 1
 R12
 R13
@@ -464,41 +464,41 @@ Aforward_unit_arch
 R1
 R2
 R3
-Z76 DEx4 work 12 forward_unit 0 22 ;D]ETnF`Min?b?KhHaV>K0
-!i122 1292
+DEx4 work 12 forward_unit 0 22 ;D]ETnF`Min?b?KhHaV>K0
+!i122 1315
 l35
 L33 111
-VX2zFQY4h6aU9jZAPZ360>1
-!s100 c>QDGk3cz<0XEAFPkk=YO2
+VO?;<CoNW7C<_8[10I@:I?3
+!s100 J@An>K<DH@ZjbJelg]XeX1
 R7
 32
-R72
+R71
 !i10b 1
+R72
 R73
 R74
-R75
 !i113 1
 R12
 R13
 Efull_adder
-Z77 w1588945548
+Z75 w1588945548
 R2
 R3
-!i122 1273
+!i122 1296
 R4
-Z78 8E:/arc2pro/5-stage pipelined processor/processor/fullAdder.vhd
-Z79 FE:/arc2pro/5-stage pipelined processor/processor/fullAdder.vhd
+Z76 8E:/arc2pro/5-stage pipelined processor/processor/fullAdder.vhd
+Z77 FE:/arc2pro/5-stage pipelined processor/processor/fullAdder.vhd
 l0
 L4 1
 VFY10M=[12B5EHFERa5S6P2
 !s100 V35a8OAKDZ8[[`9HN=G;n0
 R7
 32
-R24
+R8
 !i10b 1
-R9
-Z80 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/fullAdder.vhd|
-Z81 !s107 E:/arc2pro/5-stage pipelined processor/processor/fullAdder.vhd|
+R25
+Z78 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/fullAdder.vhd|
+Z79 !s107 E:/arc2pro/5-stage pipelined processor/processor/fullAdder.vhd|
 !i113 1
 R12
 R13
@@ -506,18 +506,18 @@ Afull_adder_arch
 R2
 R3
 DEx4 work 10 full_adder 0 22 FY10M=[12B5EHFERa5S6P2
-!i122 1273
+!i122 1296
 l12
 L11 8
 V:l^KENiSI8d38emc`O7mg2
 !s100 ]mXJ@H<iTdBjRWUi3dfc70
 R7
 32
-R24
+R8
 !i10b 1
-R9
-R80
-R81
+R25
+R78
+R79
 !i113 1
 R12
 R13
@@ -526,8 +526,8 @@ w1588945511
 R2
 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
 R4
-R78
-R79
+R76
+R77
 l0
 L4
 VB3X:J7L@<:T8:e5c8AHjU3
@@ -537,8 +537,8 @@ OP;C;10.4a;61
 !s110 1588945517
 !i10b 1
 !s108 1588945516.000000
-R80
-R81
+R78
+R79
 !i113 1
 o-work work -2002 -explicit -O0
 tExplicit 1
@@ -549,8 +549,8 @@ R2
 R3
 !i122 1051
 R4
-Z82 8E:\arc2pro\5-stage pipelined processor\processor\hazard_detection.vhd
-Z83 FE:\arc2pro\5-stage pipelined processor\processor\hazard_detection.vhd
+Z80 8E:\arc2pro\5-stage pipelined processor\processor\hazard_detection.vhd
+Z81 FE:\arc2pro\5-stage pipelined processor\processor\hazard_detection.vhd
 l0
 L5 1
 Ve`Vc17TZ?GZ[@BS9>2an43
@@ -560,52 +560,72 @@ R7
 !s110 1591065154
 !i10b 1
 !s108 1591065153.000000
-Z84 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:\arc2pro\5-stage pipelined processor\processor\hazard_detection.vhd|
-Z85 !s107 E:\arc2pro\5-stage pipelined processor\processor\hazard_detection.vhd|
+Z82 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:\arc2pro\5-stage pipelined processor\processor\hazard_detection.vhd|
+!s107 E:\arc2pro\5-stage pipelined processor\processor\hazard_detection.vhd|
 !i113 1
 R12
 R13
 Ehazard_detection_unit
-w1591065464
+Z83 w1591097577
 R1
 R2
 R3
-!i122 1075
+!i122 1316
 R4
-R82
-R83
+R80
+R81
 l0
-L5 1
-V;9fiXh9zW1UD8b5VE0eJ92
-!s100 Qg;N`1ni>V@[:Qka7a8f_1
+L6 1
+VZP:IjL6b6DTdW[VPaYhOh2
+!s100 O?bS9`6bj=37F5`EWm[Am3
 R7
 32
-!s110 1591065508
+R71
 !i10b 1
-!s108 1591065507.000000
+R72
+R82
+Z84 !s107 E:\arc2pro\5-stage pipelined processor\processor\hazard_detection.vhd|
+!i113 1
+R12
+R13
+Ahazard_detection_unit_arch
+R1
+R2
+R3
+DEx4 work 21 hazard_detection_unit 0 22 ZP:IjL6b6DTdW[VPaYhOh2
+!i122 1316
+l28
+L26 67
+VY9WK<P5Q1iFm=N@GdUUF;0
+!s100 VFDaiaK:9;H2i<T8@eLoe0
+R7
+32
+R71
+!i10b 1
+R72
+R82
 R84
-R85
 !i113 1
 R12
 R13
 Eif_id_buff
-Z86 w1589510597
+Z85 w1589510597
 R1
 R2
 R3
-!i122 1279
+!i122 1302
 R4
-Z87 8E:/arc2pro/5-stage pipelined processor/processor/IF_ID_buff.vhd
-Z88 FE:/arc2pro/5-stage pipelined processor/processor/IF_ID_buff.vhd
+Z86 8E:/arc2pro/5-stage pipelined processor/processor/IF_ID_buff.vhd
+Z87 FE:/arc2pro/5-stage pipelined processor/processor/IF_ID_buff.vhd
 l0
 L5 1
 VXEI@hReH[1JB2lSAIT^Jm1
 !s100 ;06?PRP_;=A:hiGgooX1R1
 R7
 32
-R66
+Z88 !s110 1591099243
 !i10b 1
-Z89 !s108 1591095134.000000
+Z89 !s108 1591099243.000000
 Z90 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/IF_ID_buff.vhd|
 Z91 !s107 E:/arc2pro/5-stage pipelined processor/processor/IF_ID_buff.vhd|
 !i113 1
@@ -616,14 +636,14 @@ R1
 R2
 R3
 DEx4 work 10 if_id_buff 0 22 XEI@hReH[1JB2lSAIT^Jm1
-!i122 1279
+!i122 1302
 l17
 L13 25
 V<CQ8QSoS=`eej37kU^15@3
 !s100 HFKYH`gn4]224=T>cdOHm0
 R7
 32
-R66
+R88
 !i10b 1
 R89
 R90
@@ -636,7 +656,7 @@ Z92 w1589566092
 R1
 R2
 R3
-!i122 1280
+!i122 1303
 R4
 Z93 8E:/arc2pro/5-stage pipelined processor/processor/inc_dec.vhd
 Z94 FE:/arc2pro/5-stage pipelined processor/processor/inc_dec.vhd
@@ -646,7 +666,7 @@ V:=Kc0h<Y9M01`]ABN=_S[0
 !s100 a@12mzbR52bYYGmiPbohG2
 R7
 32
-R66
+R88
 !i10b 1
 R89
 Z95 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/inc_dec.vhd|
@@ -659,14 +679,14 @@ R1
 R2
 R3
 DEx4 work 7 inc_dec 0 22 :=Kc0h<Y9M01`]ABN=_S[0
-!i122 1280
+!i122 1303
 l29
 L14 28
 VAIzia?0Qz`M9>MRz79lH70
 !s100 Vee;II_gN=Zn1Sz4@0bkO1
 R7
 32
-R66
+R88
 !i10b 1
 R89
 R95
@@ -680,7 +700,7 @@ R1
 Z98 DPx4 ieee 16 std_logic_textio 0 22 ^l:n6VFdg74Q?CKDhjD]D3
 R2
 R3
-!i122 1287
+!i122 1310
 R4
 Z99 8E:/arc2pro/5-stage pipelined processor/processor/instruction_mem.vhd
 Z100 FE:/arc2pro/5-stage pipelined processor/processor/instruction_mem.vhd
@@ -704,7 +724,7 @@ R98
 R2
 R3
 DEx4 work 8 inst_mem 0 22 _Qm[hz]VgnNJ]8lE3=HYd2
-!i122 1287
+!i122 1310
 l22
 L16 43
 VbbkhiN^]=4l4=`iFOI:n`3
@@ -724,7 +744,7 @@ Z103 w1591061498
 R1
 R2
 R3
-!i122 1288
+!i122 1311
 R4
 Z104 8E:/arc2pro/5-stage pipelined processor/processor/mem.vhd
 Z105 FE:/arc2pro/5-stage pipelined processor/processor/mem.vhd
@@ -734,11 +754,11 @@ V<ASA0H2L;4^bZfQ=ke71R3
 !s100 [PMX<f[bE;@Um8^LR:odd3
 R7
 32
-Z106 !s110 1591095137
+Z106 !s110 1591099246
 !i10b 1
-Z107 !s108 1591095137.000000
-Z108 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/mem.vhd|
-Z109 !s107 E:/arc2pro/5-stage pipelined processor/processor/mem.vhd|
+R18
+Z107 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/mem.vhd|
+Z108 !s107 E:/arc2pro/5-stage pipelined processor/processor/mem.vhd|
 !i113 1
 R12
 R13
@@ -747,7 +767,7 @@ R1
 R2
 R3
 DEx4 work 3 mem 0 22 <ASA0H2L;4^bZfQ=ke71R3
-!i122 1288
+!i122 1311
 l57
 L27 99
 Vzj]z_BojTPLaR:;;Dm7TT2
@@ -756,30 +776,30 @@ R7
 32
 R106
 !i10b 1
+R18
 R107
 R108
-R109
 !i113 1
 R12
 R13
 Emem_wb_buff
-Z110 w1590648259
+Z109 w1590648259
 R1
 R2
 R3
-!i122 1291
+!i122 1314
 R4
-Z111 8E:/arc2pro/5-stage pipelined processor/processor/MEM_WB_BUFF.vhd
-Z112 FE:/arc2pro/5-stage pipelined processor/processor/MEM_WB_BUFF.vhd
+Z110 8E:/arc2pro/5-stage pipelined processor/processor/MEM_WB_BUFF.vhd
+Z111 FE:/arc2pro/5-stage pipelined processor/processor/MEM_WB_BUFF.vhd
 l0
 L5 1
 VjCW4MUcA6hg?GWmj0n`4^3
 !s100 L^B;PzZL;HG5nhn@?6CPb2
 R7
 32
-R72
+R71
 !i10b 1
-R107
+Z112 !s108 1591099246.000000
 Z113 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/MEM_WB_BUFF.vhd|
 Z114 !s107 E:/arc2pro/5-stage pipelined processor/processor/MEM_WB_BUFF.vhd|
 !i113 1
@@ -790,16 +810,16 @@ R1
 R2
 R3
 DEx4 work 11 mem_wb_buff 0 22 jCW4MUcA6hg?GWmj0n`4^3
-!i122 1291
+!i122 1314
 l18
 L16 21
 VeK7bU5SD;h9n6D8kjjY6c0
 !s100 Q?IJZ@WgN:zV`l8zRVWkC1
 R7
 32
-R72
+R71
 !i10b 1
-R107
+R112
 R113
 R114
 !i113 1
@@ -810,7 +830,7 @@ Z115 w1591061030
 R1
 R2
 R3
-!i122 1284
+!i122 1307
 R4
 Z116 8E:/arc2pro/5-stage pipelined processor/processor/memory.vhd
 Z117 FE:/arc2pro/5-stage pipelined processor/processor/memory.vhd
@@ -820,7 +840,7 @@ V?UK0GjmSc?Xn_a5z^JZRi1
 !s100 nWj>M5TaI3U2;ZX:nhH9n0
 R7
 32
-R17
+R54
 !i10b 1
 R55
 Z118 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/memory.vhd|
@@ -833,14 +853,14 @@ R1
 R2
 R3
 DEx4 work 6 memory 0 22 ?UK0GjmSc?Xn_a5z^JZRi1
-!i122 1284
+!i122 1307
 l21
 L17 27
 V8cWOi>Xf2c]Sj8Zzi7;Eh2
 !s100 5?i?MN4DMADP^Se:W;oag3
 R7
 32
-R17
+R54
 !i10b 1
 R55
 R118
@@ -853,7 +873,7 @@ Z120 w1590012214
 R1
 R2
 R3
-!i122 1290
+!i122 1313
 R4
 Z121 8E:/arc2pro/5-stage pipelined processor/processor/pc_reg.vhd
 Z122 FE:/arc2pro/5-stage pipelined processor/processor/pc_reg.vhd
@@ -865,7 +885,7 @@ R7
 32
 R106
 !i10b 1
-R107
+R112
 Z123 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/pc_reg.vhd|
 Z124 !s107 E:/arc2pro/5-stage pipelined processor/processor/pc_reg.vhd|
 !i113 1
@@ -876,7 +896,7 @@ R1
 R2
 R3
 DEx4 work 11 pc_register 0 22 N>iaz51LB0oV`I3RJb_Q?2
-!i122 1290
+!i122 1313
 l13
 L12 11
 VzH_9C6f>VoMUlU?FGALV[0
@@ -885,7 +905,7 @@ R7
 32
 R106
 !i10b 1
-R107
+R112
 R123
 R124
 !i113 1
@@ -896,7 +916,7 @@ Z125 w1591090303
 R1
 R2
 R3
-!i122 1289
+!i122 1312
 R4
 Z126 8E:/arc2pro/5-stage pipelined processor/processor/pipeline.vhd
 Z127 FE:/arc2pro/5-stage pipelined processor/processor/pipeline.vhd
@@ -908,7 +928,7 @@ R7
 32
 R106
 !i10b 1
-R107
+R112
 Z128 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/pipeline.vhd|
 Z129 !s107 E:/arc2pro/5-stage pipelined processor/processor/pipeline.vhd|
 !i113 1
@@ -919,7 +939,7 @@ R1
 R2
 R3
 DEx4 work 8 pipeline 0 22 LDKH3VLWzEQ<=ooO>Laj]0
-!i122 1289
+!i122 1312
 l269
 L14 419
 VE`_PGOc1ic6LF7gDKlT4_3
@@ -928,7 +948,7 @@ R7
 32
 R106
 !i10b 1
-R107
+R112
 R128
 R129
 !i113 1
@@ -938,7 +958,7 @@ Eripple_adder
 Z130 w1588949376
 R2
 R3
-!i122 1274
+!i122 1297
 R4
 Z131 8E:/arc2pro/5-stage pipelined processor/processor/rippleAdder.vhd
 Z132 FE:/arc2pro/5-stage pipelined processor/processor/rippleAdder.vhd
@@ -948,7 +968,7 @@ V2UgDeX?g6abT;HZl8];b=2
 !s100 JMl4kBX]Ij95gXfX9P1>i2
 R7
 32
-R24
+R8
 !i10b 1
 R25
 Z133 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/rippleAdder.vhd|
@@ -960,14 +980,14 @@ Aripple_adder_arc
 R2
 R3
 DEx4 work 12 ripple_adder 0 22 2UgDeX?g6abT;HZl8];b=2
-!i122 1274
+!i122 1297
 l21
 L12 17
 VVP^A:[PJ;=<ViIKSGD_f40
 !s100 zf29Fa_L36_T9@;a>]U7E0
 R7
 32
-R24
+R8
 !i10b 1
 R25
 R133
@@ -980,7 +1000,7 @@ Z135 w1589131744
 R1
 R2
 R3
-!i122 1281
+!i122 1304
 R4
 Z136 8E:/arc2pro/5-stage pipelined processor/processor/sign_extend.vhd
 Z137 FE:/arc2pro/5-stage pipelined processor/processor/sign_extend.vhd
@@ -990,7 +1010,7 @@ VO1=n1B^_RDeTPDIO4DnYJ1
 !s100 6bLOTzCE8^DCzGQdkgCiN2
 R7
 32
-R54
+R88
 !i10b 1
 R89
 Z138 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/sign_extend.vhd|
@@ -1003,14 +1023,14 @@ R1
 R2
 R3
 DEx4 work 11 sign_extend 0 22 O1=n1B^_RDeTPDIO4DnYJ1
-!i122 1281
+!i122 1304
 l14
 L12 8
 VE<zOEjP=3FfLi;^dZ>Fln0
 !s100 Ob?3l^9LZYa=XjXDGYeHD3
 R7
 32
-R54
+R88
 !i10b 1
 R89
 R138
@@ -1066,7 +1086,7 @@ Z147 w1590647186
 R1
 R2
 R3
-!i122 1282
+!i122 1305
 R4
 Z148 8E:/arc2pro/5-stage pipelined processor/processor/stage_buff.vhd
 Z149 FE:/arc2pro/5-stage pipelined processor/processor/stage_buff.vhd
@@ -1078,7 +1098,7 @@ R7
 32
 R54
 !i10b 1
-R55
+R89
 Z150 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|E:/arc2pro/5-stage pipelined processor/processor/stage_buff.vhd|
 Z151 !s107 E:/arc2pro/5-stage pipelined processor/processor/stage_buff.vhd|
 !i113 1
@@ -1089,7 +1109,7 @@ R1
 R2
 R3
 DEx4 work 10 stage_buff 0 22 e>TCYaJ3?fY0mGAEOP2_W0
-!i122 1282
+!i122 1305
 l18
 L16 19
 VAcG8H[7J[JBH]YQ820`130
@@ -1098,7 +1118,7 @@ R7
 32
 R54
 !i10b 1
-R55
+R89
 R150
 R151
 !i113 1
