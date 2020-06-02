@@ -112,7 +112,14 @@ begin
                 -------------------------------------------------------------------
                 
                 -------------------------------------------------------------------
-            
+                if rst = '0' then
+                    forward_ex_mem_out_to_if <= '0';
+                    forward_mem_wb_out_to_if <= '0';
+                    forward_ex_mem_out_to_ex1 <= '0';
+                    forward_mem_wb_out_to_ex1 <= '0'; 
+                    forward_ex_mem_out_to_ex2 <= '0';
+                    forward_mem_wb_out_to_ex2 <= '0';
+                end if ;
             end if;
         end process ; -- forward_detection
         -- forward detection unit
