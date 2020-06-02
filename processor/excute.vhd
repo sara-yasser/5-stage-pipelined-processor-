@@ -4,33 +4,34 @@ USE ieee.numeric_std.all;
 
 entity excute is
 	port(
-        clk, rst                    : in  STD_LOGIC;
+        clk, rst                                : in  STD_LOGIC;
         
-        ID_EX_registers_addr        : in STD_LOGIC_VECTOR (8  DOWNTO 0);
-        ID_EX_b_20_bits             : in STD_LOGIC_VECTOR(19 downto 0);
-        ID_EX_r_data2_in            : in STD_LOGIC_VECTOR(31 downto 0);
-        ID_EX_r_data1_in            : in STD_LOGIC_VECTOR(31 downto 0);
-        -- ID_EX_sp                    : in STD_LOGIC_VECTOR(31 downto 0);
-        ID_EX_pc_inc                : in STD_LOGIC_VECTOR(31 downto 0);
-        ID_EX_write_back_signals    : in STD_LOGIC_VECTOR(3 downto 0);
-        ID_EX_memory_signals        : in STD_LOGIC_VECTOR(5 downto 0);
-        ID_EX_excute_signals        : in STD_LOGIC_VECTOR(9 downto 0);
+        ID_EX_registers_addr                    : in STD_LOGIC_VECTOR (8  DOWNTO 0);
+        ID_EX_b_20_bits                         : in STD_LOGIC_VECTOR(19 downto 0);
+        ID_EX_r_data2_in                        : in STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_r_data1_in                        : in STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_pc_inc                            : in STD_LOGIC_VECTOR(31 downto 0);
+        ID_EX_write_back_signals                : in STD_LOGIC_VECTOR(3 downto 0);
+        ID_EX_memory_signals                    : in STD_LOGIC_VECTOR(5 downto 0);
+        ID_EX_excute_signals                    : in STD_LOGIC_VECTOR(9 downto 0);
 
-        res_f                       : in STD_LOGIC;                      -- from write back
-        flag_reg                    : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
-        in_port                     : in STD_LOGIC_VECTOR(31 DOWNTO 0);
-        out_port                    : out STD_LOGIC_VECTOR(31 DOWNTO 0);
-        z                           : out  STD_LOGIC;
+        F_data_mem, F_data_WB, F_data_in_port   : in STD_LOGIC_VECTOR(31 downto 0);
+        F_src1_sel, F_src2_sel                  : in STD_LOGIC_VECTOR(1 downto 0);
+
+        res_f                                   : in STD_LOGIC;                      -- from write back
+        flag_reg                                : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
+        in_port                                 : in STD_LOGIC_VECTOR(31 DOWNTO 0);
+        out_port                                : out STD_LOGIC_VECTOR(31 DOWNTO 0);
+        z                                       : out  STD_LOGIC;
         
-        EX_MEM_registers_addr       : out STD_LOGIC_VECTOR(8 downto 0);
-        EX_MEM_r_data1_in           : out STD_LOGIC_VECTOR(31 downto 0);
-        EX_MEM_b_20_bits            : out STD_LOGIC_VECTOR(19 downto 0);
-        EX_MEM_write_data           : out STD_LOGIC_VECTOR(31 downto 0);
-        EX_MEM_alu_out              : out STD_LOGIC_VECTOR(31 downto 0);
-        -- EX_MEM_sp                   : out STD_LOGIC_VECTOR(31 downto 0);
-        EX_MEM_in_data              : out STD_LOGIC_VECTOR(31 downto 0);
-        EX_MEM_write_back_signals   : out STD_LOGIC_VECTOR(3 downto 0);
-        EX_MEM_memory_signals       : out STD_LOGIC_VECTOR(5 downto 0);
+        EX_MEM_registers_addr                   : out STD_LOGIC_VECTOR(8 downto 0);
+        EX_MEM_r_data1_in                       : out STD_LOGIC_VECTOR(31 downto 0);
+        EX_MEM_b_20_bits                        : out STD_LOGIC_VECTOR(19 downto 0);
+        EX_MEM_write_data                       : out STD_LOGIC_VECTOR(31 downto 0);
+        EX_MEM_alu_out                          : out STD_LOGIC_VECTOR(31 downto 0);
+        EX_MEM_in_data                          : out STD_LOGIC_VECTOR(31 downto 0);
+        EX_MEM_write_back_signals               : out STD_LOGIC_VECTOR(3 downto 0);
+        EX_MEM_memory_signals                   : out STD_LOGIC_VECTOR(5 downto 0);
         -- these just for testing, delet them after finishing
         flags_z_n_c : out STD_LOGIC_VECTOR(2 downto 0) ------------------ testing
 
@@ -75,7 +76,7 @@ architecture excute_arc of excute is
     end component;
 
     signal sign_extend_in : std_logic_vector(15 downto 0);
-    signal sign_extend_out, r_data1_in, r_data2_in, alu1_in, alu2_in, alu_out, sp, pc_inc, pc, write_data, flag_reg_out, in_data, out_data : std_logic_vector(31 downto 0);
+    signal sign_extend_out, r_data1_in, r_data2_in, alu1_in, alu2_in, alu_data1_in, alu_data2_in, alu_out, sp, pc_inc, pc, write_data, flag_reg_out, in_data, out_data : std_logic_vector(31 downto 0);
     signal src1, src2, in_seg, out_seg : std_logic;
     signal ALU_signals : std_logic_vector(3 downto 0);
     signal flag_in, flag_out, flag_reg_in : std_logic_vector(2 downto 0);
@@ -94,7 +95,7 @@ begin
     -------------------------------- testing ---------------------------------------
     sign_extend_com: sign_extend port map(sign_extend_in, sign_extend_out);
     inc_dec_com: inc_dec port map('1','0',pc_inc, pc);
-    ALU_com: ALU port map(ALU_signals, alu1_in, alu2_in, flag_in, alu_out, flag_out);
+    ALU_com: ALU port map(ALU_signals, alu_data1_in, alu_data2_in, flag_in, alu_out, flag_out);
     CCR_com: CCR port map(clk, rst, flag_reg_in, flag_in);
     -- initializations
     b_20_bits          <= ID_EX_b_20_bits;
@@ -131,6 +132,17 @@ begin
     else pc when WDS = "01"
     else pc_inc when WDS = "10"
     else flag_reg_out;
+
+    -- forwarding unit muxes
+    alu_data1_in <= F_data_in_port when F_src1_sel = "11"
+    else F_data_mem when F_src1_sel = "01"
+    else F_data_WB when F_src1_sel = "10"
+    else alu1_in;
+
+    alu_data2_in <= F_data_in_port when F_src2_sel = "11"
+    else F_data_mem when F_src2_sel = "01"
+    else F_data_WB when F_src2_sel = "10"
+    else alu2_in;
 
     -- in port
     in_data <= in_port when in_seg = '1'

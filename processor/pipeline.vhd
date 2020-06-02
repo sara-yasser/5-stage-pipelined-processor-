@@ -4,7 +4,7 @@ USE ieee.numeric_std.all;
 
 entity pipeline IS
 port(
-    clk, rst :                   in  STD_LOGIC;
+    clk, rst, forward_E :                   in  STD_LOGIC;
     in_port : in STD_LOGIC_VECTOR(31 DOWNTO 0);
     out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0);
     interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0)  -- remove this
@@ -84,6 +84,9 @@ architecture pipeline_arc of pipeline is
             ID_EX_memory_signals        : in STD_LOGIC_VECTOR(5 downto 0);
             ID_EX_excute_signals        : in STD_LOGIC_VECTOR(9 downto 0);
 
+            F_data_mem, F_data_WB, F_data_in_port   : in STD_LOGIC_VECTOR(31 downto 0);
+            F_src1_sel, F_src2_sel                  : in STD_LOGIC_VECTOR(1 downto 0);
+
             res_f                       : in STD_LOGIC;                      -- from write back
             flag_reg                    : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
             in_port                     : in STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -138,6 +141,31 @@ architecture pipeline_arc of pipeline is
 
         );
     end component;
+
+    component forward_unit is
+        port (
+          clk, rst :   in std_logic;
+
+          enable_forward : in std_logic;
+          forward_ex_mem_out_to_if, forward_mem_wb_out_to_if, forward_ex_mem_out_to_ex1, 
+          forward_mem_wb_out_to_ex1, forward_ex_mem_out_to_ex2, forward_mem_wb_out_to_ex2  : out std_logic;
+
+          -- inputs of signals and address
+          IF_ID_in_op_code    :   in std_logic_vector(3 downto 0);         --jump
+          IF_ID_in_last_6_bits    :   in std_logic_vector(4 downto 0);     --jump
+          jump_Rdst :   in std_logic_vector(2 downto 0);                   --jump
+
+          ID_EX_out_memory_read_5, ID_EX_out_read_from_stack_2:   in std_logic;
+          ID_EX_out_registers_addr_Rsrc2, ID_EX_out_registers_addr_Rsrc1, ID_EX_out_Rdst  :   in std_logic_vector(2 downto 0);
+
+          EX_MEM_out_Rdst, EX_MEM_out_Rsrc1   :   in std_logic_vector(2 downto 0);
+          EX_MEM_out_write_back_signals_RW_1, EX_MEM_out_write_back_signals_swap_0, EX_MEM_out_memory_signals_MR_5 :   in std_logic;
+          EX_MEM_memory_signal_WB : in std_logic_vector(1 downto 0);
+
+          MEM_WB_out_Rdst  :   in std_logic_vector(2 downto 0);
+          MEM_WB_out_write_back_signals_RW_1 :   in std_logic
+        ) ;
+      end component;
 
     -- buffers
         signal IF_ID_in, IF_ID_out   : std_logic_vector(47 downto 0):=(others => '0');
@@ -218,6 +246,18 @@ architecture pipeline_arc of pipeline is
         signal data_branch, int_address  : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal R_dst : STD_LOGIC_VECTOR(2 downto 0);
         signal WB_signals : STD_LOGIC_VECTOR(1 downto 0);
+
+    -- forwarding unit
+        signal forward_enable : std_logic:= '0';
+        signal F_mem_to_IF, F_WB_to_IF, F_MEM_to_EX1, F_WB_to_EX1, F_MEM_to_EX2, F_WB_to_EX2: std_logic:= '0';
+        signal IF_op_code  : STD_LOGIC_VECTOR(3 downto 0);
+        signal IF_last_6_bits : STD_LOGIC_VECTOR(5 downto 0);
+        signal IF_Rdst, EX_src2, EX_src1, EX_dst, MEM_dst, MEM_src, WB_dst : STD_LOGIC_VECTOR(2 downto 0);
+        signal EX_MR, EX_read_from_stack, MEM_RW, MEM_swap, MEM_MR, WB_RW : std_logic;
+        signal MEM_WB_seg : STD_LOGIC_VECTOR(1 downto 0);
+        
+        signal F_src1_sel, F_src2_sel                  : STD_LOGIC_VECTOR(1 downto 0);
+
     -- these just for testing, delet them after finishing
         signal R0, R1, R2, R3, R4, R5, R6, R7, sp : std_logic_vector(31 downto 0); ------------------ testing
         signal flags_z_n_c : STD_LOGIC_VECTOR(2 downto 0); ------------------ testing
@@ -242,6 +282,7 @@ architecture pipeline_arc of pipeline is
         excute_com     : excute                         port map(clk, rst, ID_EX_out_registers_addr, ID_EX_out_b_20_bits, ID_EX_out_r_data2_in,
                                                         ID_EX_out_r_data1_in, ID_EX_out_pc_inc, ID_EX_out_write_back_signals,
                                                         ID_EX_out_memory_signals, ID_EX_out_excute_signals,
+                                                        EX_MEM_out_ALU_out, w_data1, EX_MEM_out_in_port_data, F_src1_sel, F_src2_sel, 
                                                         res_f, flag_reg, in_port_data, out_port_data, z,
                                                         EX_MEM_in_registers_addr, EX_MEM_in_r_data1_in, EX_MEM_in_b_20_bits,
                                                         EX_MEM_in_write_data, EX_MEM_in_alu_out, EX_MEM_in_in_data,
@@ -262,6 +303,44 @@ architecture pipeline_arc of pipeline is
 
         MEM_WB_buff_com: MEM_WB_buff generic map (77)    port map(clk, rst, stall, MEM_WB_in, MEM_WB_out);
         
+        -------------- forwarding unit ------------------------------
+        forward_unit_com: forward_unit port map(clk, rst, forward_enable, 
+                                                F_mem_to_IF, F_WB_to_IF, F_MEM_to_EX1, F_WB_to_EX1, F_MEM_to_EX2, F_WB_to_EX2,
+                                                IF_op_code, IF_last_6_bits, IF_Rdst, 
+                                                EX_MR, EX_read_from_stack, EX_src2, EX_src1, EX_dst,
+                                                MEM_dst, MEM_src, MEM_RW, MEM_swap, MEM_MR, MEM_WB_seg,
+                                                WB_dst, WB_RW);
+
+        -- forward initializations
+            F_src1_sel(0) <= F_MEM_to_EX1;
+            F_src1_sel(1) <= F_WB_to_EX1;
+            F_src2_sel(0) <= F_MEM_to_EX2;
+            F_src2_sel(1) <= F_WB_to_EX2;
+
+            forward_enable <= forward_E;
+
+            IF_op_code <= IF_ID_in_instruction(15 downto 12);
+            IF_last_6_bits <= IF_ID_in_instruction(5 downto 0);
+            IF_Rdst <= IF_ID_in_instruction(11 downto 9);
+
+            EX_MR <= ID_EX_out_memory_signals(5);
+            EX_read_from_stack <= ID_EX_out_memory_signals(2);
+            EX_src2 <= ID_EX_out_registers_addr(5 downto 3);
+            EX_src1 <= ID_EX_out_registers_addr(8 downto 6);
+            EX_dst <= ID_EX_out_registers_addr(2 downto 0);
+
+            MEM_dst <= EX_MEM_out_first_40_bits(2 downto 0);
+            MEM_src <= EX_MEM_out_first_40_bits(8 downto 6);
+            MEM_RW <= EX_MEM_out_write_back_signals(1);
+            MEM_swap <= EX_MEM_out_write_back_signals(0);
+            MEM_MR <= EX_MEM_out_memory_signals(5);
+            MEM_WB_seg <= EX_MEM_out_memory_signals(1 downto 0);
+
+            WB_dst <= w_addr1;
+            WB_RW <= WB_signals(1);
+
+
+        ------------------------------------------------------------
         -- IF_ID in buff
             IF_ID_in(15 downto 0) <= IF_ID_in_instruction;
             IF_ID_in(47 downto 16) <= IF_ID_in_pc_incremented;
