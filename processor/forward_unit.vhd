@@ -14,10 +14,6 @@ entity forward_unit is
     clk :   in std_logic;
     rst :   in std_logic;
     ----------------------------------------------------
-    stall_sig: out std_logic;
-    forward :   out std_logic;
-    sel_ex_src1, sel_ex_src2    :   out std_logic_vector(1 downto 0);
-    sel_jump    :   out std_logic_vector(2 downto 0);
     ------------------------------------------------------
     enable_forward : in std_logic;
     forward_mem_wb_out_to_ex, forward_ex_mem_out_to_if, forward_mem_wb_out_to_if, forward_ex_mem_out_to_ex : out std_logic;
@@ -30,7 +26,7 @@ entity forward_unit is
     ID_EX_in_Rdst  :   in std_logic_vector(2 downto 0);
     EX_MEM_out_write_back_signals_1 :   in std_logic;
     IF_ID_in_op_code    :   in std_logic_vector(3 downto 0);
-    IF_ID_in_last_6_bits    :   in std_logic_vector(4 downto);
+    IF_ID_in_last_6_bits    :   in std_logic_vector(4 downto 0);
     EX_MEM_out_memory_signals_5 :   in std_logic
     -------------------------------------------
     -- need to edit when Sara wakes up
@@ -53,19 +49,19 @@ begin
                 -- this signal is not exist with this name in pipeline => (ask sara)
                 mem_wb_out_write_back_signals_1 = 1 then
                     -- if_id_out_Rdst = id_ex_out_Rsrc2
-                    if IF_ID_out_instruction_Rdst(2 downto 0) = ID_EX_out_registers_addr_Rsrc2(5 downto 3) then
+                    if IF_ID_out_instruction_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                         forward_mem_wb_out_to_ex = '1';
                     
                     -- if_id_out_Rdst = id_ex_out_Rsrc1
-                    elsif IF_ID_out_instruction_Rdst(2 downto 0) = ID_EX_out_registers_addr_Rsrc1(8 downto 6) then
+                    elsif IF_ID_out_instruction_Rdst = ID_EX_out_registers_addr_Rsrc1 then
                         forward_mem_wb_out_to_ex = '1';
                     
                     -- if_id_in_Rdst = id_ex_out_Rsrc2
-                    elsif ID_EX_in_Rdst(2 downto 0) = ID_EX_out_registers_addr_Rsrc2(5 downto 3) then
+                    elsif ID_EX_in_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                         forward_mem_wb_out_to_ex = '1';
                     
                     -- if_id_in_Rdst = id_ex_out_Rsrc1
-                    elsif ID_EX_in_Rdst(2 downto 0) = ID_EX_out_registers_addr_Rsrc1(8 downto 6) then
+                    elsif ID_EX_in_Rdst = ID_EX_out_registers_addr_Rsrc1 then
                         forward_mem_wb_out_to_ex = '1';
                     end if ;
                 end if ;
@@ -73,7 +69,7 @@ begin
                 -- jump after R-type
                 if EX_MEM_out_write_back_signals_1 = 1 and 
                 -- fitch_op_code = jump
-                (IF_ID_in_op_code(15 downto 12) = "1111" and IF_ID_in_last_6_bits(5 downto 1) = "11110") and 
+                (IF_ID_in_op_code = "1111" and IF_ID_in_last_6_bits = "11110") and 
                 EX_MEM_out_memory_signals_5 = 0 then
                     -- ex_mem_out_Rdst = jump_Rdst
                     if ex_mem_out_Rdst = jump_Rdst then
@@ -84,8 +80,8 @@ begin
                 -- jump after load
                 if mem_wb_out_write_back_signals_1 = 1 and 
                 -- fitch_op_code = jump 
-                (IF_ID_in_op_code(15 downto 12) = "1111" and IF_ID_in_last_6_bits(5 downto 1) = "11110") then
-                    if mem_wb_out_Rdst = jump_Rdst (i.e. if_Rdst) then
+                (IF_ID_in_op_code = "1111" and IF_ID_in_last_6_bits = "11110") then
+                    if mem_wb_out_Rdst = jump_Rdst then
                         forward_mem_wb_out_to_if = '1';
                     end if ;
                     
@@ -94,20 +90,20 @@ begin
                 -- swap
                 if ex_mem_out_write_back_signals_0 = 1 then
                     -- registers of ex_mem = id_ex_out_Rsrc2
-                    if EX_MEM_out_first_40_bits() = ID_EX_out_registers_addr_Rsrc2(5 downto 3) then
+                    if EX_MEM_out_first_40_bits_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                         forward_ex_mem_out_to_ex = '1';
                     -- registers of ex_mem = id_ex_out_Rsrc1
-                    if EX_MEM_out_first_40_bits() = ID_EX_out_registers_addr_Rsrc1(8 downto 6) then
+                    if EX_MEM_out_first_40_bits_Rdst = ID_EX_out_registers_addr_Rsrc1 then
                         forward_ex_mem_out_to_ex = '1';
                     end if ;
                 end if ;
                 -------------------------------------------------------------------
                 -- ALU to ALU
                 -- ex_mem_out_Rdst = id_ex_out_Rsrc2
-                if EX_MEM_out_first_40_bits_Rdst(2 downto 0) = ID_EX_out_registers_addr_Rsrc2(5 downto 3) then
+                if EX_MEM_out_first_40_bits_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                     forward_ex_mem_out_to_ex = '1';
                 -- ex_mem_out_Rdst = id_ex_out_Rsrc1
-                elsif EX_MEM_out_first_40_bits_Rdst(2 downto 0) = ID_EX_out_registers_addr_Rsrc1(8 downto 6) then
+                elsif EX_MEM_out_first_40_bits_Rdst = ID_EX_out_registers_addr_Rsrc1 then
                     forward_ex_mem_out_to_ex = '1';
                 end if ;
                 -------------------------------------------------------------------
