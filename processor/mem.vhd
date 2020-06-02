@@ -83,7 +83,8 @@ architecture mem_arc of mem is
         WB <= memory_signals(1 downto 0);
         
         --muxes
-        mem_addr <= sp_pointer when write_in_stack = '1' or read_from_stack = '1'
+        mem_addr <= sp_pointer when write_in_stack = '1'
+        else std_logic_vector(unsigned(sp_pointer)+2) when read_from_stack = '1'
         else addr;-- when MR = '1' or MW = '1'
 
         write_in_mem <= '1' when write_in_stack = '1' or MW = '1'

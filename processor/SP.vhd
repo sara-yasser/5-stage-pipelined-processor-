@@ -14,10 +14,12 @@ signal temp : std_logic_vector(31 DOWNTO 0);
     PROCESS (clk,rst)
         BEGIN
             if rst = '1' then
-                temp <= "00000000000000000000111111111110";
+                temp <= "00000000000000000000111111111100";
             else
-                if inc = '1' then
-                    temp <= std_logic_vector(unsigned(temp)+2);
+                IF (not (falling_edge(CLK))) THEN
+                    if inc = '1' then
+                        temp <= std_logic_vector(unsigned(temp)+2);
+                    end if;
                 elsif dec = '1' then
                     IF (falling_edge(CLK)) THEN
                         temp <= std_logic_vector(unsigned(temp)-2);
