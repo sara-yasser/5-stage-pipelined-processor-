@@ -67,6 +67,7 @@ begin
                     -- ex_mem_out_Rdst = jump_Rdst
                     if ex_mem_out_Rdst = jump_Rdst then
                         forward_ex_mem_out_to_if <= '1';
+                        forward_mem_wb_out_to_if <= '0';
                     end if ;
                 end if ;
                 -------------------------------------------------------------------
@@ -76,6 +77,7 @@ begin
                 (IF_ID_in_op_code = "1111" and IF_ID_in_last_6_bits = "11110") then
                     if mem_wb_out_Rdst = jump_Rdst then
                         forward_mem_wb_out_to_if <= '1';
+                        forward_ex_mem_out_to_if <= '0';
                     end if ;
                     
                 end if ;
