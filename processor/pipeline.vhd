@@ -121,7 +121,10 @@ architecture pipeline_arc of pipeline is
             
             MEM_WB_first_40_bits      : out std_logic_vector(40 downto 0);
             MEM_WB_wb_result          : out std_logic_vector(31 downto 0);
-            MEM_WB_write_back_signals : out std_logic_vector(3 downto 0)
+            MEM_WB_write_back_signals : out std_logic_vector(3 downto 0);
+            --testing
+            inc, dec                    : out std_logic;
+            sp_out                      : out std_logic_vector(31 downto 0)
         );
     end component;
 
@@ -210,14 +213,15 @@ architecture pipeline_arc of pipeline is
         signal w_data1, w_data2 : STD_LOGIC_VECTOR(31 DOWNTO 0):=(others => '0');
 
     -- general
-        signal stall, inc_sp, dec_sp, write_in_pc, z : std_logic:='0';
+        signal stall, write_in_pc, z : std_logic:='0';
         signal curr_pc_ID, curr_pc_IF : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal data_branch, int_address  : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal R_dst : STD_LOGIC_VECTOR(2 downto 0);
         signal WB_signals : STD_LOGIC_VECTOR(1 downto 0);
     -- these just for testing, delet them after finishing
-        signal R0, R1, R2, R3, R4, R5, R6, R7 : std_logic_vector(31 downto 0); ------------------ testing
+        signal R0, R1, R2, R3, R4, R5, R6, R7, sp : std_logic_vector(31 downto 0); ------------------ testing
         signal flags_z_n_c : STD_LOGIC_VECTOR(2 downto 0); ------------------ testing
+        signal inc_sp, dec_sp : std_logic;
 
     begin
         fetch_com      : fetch                          port map(clk, rst, write_in_pc, data_branch, w_data1, int_address,
@@ -251,7 +255,10 @@ architecture pipeline_arc of pipeline is
         mem_com        : mem                            port map(clk, rst, EX_MEM_out_first_40_bits, EX_MEM_out_b_20_bits,
                                                         EX_MEM_out_data_mem_in, EX_MEM_out_ALU_out, EX_MEM_out_in_port_data,
                                                         EX_MEM_out_write_back_signals, EX_MEM_out_memory_signals,
-                                                        MEM_WB_in_first_40_bits, MEM_WB_in_wb_result, MEM_WB_in_write_back_signals);
+                                                        MEM_WB_in_first_40_bits, MEM_WB_in_wb_result, MEM_WB_in_write_back_signals,
+                                                        -- these just for testing, delet them after finishing
+                                                        inc_sp, dec_sp, sp  ------------------ testing
+                                                        );
 
         MEM_WB_buff_com: MEM_WB_buff generic map (77)    port map(clk, rst, stall, MEM_WB_in, MEM_WB_out);
         

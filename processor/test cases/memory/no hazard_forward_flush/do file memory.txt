@@ -6,16 +6,16 @@ run
 run
 run
 run
-force -freeze sim:/pipeline/in_port 5 0
+force -freeze sim:/pipeline/in_port 0CDAFE19 0
 run
 run
-force -freeze sim:/pipeline/in_port 00000019 0
+force -freeze sim:/pipeline/in_port ffff 0
 run
 run
-force -freeze sim:/pipeline/in_port fffd 0
+force -freeze sim:/pipeline/in_port f320 0
 run
 run
-force -freeze sim:/pipeline/in_port 0000F320 0
+run
 run
 run
 run

@@ -4,20 +4,23 @@ USE ieee.numeric_std.all;
 
 entity mem is
     port(
-        clk, rst                  :   in std_logic;
+        clk, rst                    :   in std_logic;
 
-        EX_MEM_first_40_bits      : in std_logic_vector(40 DOWNTO 0);
-        EX_MEM_b_20_bits          : in std_logic_vector(19 downto 0);
-        EX_MEM_data_mem_in        : in std_logic_vector(31 downto 0);
-        EX_MEM_ALU_out            : in std_logic_vector(31 downto 0);
+        EX_MEM_first_40_bits        : in std_logic_vector(40 DOWNTO 0);
+        EX_MEM_b_20_bits            : in std_logic_vector(19 downto 0);
+        EX_MEM_data_mem_in          : in std_logic_vector(31 downto 0);
+        EX_MEM_ALU_out              : in std_logic_vector(31 downto 0);
         -- EX_MEM_sp                 : in std_logic_vector(31 downto 0);
-        EX_MEM_in_port_data       : in std_logic_vector(31 downto 0);
-        EX_MEM_write_back_signals : in std_logic_vector(3 downto 0);
-        EX_MEM_memory_signals     : in std_logic_vector(5 downto 0);
+        EX_MEM_in_port_data         : in std_logic_vector(31 downto 0);
+        EX_MEM_write_back_signals   : in std_logic_vector(3 downto 0);
+        EX_MEM_memory_signals       : in std_logic_vector(5 downto 0);
         
-        MEM_WB_first_40_bits      : out std_logic_vector(40 downto 0);
-        MEM_WB_wb_result          : out std_logic_vector(31 downto 0);
-        MEM_WB_write_back_signals : out std_logic_vector(3 downto 0)
+        MEM_WB_first_40_bits        : out std_logic_vector(40 downto 0);
+        MEM_WB_wb_result            : out std_logic_vector(31 downto 0);
+        MEM_WB_write_back_signals   : out std_logic_vector(3 downto 0);
+        --testing
+        inc, dec                    : out std_logic;
+        sp_out                      : out std_logic_vector(31 downto 0)
     );
 end entity;
 
@@ -52,6 +55,11 @@ architecture mem_arc of mem is
     
 
     begin
+        --------------------------- testing -------------------------------
+        sp_out <= sp_pointer;
+        inc <= inc_sp;
+        dec <= dec_sp;
+        --------------------------- testing -------------------------------
         -- memory_com: memory generic map (12) port map(clk, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
         memory_com: memory generic map (12) port map(clk, rst, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out);
         sp_com: sp port map(clk, rst, inc_sp, dec_sp, sp_pointer);
