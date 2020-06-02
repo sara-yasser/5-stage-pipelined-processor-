@@ -15,7 +15,7 @@ entity forward_unit is
     --------------------------------------------------------
     -- inputs of signals and address
     IF_ID_out_Rdst  :   in std_logic_vector(2 downto 0);
-    ID_EX_out_memory_read_5, ID_EX_out_read_from_stack_2, mem_wb_out_write_back_signals_RW_1 :   in std_logic;
+    ID_EX_out_memory_read_5, ID_EX_out_read_from_stack_2, MEM_WB_out_write_back_signals_RW_1 :   in std_logic;
     ID_EX_out_registers_addr_Rsrc2, ID_EX_out_registers_addr_Rsrc1  :   in std_logic_vector(2 downto 0);
     EX_MEM_out_Rdst, EX_MEM_out_Rsrc1   :   in std_logic_vector(2 downto 0);
     EX_MEM_out_write_back_signals_RW_1, EX_MEM_out_write_back_signals_swap_0, EX_MEM_out_memory_signals_MR_5 :   in std_logic;
@@ -98,13 +98,17 @@ begin
                 end if ;
                 -------------------------------------------------------------------
                 -- ALU to ALU
-                -- ex_mem_out_Rdst = id_ex_out_Rsrc2
-                if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc2 then
-                    forward_ex_mem_out_to_ex2 <= '1';
-                -- ex_mem_out_Rdst = id_ex_out_Rsrc1
-                elsif EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc1 then
-                    forward_ex_mem_out_to_ex1 <= '1';
+                if EX_MEM_out_memory_signals_MR_5 = '0' then
+                    -- ex_mem_out_Rdst = id_ex_out_Rsrc2
+                    if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc2 then
+                        forward_ex_mem_out_to_ex2 <= '1';
+                    -- ex_mem_out_Rdst = id_ex_out_Rsrc1
+                    elsif EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc1 then
+                        forward_ex_mem_out_to_ex1 <= '1';
+                    end if ;
                 end if ;
+                -------------------------------------------------------------------
+                
                 -------------------------------------------------------------------
             
             end if;
