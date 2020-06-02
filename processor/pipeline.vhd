@@ -152,7 +152,7 @@ architecture pipeline_arc of pipeline is
 
           -- inputs of signals and address
           IF_ID_in_op_code    :   in std_logic_vector(3 downto 0);         --jump
-          IF_ID_in_last_6_bits    :   in std_logic_vector(4 downto 0);     --jump
+          IF_ID_in_last_6_bits    :   in std_logic_vector(5 downto 0);     --jump
           jump_Rdst :   in std_logic_vector(2 downto 0);                   --jump
 
           ID_EX_out_memory_read_5, ID_EX_out_read_from_stack_2:   in std_logic;
@@ -255,8 +255,11 @@ architecture pipeline_arc of pipeline is
         signal IF_Rdst, EX_src2, EX_src1, EX_dst, MEM_dst, MEM_src, WB_dst : STD_LOGIC_VECTOR(2 downto 0);
         signal EX_MR, EX_read_from_stack, MEM_RW, MEM_swap, MEM_MR, WB_RW : std_logic;
         signal MEM_WB_seg : STD_LOGIC_VECTOR(1 downto 0);
-        
+
         signal F_src1_sel, F_src2_sel                  : STD_LOGIC_VECTOR(1 downto 0);
+
+        signal F_WB_in, F_WB_out : STD_LOGIC_VECTOR(35 downto 0);
+        signal temp_data : STD_LOGIC_VECTOR(31 downto 0);
 
     -- these just for testing, delet them after finishing
         signal R0, R1, R2, R3, R4, R5, R6, R7, sp : std_logic_vector(31 downto 0); ------------------ testing
@@ -282,7 +285,7 @@ architecture pipeline_arc of pipeline is
         excute_com     : excute                         port map(clk, rst, ID_EX_out_registers_addr, ID_EX_out_b_20_bits, ID_EX_out_r_data2_in,
                                                         ID_EX_out_r_data1_in, ID_EX_out_pc_inc, ID_EX_out_write_back_signals,
                                                         ID_EX_out_memory_signals, ID_EX_out_excute_signals,
-                                                        EX_MEM_out_ALU_out, w_data1, EX_MEM_out_in_port_data, F_src1_sel, F_src2_sel, 
+                                                        EX_MEM_out_ALU_out, temp_data, EX_MEM_out_in_port_data, F_src1_sel, F_src2_sel, 
                                                         res_f, flag_reg, in_port_data, out_port_data, z,
                                                         EX_MEM_in_registers_addr, EX_MEM_in_r_data1_in, EX_MEM_in_b_20_bits,
                                                         EX_MEM_in_write_data, EX_MEM_in_alu_out, EX_MEM_in_in_data,
@@ -311,6 +314,8 @@ architecture pipeline_arc of pipeline is
                                                 MEM_dst, MEM_src, MEM_RW, MEM_swap, MEM_MR, MEM_WB_seg,
                                                 WB_dst, WB_RW);
 
+        forward_WB_Buff_com: stage_buff generic map (36)   port map(clk, rst, stall, F_WB_in, F_WB_out);
+
         -- forward initializations
             F_src1_sel(0) <= F_MEM_to_EX1;
             F_src1_sel(1) <= F_WB_to_EX1;
@@ -336,9 +341,16 @@ architecture pipeline_arc of pipeline is
             MEM_MR <= EX_MEM_out_memory_signals(5);
             MEM_WB_seg <= EX_MEM_out_memory_signals(1 downto 0);
 
-            WB_dst <= w_addr1;
-            WB_RW <= WB_signals(1);
+            -- WB_dst <= w_addr1;
+            -- WB_RW <= WB_signals(1);
 
+            F_WB_in(2 downto 0) <= w_addr1;
+            F_WB_in(3) <= WB_signals(1);
+            F_WB_in(35 downto 4) <= w_data1;
+
+            WB_dst <= F_WB_out(2 downto 0);
+            WB_RW <= F_WB_out(3);
+            temp_data <= F_WB_out(35 downto 4);
 
         ------------------------------------------------------------
         -- IF_ID in buff

@@ -119,7 +119,7 @@ begin
     -- out buff
 
     ID_EX_dst_src            <= dst_src;
-    ID_EX_src2               <= src2;
+    ID_EX_src2               <= read_addr2;
     ID_EX_src1               <= src1;
     ID_EX_decoder_out        <= decoder_out;
     ID_EX_rd_data2           <= rd_data2;

@@ -45,8 +45,8 @@ begin
             forward_mem_wb_out_to_ex2 <= '0';
             if enable_forward = '1' then
                 -- load
-                if (ID_EX_out_memory_read_5 = '1' or ID_EX_out_read_from_stack_2 = '1') and 
-                MEM_WB_out_write_back_signals_RW_1 = '1' then
+                -- if (ID_EX_out_memory_read_5 = '1' or ID_EX_out_read_from_stack_2 = '1') and 
+                if MEM_WB_out_write_back_signals_RW_1 = '1' then
                     -- if_id_in_Rdst = id_ex_out_Rsrc2
                     if MEM_WB_out_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                         forward_mem_wb_out_to_ex2 <= '1';
@@ -65,7 +65,6 @@ begin
                     -- ex_mem_out_Rdst = jump_Rdst
                     if ex_mem_out_Rdst = jump_Rdst then
                         forward_ex_mem_out_to_if <= '1';
-                        forward_mem_wb_out_to_if <= '0';
                     end if ;
                 end if ;
                 -------------------------------------------------------------------
@@ -75,7 +74,6 @@ begin
                 (IF_ID_in_op_code = "1111" and IF_ID_in_last_6_bits = "111100") then
                     if mem_wb_out_Rdst = jump_Rdst then
                         forward_mem_wb_out_to_if <= '1';
-                        forward_ex_mem_out_to_if <= '0';
                     end if ;
                     
                 end if ;
@@ -101,20 +99,12 @@ begin
                     -- ex_mem_out_Rdst = id_ex_out_Rsrc2
                     if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                         forward_ex_mem_out_to_ex2 <= '1';
-                        forward_ex_mem_out_to_if <= '0';
-                        forward_mem_wb_out_to_if <= '0';
-                        forward_mem_wb_out_to_ex1 <= '0'; 
-                        forward_mem_wb_out_to_ex2 <= '0';
                     else
                         forward_ex_mem_out_to_ex2 <= '0';
                     end if ;
                     -- ex_mem_out_Rdst = id_ex_out_Rsrc1
                     if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc1 then
                         forward_ex_mem_out_to_ex1 <= '1';
-                        forward_ex_mem_out_to_if <= '0';
-                        forward_mem_wb_out_to_if <= '0';
-                        forward_mem_wb_out_to_ex1 <= '0'; 
-                        forward_mem_wb_out_to_ex2 <= '0';
                     else
                         forward_ex_mem_out_to_ex1 <= '0';
                     end if ;
@@ -125,10 +115,6 @@ begin
                     if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                         forward_ex_mem_out_to_ex2 <= '1';
                         forward_mem_wb_out_to_ex2 <= '1';
-                        forward_ex_mem_out_to_ex1 <= '0';
-                        forward_ex_mem_out_to_if <= '0';
-                        forward_mem_wb_out_to_if <= '0';
-                        forward_mem_wb_out_to_ex1 <= '0'; 
                     else
                         forward_ex_mem_out_to_ex2 <= '0';
                         forward_mem_wb_out_to_ex2 <= '0';
@@ -137,17 +123,13 @@ begin
                     if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc1 then
                         forward_ex_mem_out_to_ex1 <= '1';
                         forward_mem_wb_out_to_ex1 <= '1';
-                        forward_ex_mem_out_to_ex2 <= '0';
-                        forward_ex_mem_out_to_if <= '0';
-                        forward_mem_wb_out_to_if <= '0';
-                        forward_mem_wb_out_to_ex2 <= '0'; 
                     else
                         forward_ex_mem_out_to_ex1 <= '0';
                         forward_mem_wb_out_to_ex1 <= '0';
                     end if ;
                 end if;
                 -------------------------------------------------------------------
-                if rst = '0' then
+                if rst = '1' then
                     forward_ex_mem_out_to_if <= '0';
                     forward_mem_wb_out_to_if <= '0';
                     forward_ex_mem_out_to_ex1 <= '0';

@@ -25,7 +25,7 @@ architecture inst_mem_arc of inst_mem is
         -- end loop;
 
         process(clk)
-        file text_file1 : text open read_mode is "E:\Study\2nd Semester\Arch\Project\GitHubTeam2\5-stage-pipelined-processor-\processor\out.txt";
+        file text_file1 : text open read_mode is "out.txt";
         variable text_line : line;
         variable char1, char2, char3, char4 : character;
         variable inst :STD_LOGIC_VECTOR(15 downto 0) := (others => '0');
