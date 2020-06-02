@@ -9,13 +9,13 @@ run
 run
 run
 run
-force -freeze sim:/pipeline/in_port 0CDAFE19 0
+force -freeze sim:/pipeline/in_port 32'h0CDAFE19 0
 run
 run
-force -freeze sim:/pipeline/in_port ffff 0
+force -freeze sim:/pipeline/in_port 32'hffff 0
 run
 run
-force -freeze sim:/pipeline/in_port f320 0
+force -freeze sim:/pipeline/in_port 32'hf320 0
 run
 run
 run

@@ -4,7 +4,7 @@ USE ieee.numeric_std.all;
 
 entity pipeline IS
 port(
-    clk, rst, forward_E :                   in  STD_LOGIC;
+    clk, rst, forward_E, hazard_E, interrupt_sig :                   in  STD_LOGIC;
     in_port : in STD_LOGIC_VECTOR(31 DOWNTO 0);
     out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0);
     interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0)  -- remove this
@@ -167,6 +167,26 @@ architecture pipeline_arc of pipeline is
         ) ;
       end component;
 
+      component hazard_detection_unit is
+        port (
+          clk, dec :   in std_logic;
+          enable_hazard : in std_logic;
+          ID_EX_out_RW,
+          read_from_stack,
+          ID_EX_out_MR,
+          write_back_signals_RW_1,
+          control_unit_MR,
+          control_unit_RW,
+          EX_MEM_out_RW ,
+          EX_MEM_out_MR : in std_logic;
+          interrupt_sig : in std_logic;
+          Id_EX_out_Rdst, IF_ID_out_Rsrc1, IF_ID_out_Rsrc2, IF_ID_out_Rdst, jump_Rdst, EX_MEM_out_Rdst : in std_logic_vector(2 downto 0);
+          fitch_op_code : in std_logic_vector(3 downto 0);
+          last_6_bits : in std_logic_vector(5 downto 0);
+          stall_sig : out integer
+        ) ;
+      end component;
+
     -- buffers
         signal IF_ID_in, IF_ID_out   : std_logic_vector(47 downto 0):=(others => '0');
         signal ID_EX_in, ID_EX_out   : std_logic_vector(144  DOWNTO 0):=(others => '0');
@@ -261,6 +281,9 @@ architecture pipeline_arc of pipeline is
         signal F_WB_in, F_WB_out : STD_LOGIC_VECTOR(35 downto 0);
         signal temp_data : STD_LOGIC_VECTOR(31 downto 0);
 
+    -- hazard
+        signal dec_stall, hazard_enable, EX_RW : std_logic:='0';
+        signal stall_int : integer:=0;
     -- these just for testing, delet them after finishing
         signal R0, R1, R2, R3, R4, R5, R6, R7, sp : std_logic_vector(31 downto 0); ------------------ testing
         signal flags_z_n_c : STD_LOGIC_VECTOR(2 downto 0); ------------------ testing
@@ -352,6 +375,20 @@ architecture pipeline_arc of pipeline is
             WB_RW <= F_WB_out(3);
             temp_data <= F_WB_out(35 downto 4);
 
+        ------------------------------------------------------------
+        ---------------- hazard detection unit ---------------------
+        hazard_enable <= hazard_E;
+        hazard_detection_unit_com: hazard_detection_unit port map (
+              clk, dec_stall,
+              hazard_enable, EX_RW, EX_read_from_stack, EX_MR, WB_RW, '0', '0', MEM_RW ,
+              MEM_MR,
+              interrupt_sig,
+              EX_dst, IF_ID_out_instruction(8 downto 6), IF_ID_out_instruction(5 downto 3), IF_ID_out_instruction(11 downto 9),
+              IF_Rdst, MEM_dst, IF_op_code, IF_last_6_bits, stall_int
+            );
+
+        stall <= '1' when (stall_int > 0)
+        else'0';
         ------------------------------------------------------------
         -- IF_ID in buff
             IF_ID_in(15 downto 0) <= IF_ID_in_instruction;

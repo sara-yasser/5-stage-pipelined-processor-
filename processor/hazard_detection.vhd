@@ -18,7 +18,7 @@ entity hazard_detection_unit is
     interrupt_sig : in std_logic;
     Id_EX_out_Rdst, IF_ID_out_Rsrc1, IF_ID_out_Rsrc2, IF_ID_out_Rdst, jump_Rdst, EX_MEM_out_Rdst : in std_logic_vector(2 downto 0);
     fitch_op_code : in std_logic_vector(3 downto 0);
-    last_6_bits : in std_logic_vector(4 downto 0);
+    last_6_bits : in std_logic_vector(5 downto 0);
     stall_sig : out integer
   ) ;
 end hazard_detection_unit;
@@ -44,7 +44,7 @@ begin
         end if ;
 
         -- jump
-        if (fitch_op_code = "1111" and last_6_bits = "11110") then
+        if (fitch_op_code = "1111" and last_6_bits = "111100") then
           -- jump after R-type
           if write_back_signals_RW_1 = '1' and control_unit_MR = '0' and IF_ID_out_Rdst = jump_Rdst then
             temp_stall <= 2;
@@ -72,7 +72,7 @@ begin
         end if ;
         
         -- in case of RET and RTI
-        if fitch_op_code = "1111" and (last_6_bits = "10110" or last_6_bits = "01100") then
+        if fitch_op_code = "1111" and (last_6_bits = "101100" or last_6_bits = "011000") then
             temp_stall <= 3;
         end if ;
 
