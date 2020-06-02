@@ -119,10 +119,10 @@ begin
     ALU_signals <= excute_signals(3 downto 0);
 
     -- muxes
-    alu1_in <= r_data1_in when src1 = '0'
+    alu_data1_in <= alu1_in when src1 = '0'
     else sign_extend_out;
 
-    alu2_in <= r_data2_in when src2 = '0'
+    alu_data2_in <= alu2_in when src2 = '0'
     else sign_extend_out;
 
     flag_reg_in <= flag_out when res_f = '0'
@@ -134,15 +134,15 @@ begin
     else flag_reg_out;
 
     -- forwarding unit muxes
-    alu_data1_in <= F_data_in_port when F_src1_sel = "11"
+    alu1_in <= F_data_in_port when F_src1_sel = "11"
     else F_data_mem when F_src1_sel = "01"
     else F_data_WB when F_src1_sel = "10"
-    else alu1_in;
+    else r_data1_in;
 
-    alu_data2_in <= F_data_in_port when F_src2_sel = "11"
+    alu2_in <= F_data_in_port when F_src2_sel = "11"
     else F_data_mem when F_src2_sel = "01"
     else F_data_WB when F_src2_sel = "10"
-    else alu2_in;
+    else r_data2_in;
 
     -- in port
     in_data <= in_port when in_seg = '1'

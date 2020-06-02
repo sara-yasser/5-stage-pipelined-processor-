@@ -55,10 +55,10 @@ begin
                     if MEM_WB_out_Rdst = ID_EX_out_registers_addr_Rsrc1 then
                         forward_mem_wb_out_to_ex1 <= '1';
                     end if ;
-                end if ;
+                
                 -------------------------------------------------------------------
                 -- jump after R-type
-                if EX_MEM_out_write_back_signals_RW_1 = '1' and 
+                elsif EX_MEM_out_write_back_signals_RW_1 = '1' and 
                 -- fitch_op_code = jump
                 (IF_ID_in_op_code = "1111" and IF_ID_in_last_6_bits = "111100") and 
                 EX_MEM_out_memory_signals_MR_5 = '0' then
@@ -66,20 +66,19 @@ begin
                     if ex_mem_out_Rdst = jump_Rdst then
                         forward_ex_mem_out_to_if <= '1';
                     end if ;
-                end if ;
+                
                 -------------------------------------------------------------------
                 -- jump after load
-                if mem_wb_out_write_back_signals_RW_1 = '1' and 
+                elsif mem_wb_out_write_back_signals_RW_1 = '1' and 
                 -- fitch_op_code = jump 
                 (IF_ID_in_op_code = "1111" and IF_ID_in_last_6_bits = "111100") then
                     if mem_wb_out_Rdst = jump_Rdst then
                         forward_mem_wb_out_to_if <= '1';
                     end if ;
                     
-                end if ;
                 -------------------------------------------------------------------
                 -- swap
-                if ex_mem_out_write_back_signals_swap_0 = '1' then
+                elsif ex_mem_out_write_back_signals_swap_0 = '1' then
                     -- registers of ex_mem = id_ex_out_Rsrc2
                     if (EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc2) or (EX_MEM_out_Rsrc1 = ID_EX_out_registers_addr_Rsrc2) then
                         forward_ex_mem_out_to_ex2 <= '1';
@@ -92,10 +91,10 @@ begin
                     else
                         forward_ex_mem_out_to_ex1 <= '0';
                     end if;
-                end if ;
+                
                 -------------------------------------------------------------------
                 -- ALU to ALU
-                if (EX_MEM_out_memory_signals_MR_5 = '0') and (EX_MEM_out_write_back_signals_RW_1 = '1') then
+                elsif (EX_MEM_out_memory_signals_MR_5 = '0') and (EX_MEM_out_write_back_signals_RW_1 = '1') then
                     -- ex_mem_out_Rdst = id_ex_out_Rsrc2
                     if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                         forward_ex_mem_out_to_ex2 <= '1';
@@ -108,10 +107,10 @@ begin
                     else
                         forward_ex_mem_out_to_ex1 <= '0';
                     end if ;
-                end if ;
+                
                 -------------------------------------------------------------------
                 -- IN PORT
-                if (EX_MEM_memory_signal_WB = "00") and (EX_MEM_out_write_back_signals_RW_1 = '1') then --in port
+                elsif (EX_MEM_memory_signal_WB = "00") and (EX_MEM_out_write_back_signals_RW_1 = '1') then --in port
                     if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                         forward_ex_mem_out_to_ex2 <= '1';
                         forward_mem_wb_out_to_ex2 <= '1';
