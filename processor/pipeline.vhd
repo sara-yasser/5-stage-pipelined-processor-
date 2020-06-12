@@ -14,7 +14,7 @@ end entity;
 architecture pipeline_arc of pipeline is
     component fetch is
         port(
-        clk, rst, write_in_pc, read_same_inst   : in std_logic;
+        clk, rst, write_in_pc   : in std_logic;
         data_branch, write_data                 : in std_logic_vector(31 downto 0);
         int_address                             : out std_logic_vector(31 downto 0);
         R_dst                                   : out std_logic_vector(2 downto 0);
@@ -290,7 +290,8 @@ architecture pipeline_arc of pipeline is
         signal inc_sp, dec_sp : std_logic;
 
     begin
-        fetch_com      : fetch                          port map(clk, rst, write_in_pc, stall_IF_ID, data_branch, w_data1, int_address,
+        
+        fetch_com      : fetch                          port map(clk, rst, write_in_pc, data_branch, w_data1, int_address,
                                                         R_dst, IF_ID_in_instruction, IF_ID_in_pc_incremented);
         IF_ID_buff_com : IF_ID_buff                     port map(clk, rst, stall_IF_ID, IF_ID_in, IF_ID_out);
 
@@ -377,18 +378,18 @@ architecture pipeline_arc of pipeline is
 
         ------------------------------------------------------------
         ---------------- hazard detection unit ---------------------
-        hazard_enable <= hazard_E;
-        hazard_detection_unit_com: hazard_detection_unit port map (
-              clk, dec_stall,
-              hazard_enable, EX_RW, EX_read_from_stack, EX_MR, WB_RW, '0', '0', MEM_RW ,
-              MEM_MR,
-              interrupt_sig,
-              EX_dst, IF_ID_out_instruction(8 downto 6), IF_ID_out_instruction(5 downto 3), IF_ID_out_instruction(11 downto 9),
-              IF_Rdst, MEM_dst, IF_op_code, IF_last_6_bits, stall_int
-            );
+        --hazard_enable <= hazard_E;
+        --hazard_detection_unit_com: hazard_detection_unit port map (
+        --      clk, dec_stall,
+        --      hazard_enable, EX_RW, EX_read_from_stack, EX_MR, WB_RW, '0', '0', MEM_RW ,
+        --      MEM_MR,
+        --      interrupt_sig,
+        --      EX_dst, IF_ID_out_instruction(8 downto 6), IF_ID_out_instruction(5 downto 3), IF_ID_out_instruction(11 downto 9),
+        --      IF_Rdst, MEM_dst, IF_op_code, IF_last_6_bits, stall_int
+        --    );
 
-        stall <= '1' when (stall_int > 0)
-        else'0';
+        --stall <= '1' when (stall_int > 0)
+        --else'0';
         ------------------------------------------------------------
         -- IF_ID in buff
             IF_ID_in(15 downto 0) <= IF_ID_in_instruction;
