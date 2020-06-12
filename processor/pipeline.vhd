@@ -14,13 +14,13 @@ end entity;
 architecture pipeline_arc of pipeline is
     component fetch is
         port(
-            clk, rst, write_in_pc   : in std_logic;
-            data_branch, write_data : in std_logic_vector(31 downto 0);
-            int_address             : out std_logic_vector(31 downto 0);
-            R_dst                   : out std_logic_vector(2 downto 0);
-            IF_ID_instruction       : out std_logic_vector(15 downto 0);
-            IF_ID_pc_incremented    : out std_logic_vector(31 downto 0)
-        );
+        clk, rst, write_in_pc, read_same_inst   : in std_logic;
+        data_branch, write_data                 : in std_logic_vector(31 downto 0);
+        int_address                             : out std_logic_vector(31 downto 0);
+        R_dst                                   : out std_logic_vector(2 downto 0);
+        IF_ID_instruction                       : out std_logic_vector(15 downto 0);
+        IF_ID_pc_incremented                    : out std_logic_vector(31 downto 0)
+    );
     end component;
 
     component IF_ID_buff IS
@@ -290,7 +290,7 @@ architecture pipeline_arc of pipeline is
         signal inc_sp, dec_sp : std_logic;
 
     begin
-        fetch_com      : fetch                          port map(clk, rst, write_in_pc, data_branch, w_data1, int_address,
+        fetch_com      : fetch                          port map(clk, rst, write_in_pc, stall_IF_ID, data_branch, w_data1, int_address,
                                                         R_dst, IF_ID_in_instruction, IF_ID_in_pc_incremented);
         IF_ID_buff_com : IF_ID_buff                     port map(clk, rst, stall_IF_ID, IF_ID_in, IF_ID_out);
 
