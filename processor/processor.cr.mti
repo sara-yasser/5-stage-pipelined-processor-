@@ -96,14 +96,13 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Compiling entity MEM_WB_buff
 -- Compiling architecture MEM_WB_buff_arc of MEM_WB_buff
 
-} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/fetch.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/fetch.vhd}
+} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/decode.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/decode.vhd}
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
 -- Loading package TEXTIO
 -- Loading package std_logic_1164
--- Loading package NUMERIC_STD
--- Compiling entity fetch
--- Compiling architecture fetch_arc of fetch
+-- Compiling entity decode
+-- Compiling architecture decode_arc of decode
 
 } {} {}} {E:/arc2pro/5-stage pipelined processor/processor/forward_unit.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/forward_unit.vhd}
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
@@ -114,14 +113,6 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Compiling entity forward_unit
 -- Compiling architecture forward_unit_arch of forward_unit
 
-} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/decode.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/decode.vhd}
-Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Compiling entity decode
--- Compiling architecture decode_arc of decode
-
 } {} {}} {E:/arc2pro/5-stage pipelined processor/processor/IF_ID_buff.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/IF_ID_buff.vhd}
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
@@ -130,24 +121,6 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Loading package NUMERIC_STD
 -- Compiling entity IF_ID_buff
 -- Compiling architecture IF_ID_buff_arc of IF_ID_buff
-
-} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/excute.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/excute.vhd}
-Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
--- Compiling entity excute
--- Compiling architecture excute_arc of excute
-
-} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/decoder.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/decoder.vhd}
-Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
--- Compiling entity decoder
--- Compiling architecture decoder_arc of decoder
 
 } {} {}} {E:/arc2pro/5-stage pipelined processor/processor/stage_buff.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/stage_buff.vhd}
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
@@ -158,6 +131,24 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Compiling entity stage_buff
 -- Compiling architecture stage_buff_arc of stage_buff
 
+} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/decoder.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/decoder.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity decoder
+-- Compiling architecture decoder_arc of decoder
+
+} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/excute.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/excute.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity excute
+-- Compiling architecture excute_arc of excute
+
 } {} {}} {E:/arc2pro/5-stage pipelined processor/processor/file_registers.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/file_registers.vhd}
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
@@ -167,15 +158,14 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Compiling entity file_reg
 -- Compiling architecture file_reg_arc of file_reg
 
-} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/instruction_mem.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/instruction_mem.vhd}
+} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/CCR.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/CCR.vhd}
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
 -- Loading package TEXTIO
 -- Loading package std_logic_1164
--- Loading package std_logic_textio
 -- Loading package NUMERIC_STD
--- Compiling entity inst_mem
--- Compiling architecture inst_mem_arc of inst_mem
+-- Compiling entity CCR
+-- Compiling architecture CCR_arc of CCR
 
 } {} {}} {E:/arc2pro/5-stage pipelined processor/processor/pc_reg.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/pc_reg.vhd}
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
@@ -186,14 +176,15 @@ Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 
 -- Compiling entity pc_register
 -- Compiling architecture pc_register_arc of pc_register
 
-} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/CCR.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/CCR.vhd}
+} {} {}} {E:/arc2pro/5-stage pipelined processor/processor/instruction_mem.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/instruction_mem.vhd}
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
 -- Loading package STANDARD
 -- Loading package TEXTIO
 -- Loading package std_logic_1164
+-- Loading package std_logic_textio
 -- Loading package NUMERIC_STD
--- Compiling entity CCR
--- Compiling architecture CCR_arc of CCR
+-- Compiling entity inst_mem
+-- Compiling architecture inst_mem_arc of inst_mem
 
 } {} {}} {E:/arc2pro/5-stage pipelined processor/processor/ALU.vhd} {1 {vcom -work work -2002 -explicit -stats=none {E:/arc2pro/5-stage pipelined processor/processor/ALU.vhd}
 Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
