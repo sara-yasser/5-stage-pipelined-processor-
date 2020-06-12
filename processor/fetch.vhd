@@ -4,7 +4,7 @@ USE ieee.numeric_std.all;
 
 entity fetch is
     port(
-        clk, rst, write_in_pc   : in std_logic;
+        clk, rst, write_in_pc, read_same_inst   : in std_logic;
         data_branch, write_data                 : in std_logic_vector(31 downto 0);
         int_address                             : out std_logic_vector(31 downto 0);
         R_dst                                   : out std_logic_vector(2 downto 0);
@@ -31,11 +31,11 @@ architecture fetch_arc of fetch is
 
 
         -- muxes
-        pc_data_in <= pc_in when write_in_pc = '0'
+        pc_branch_result <= pc_in when write_in_pc = '0'
         else write_data;
 
-        --pc_data_in <= pc_branch_result when read_same_inst = '0'
-        --else pc_dec;
+        pc_data_in <= pc_branch_result when read_same_inst = '0'
+        else pc_dec;
 
 
         int_address <= int_addr;

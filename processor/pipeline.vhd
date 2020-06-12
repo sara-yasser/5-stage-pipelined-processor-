@@ -4,7 +4,7 @@ USE ieee.numeric_std.all;
 
 entity pipeline IS
 port(
-    clk, rst, forward_E, hazard_E, interrupt_sig :                   in  STD_LOGIC;
+    clk, rst, forward_E, hazard_E, interrupt_sig, read_same_inst :                   in  STD_LOGIC;
     in_port : in STD_LOGIC_VECTOR(31 DOWNTO 0);
     out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0);
     interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0)  -- remove this
@@ -114,11 +114,11 @@ architecture pipeline_arc of pipeline is
     begin
         
         fetch_com      :  entity work.fetch port map(                        
-            clk, rst, write_in_pc, data_branch, w_data1, int_address,
+            clk, rst, write_in_pc, read_same_inst, data_branch, w_data1, int_address,
             R_dst, IF_ID_in_instruction, IF_ID_in_pc_incremented
             );
         IF_ID_buff_com :  entity work.IF_ID_buff port map(
-            clk, rst, stall_IF_ID, IF_ID_in, IF_ID_out
+            clk, rst, read_same_inst, IF_ID_in, IF_ID_out
             );
 
         decode_com     :  entity work.decode port map(
