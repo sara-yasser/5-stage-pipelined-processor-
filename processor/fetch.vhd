@@ -14,53 +14,18 @@ entity fetch is
 end entity;
 
 architecture fetch_arc of fetch is
-    component inst_mem is
-        port(
-            clk, rst                : in std_logic;
-            addr                    : in std_logic_vector(31 downto 0);
-            dout                    : out std_logic_vector(15 downto 0);
-            initial_pc, int_address : out std_logic_vector(31 downto 0)
-        );
-    end component;
-
-    component branch_p is
-        port(
-            clk, rst :   in std_logic;
-            first_four_bits :    in  STD_LOGIC_VECTOR(3 DOWNTO 0);
-            last_six_bits :      in  STD_LOGIC_VECTOR(5 DOWNTO 0);
-            curr_pc : in std_logic_vector(31 downto 0);
-            R_dst : in std_logic_vector(31 downto 0);
-            branch : out std_logic
-        );
-    end component;
-
-    component inc_dec is
-        port(
-            sel : std_logic;   -- 0 inc, 1 dec
-            num : std_logic;   -- 0 by 1, 1 by 2
-            A: in std_logic_vector(31 downto 0);
-            c: out std_logic_vector(31 downto 0)
-            );
-    end component;
-
-    component pc_register IS
-        PORT( clk, rst, e : IN std_logic;
-                d : IN std_logic_vector(31 DOWNTO 0);
-                q : OUT std_logic_vector(31 DOWNTO 0)
-        );
-    end component;
     
-    signal instruction : std_logic_vector(15 downto 0);
-    signal branch_seg, e : std_logic;
+    signal instruction : std_logic_vector(15 downto 0):=(others => '0');
+    signal branch_seg, e : std_logic:='0';
     signal pc_incremented, init_pc, int_addr, curr_pc, pc_in, pc_data_in, pc_branch_result, pc_dec : std_logic_vector(31 downto 0):=(others => '0');
     
 
     begin
-        inst_mem_com: inst_mem port map(clk, rst, curr_pc, instruction, init_pc, int_addr);
-        branch_p_com: branch_p port map(clk, rst, instruction(15 downto 12), instruction(5 downto 0), curr_pc, data_branch, branch_seg);
-        inc_dec_com: inc_dec port map('0', '0', curr_pc, pc_incremented);
-        pc_register_com: pc_register port map(clk, rst, e, pc_data_in, curr_pc);
-        dec_com: inc_dec port map('1', '0', pc_in, pc_dec);
+        inst_mem_com:  entity work.inst_mem port map(clk, rst, curr_pc, instruction, init_pc, int_addr);
+        branch_p_com:  entity work.branch_p port map(clk, rst, instruction(15 downto 12), instruction(5 downto 0), curr_pc, data_branch, branch_seg);
+        inc_dec_com:  entity work.inc_dec port map('0', '0', curr_pc, pc_incremented);
+        pc_register_com:  entity work.pc_register port map(clk, rst, e, pc_data_in, curr_pc);
+        dec_com:  entity work.inc_dec port map('1', '0', pc_in, pc_dec);
 
         e <= '1';
 

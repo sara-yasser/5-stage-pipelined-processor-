@@ -32,37 +32,6 @@ entity decode IS
 end entity;
 
 architecture decode_arc of decode is
-    component control_unit IS
-    port(
-        clk, rst :           in  STD_LOGIC;
-		first_four_bits :    in  STD_LOGIC_VECTOR(3 DOWNTO 0);
-		last_six_bits :      in  STD_LOGIC_VECTOR(5 DOWNTO 0);
-		decode_signals :     out STD_LOGIC_VECTOR(4 DOWNTO 0);
-		excute_signals :     out STD_LOGIC_VECTOR(9 DOWNTO 0);
-		memory_signals :     out STD_LOGIC_VECTOR(5 DOWNTO 0);
-		write_back_signals : out STD_LOGIC_VECTOR(3 DOWNTO 0)
-        );
-    end component;
-
-    component decoder IS
-    port(
-		clk, rst, E, T, C :          in  STD_LOGIC;
-		data_in :      in  STD_LOGIC_VECTOR(11 DOWNTO 0);
-		data_out :     out STD_LOGIC_VECTOR(19 DOWNTO 0)
-        );
-    end component;
-
-    component file_reg IS
-        port(
-            clk, reg_wr_sig, swap_sig, rst : in  STD_LOGIC;
-            rd_address1, rd_address2, R_dst    :   in std_logic_vector(2 downto 0);
-            wr_address1, wr_address2  :   in std_logic_vector(2 downto 0);
-            wr_data, swap_data2 :   in std_logic_vector(31 downto 0);
-            rd_data1, rd_data2, data_branch :   out std_logic_vector(31 downto 0);
-            -- these just for testing, delet them after finishing
-            R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0) ------------------ testing
-        );
-    end component;
 
 signal last_6_bits : STD_LOGIC_VECTOR(5 DOWNTO 0);
 signal op_code : STD_LOGIC_VECTOR(3 DOWNTO 0);
@@ -81,12 +50,12 @@ signal read_addr2 : STD_LOGIC_VECTOR(2 DOWNTO 0);
 signal rd_data1, rd_data2, sp, IF_ID_pc, ID_EX_pc_in : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 begin
-    control_unit_com: control_unit port map (clk, rst, op_code, last_6_bits, decode_signals, excute_signals, memory_signals, 
+    control_unit_com:  entity work.control_unit port map (clk, rst, op_code, last_6_bits, decode_signals, excute_signals, memory_signals, 
                                             write_back_signals);
 
-    decoder_com: decoder port map           (clk, rst, ETC(2), ETC(1), ETC(0), IMM_EA, decoder_out);
+    decoder_com:  entity work.decoder port map           (clk, rst, ETC(2), ETC(1), ETC(0), IMM_EA, decoder_out);
     
-    file_reg_com: file_reg port map         (clk, WB_signals(1), WB_signals(0), rst, src1, read_addr2, 
+    file_reg_com:  entity work.file_reg port map         (clk, WB_signals(1), WB_signals(0), rst, src1, read_addr2, 
                                             R_dst, w_addr1, w_addr2, w_data1, w_data2, rd_data1, rd_data2, 
                                             data_branch,
                                             -- these just for testing, delet them after finishing

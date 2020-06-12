@@ -12,180 +12,6 @@ port(
 end entity;
 
 architecture pipeline_arc of pipeline is
-    component fetch is
-        port(
-        clk, rst, write_in_pc   : in std_logic;
-        data_branch, write_data                 : in std_logic_vector(31 downto 0);
-        int_address                             : out std_logic_vector(31 downto 0);
-        R_dst                                   : out std_logic_vector(2 downto 0);
-        IF_ID_instruction                       : out std_logic_vector(15 downto 0);
-        IF_ID_pc_incremented                    : out std_logic_vector(31 downto 0)
-    );
-    end component;
-
-    component IF_ID_buff IS
-        port(
-            clk, rst, stall_sig :    in  STD_LOGIC;
-            input_vec   :            in std_logic_vector(47 downto 0);
-            output_vec  :            out std_logic_vector(47 downto 0)
-            );
-    end component;
-
-    component decode is
-        PORT(
-            clk                         : in  STD_LOGIC;
-            rst, z      : in STD_LOGIC;
-            WB_signals                  : in STD_LOGIC_VECTOR(1 DOWNTO 0);   -- from write back
-            w_addr1, w_addr2            : in STD_LOGIC_VECTOR(2 DOWNTO 0);   -- from write back
-            w_data1, w_data2            : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
-            R_dst                       : in STD_LOGIC_VECTOR(2 DOWNTO 0);
-
-            IF_ID_instruction           : in std_logic_vector(15 downto 0);
-            IF_ID_pc_incremented        : in std_logic_vector(31 downto 0);
-
-            data_branch                 : out STD_LOGIC_VECTOR(31 downto 0);
-
-            ID_EX_dst_src               : out STD_LOGIC_VECTOR(2 downto 0);
-            ID_EX_src2                  : out STD_LOGIC_VECTOR(2 downto 0);
-            ID_EX_src1                  : out STD_LOGIC_VECTOR(2 downto 0);
-            ID_EX_decoder_out           : out STD_LOGIC_VECTOR(19 downto 0);
-            ID_EX_rd_data2              : out STD_LOGIC_VECTOR(31 downto 0);
-            ID_EX_rd_data1              : out STD_LOGIC_VECTOR(31 downto 0);
-            -- ID_EX_sp                    : out STD_LOGIC_VECTOR(31 downto 0);
-            ID_EX_pc                    : out STD_LOGIC_VECTOR(31 downto 0);
-            ID_EX_write_back_signals    : out STD_LOGIC_VECTOR(3 downto 0);
-            ID_EX_memory_signals        : out STD_LOGIC_VECTOR(5 downto 0);
-            ID_EX_excute_signals        : out STD_LOGIC_VECTOR(9 downto 0);
-            -- these just for testing, delet them after finishing
-            R0, R1, R2, R3, R4, R5, R6, R7 : out std_logic_vector(31 downto 0) ------------------ testing
-            );
-    end component;
-
-    component stage_buff IS
-        generic (n : integer := 32);
-        port(
-            clk, rst, stall_sig :    in  STD_LOGIC;
-            input_vec   :            in std_logic_vector(n - 1 downto 0);
-            output_vec  :            out std_logic_vector(n - 1 downto 0)
-            );
-    end component;
-
-    component excute is
-        port(
-            clk, rst                    : in  STD_LOGIC;
-        
-            ID_EX_registers_addr        : in STD_LOGIC_VECTOR (8  DOWNTO 0);
-            ID_EX_b_20_bits             : in STD_LOGIC_VECTOR(19 downto 0);
-            ID_EX_r_data2_in            : in STD_LOGIC_VECTOR(31 downto 0);
-            ID_EX_r_data1_in            : in STD_LOGIC_VECTOR(31 downto 0);
-            -- ID_EX_sp                    : in STD_LOGIC_VECTOR(31 downto 0);
-            ID_EX_pc_inc                : in STD_LOGIC_VECTOR(31 downto 0);
-            ID_EX_write_back_signals    : in STD_LOGIC_VECTOR(3 downto 0);
-            ID_EX_memory_signals        : in STD_LOGIC_VECTOR(5 downto 0);
-            ID_EX_excute_signals        : in STD_LOGIC_VECTOR(9 downto 0);
-
-            F_data_mem, F_data_WB, F_data_in_port   : in STD_LOGIC_VECTOR(31 downto 0);
-            F_src1_sel, F_src2_sel                  : in STD_LOGIC_VECTOR(1 downto 0);
-
-            res_f                       : in STD_LOGIC;                      -- from write back
-            flag_reg                    : in STD_LOGIC_VECTOR(31 DOWNTO 0);  -- from write back
-            in_port                     : in STD_LOGIC_VECTOR(31 DOWNTO 0);
-            out_port                    : out STD_LOGIC_VECTOR(31 DOWNTO 0);
-            z                           : out  STD_LOGIC;
-            
-            EX_MEM_registers_addr       : out STD_LOGIC_VECTOR(8 downto 0);
-            EX_MEM_r_data1_in           : out STD_LOGIC_VECTOR(31 downto 0);
-            EX_MEM_b_20_bits            : out STD_LOGIC_VECTOR(19 downto 0);
-            EX_MEM_write_data           : out STD_LOGIC_VECTOR(31 downto 0);
-            EX_MEM_alu_out              : out STD_LOGIC_VECTOR(31 downto 0);
-            -- EX_MEM_sp                   : out STD_LOGIC_VECTOR(31 downto 0);
-            EX_MEM_in_data              : out STD_LOGIC_VECTOR(31 downto 0);
-            EX_MEM_write_back_signals   : out STD_LOGIC_VECTOR(3 downto 0);
-            EX_MEM_memory_signals       : out STD_LOGIC_VECTOR(5 downto 0);
-            -- these just for testing, delet them after finishing
-            flags_z_n_c : out STD_LOGIC_VECTOR(2 downto 0) ------------------ testing
-        );
-    end component;
-
-    component mem is
-        port(
-            clk, rst                  :   in std_logic;
-
-            EX_MEM_first_40_bits      : in std_logic_vector(40 DOWNTO 0);
-            EX_MEM_b_20_bits          : in std_logic_vector(19 downto 0);
-            EX_MEM_data_mem_in        : in std_logic_vector(31 downto 0);
-            EX_MEM_ALU_out            : in std_logic_vector(31 downto 0);
-            -- EX_MEM_sp                 : in std_logic_vector(31 downto 0);
-            EX_MEM_in_port_data       : in std_logic_vector(31 downto 0);
-            EX_MEM_write_back_signals : in std_logic_vector(3 downto 0);
-            EX_MEM_memory_signals     : in std_logic_vector(5 downto 0);
-
-            -- inc_sp, dec_sp            : out std_logic;
-            
-            MEM_WB_first_40_bits      : out std_logic_vector(40 downto 0);
-            MEM_WB_wb_result          : out std_logic_vector(31 downto 0);
-            MEM_WB_write_back_signals : out std_logic_vector(3 downto 0);
-            --testing
-            inc, dec                    : out std_logic;
-            sp_out                      : out std_logic_vector(31 downto 0)
-        );
-    end component;
-
-    component MEM_WB_buff IS
-    generic (n : integer := 32);
-    port
-    (
-        clk, rst, stall_sig :   in  STD_LOGIC;
-        input_vec   :   in std_logic_vector(n - 1 downto 0);
-        output_vec  :   out std_logic_vector(n - 1 downto 0)
-
-        );
-    end component;
-
-    component forward_unit is
-        port (
-          clk, rst :   in std_logic;
-
-          enable_forward : in std_logic;
-          forward_ex_mem_out_to_if, forward_mem_wb_out_to_if, forward_ex_mem_out_to_ex1, 
-          forward_mem_wb_out_to_ex1, forward_ex_mem_out_to_ex2, forward_mem_wb_out_to_ex2  : out std_logic;
-
-          -- inputs of signals and address
-          IF_ID_in_op_code    :   in std_logic_vector(3 downto 0);         --jump
-          IF_ID_in_last_6_bits    :   in std_logic_vector(5 downto 0);     --jump
-          jump_Rdst :   in std_logic_vector(2 downto 0);                   --jump
-
-          ID_EX_out_memory_read_5, ID_EX_out_read_from_stack_2:   in std_logic;
-          ID_EX_out_registers_addr_Rsrc2, ID_EX_out_registers_addr_Rsrc1, ID_EX_out_Rdst  :   in std_logic_vector(2 downto 0);
-
-          EX_MEM_out_Rdst, EX_MEM_out_Rsrc1   :   in std_logic_vector(2 downto 0);
-          EX_MEM_out_write_back_signals_RW_1, EX_MEM_out_write_back_signals_swap_0, EX_MEM_out_memory_signals_MR_5 :   in std_logic;
-          EX_MEM_memory_signal_WB : in std_logic_vector(1 downto 0);
-
-          MEM_WB_out_Rdst  :   in std_logic_vector(2 downto 0);
-          MEM_WB_out_write_back_signals_RW_1 :   in std_logic
-        ) ;
-      end component;
-
-      component hazard_detection_unit is
-        port (
-          clk, dec :   in std_logic;
-          enable_hazard : in std_logic;
-          ID_EX_out_RW,
-          read_from_stack,
-          ID_EX_out_MR,
-          write_back_signals_RW_1,
-          control_unit_MR,
-          control_unit_RW,
-          EX_MEM_out_RW ,
-          EX_MEM_out_MR : in std_logic;
-          interrupt_sig : in std_logic;
-          Id_EX_out_Rdst, IF_ID_out_Rsrc1, IF_ID_out_Rsrc2, IF_ID_out_Rdst, jump_Rdst, EX_MEM_out_Rdst : in std_logic_vector(2 downto 0);
-          fitch_op_code : in std_logic_vector(3 downto 0);
-          last_6_bits : in std_logic_vector(5 downto 0);
-          stall_sig : out integer
-        ) ;
-      end component;
 
     -- buffers
         signal IF_ID_in, IF_ID_out   : std_logic_vector(47 downto 0):=(others => '0');
@@ -210,7 +36,6 @@ architecture pipeline_arc of pipeline is
         signal ID_EX_in_decoder_out        : STD_LOGIC_VECTOR(19 downto 0):=(others => '0');
         signal ID_EX_in_rd_data2           : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal ID_EX_in_rd_data1           : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
-        -- signal ID_EX_in_sp                 : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal ID_EX_in_pc                 : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal ID_EX_in_write_back_signals : STD_LOGIC_VECTOR(3 downto 0):=(others => '0');
         signal ID_EX_in_memory_signals     : STD_LOGIC_VECTOR(5 downto 0):=(others => '0');
@@ -226,7 +51,6 @@ architecture pipeline_arc of pipeline is
         signal ID_EX_out_b_20_bits              : STD_LOGIC_VECTOR(19 downto 0):=(others => '0');
         signal ID_EX_out_r_data2_in             : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal ID_EX_out_r_data1_in             : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
-        -- signal ID_EX_out_sp                     : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal ID_EX_out_pc_inc                 : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal ID_EX_out_write_back_signals     : STD_LOGIC_VECTOR(3 downto 0):=(others => '0');
         signal ID_EX_out_memory_signals         : STD_LOGIC_VECTOR(5 downto 0):=(others => '0');
@@ -237,7 +61,6 @@ architecture pipeline_arc of pipeline is
         signal EX_MEM_in_b_20_bits              : STD_LOGIC_VECTOR(19 downto 0):=(others => '0');
         signal EX_MEM_in_write_data             : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal EX_MEM_in_alu_out                : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
-        -- signal EX_MEM_in_sp                     : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal EX_MEM_in_in_data                : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal EX_MEM_in_write_back_signals     : STD_LOGIC_VECTOR(3 downto 0):=(others => '0');
         signal EX_MEM_in_memory_signals         : STD_LOGIC_VECTOR(5 downto 0):=(others => '0');
@@ -247,7 +70,6 @@ architecture pipeline_arc of pipeline is
         signal EX_MEM_out_b_20_bits             : STD_LOGIC_VECTOR(19 downto 0):=(others => '0');
         signal EX_MEM_out_data_mem_in           : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal EX_MEM_out_ALU_out               : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
-        -- signal EX_MEM_out_sp                    : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal EX_MEM_out_in_port_data          : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal EX_MEM_out_write_back_signals    : STD_LOGIC_VECTOR(3 downto 0):=(others => '0');
         signal EX_MEM_out_memory_signals        : STD_LOGIC_VECTOR(5 downto 0):=(others => '0');
@@ -291,54 +113,61 @@ architecture pipeline_arc of pipeline is
 
     begin
         
-        fetch_com      : fetch                          port map(clk, rst, write_in_pc, data_branch, w_data1, int_address,
-                                                        R_dst, IF_ID_in_instruction, IF_ID_in_pc_incremented);
-        IF_ID_buff_com : IF_ID_buff                     port map(clk, rst, stall_IF_ID, IF_ID_in, IF_ID_out);
+        fetch_com      :  entity work.fetch port map(                        
+            clk, rst, write_in_pc, data_branch, w_data1, int_address,
+            R_dst, IF_ID_in_instruction, IF_ID_in_pc_incremented
+            );
+        IF_ID_buff_com :  entity work.IF_ID_buff port map(
+            clk, rst, stall_IF_ID, IF_ID_in, IF_ID_out
+            );
 
-        decode_com     : decode                         port map(clk, rst, z, WB_signals, w_addr1, w_addr2, 
-                                                        w_data1, w_data2, R_dst,
-                                                        IF_ID_out_instruction, IF_ID_out_pc_incremented, data_branch,
-                                                        ID_EX_in_dst_src, ID_EX_in_src2, ID_EX_in_src1, ID_EX_in_decoder_out,
-                                                        ID_EX_in_rd_data2, ID_EX_in_rd_data1, ID_EX_in_pc,
-                                                        ID_EX_in_write_back_signals, ID_EX_in_memory_signals, ID_EX_in_excute_signals,
-                                                        -- these just for testing, delet them after finishing
-                                                        R0, R1, R2, R3, R4, R5, R6, R7 ------------------ testing
-                                                        );
-        ID_EX_buff_com : stage_buff generic map (145)   port map(clk, rst, stall, ID_EX_in, ID_EX_out);
+        decode_com     :  entity work.decode port map(
+            clk, rst, z, WB_signals, w_addr1, w_addr2, w_data1, w_data2, R_dst, IF_ID_out_instruction, IF_ID_out_pc_incremented, 
+            data_branch, ID_EX_in_dst_src, ID_EX_in_src2, ID_EX_in_src1, ID_EX_in_decoder_out, ID_EX_in_rd_data2, ID_EX_in_rd_data1, 
+            ID_EX_in_pc, ID_EX_in_write_back_signals, ID_EX_in_memory_signals, ID_EX_in_excute_signals,
+            -- these just for testing, delet them after finishing
+            R0, R1, R2, R3, R4, R5, R6, R7 ------------------ testing
+            );
+        ID_EX_buff_com :  entity work.stage_buff generic map (145) port map(
+            clk, rst, stall, ID_EX_in, ID_EX_out
+            );
         
-        excute_com     : excute                         port map(clk, rst, ID_EX_out_registers_addr, ID_EX_out_b_20_bits, ID_EX_out_r_data2_in,
-                                                        ID_EX_out_r_data1_in, ID_EX_out_pc_inc, ID_EX_out_write_back_signals,
-                                                        ID_EX_out_memory_signals, ID_EX_out_excute_signals,
-                                                        EX_MEM_out_ALU_out, temp_data, EX_MEM_out_in_port_data, F_src1_sel, F_src2_sel, 
-                                                        res_f, flag_reg, in_port_data, out_port_data, z,
-                                                        EX_MEM_in_registers_addr, EX_MEM_in_r_data1_in, EX_MEM_in_b_20_bits,
-                                                        EX_MEM_in_write_data, EX_MEM_in_alu_out, EX_MEM_in_in_data,
-                                                        EX_MEM_in_write_back_signals, EX_MEM_in_memory_signals,
-                                                        -- these just for testing, delet them after finishing
-                                                        flags_z_n_c  ------------------ testing
-                                                        );
-        EX_MEM_buff_com: stage_buff generic map (167)   port map(clk, rst, stall, EX_MEM_in, EX_MEM_out);
+        excute_com     :  entity work.excute port map(
+            clk, rst, ID_EX_out_registers_addr, ID_EX_out_b_20_bits, ID_EX_out_r_data2_in, ID_EX_out_r_data1_in, ID_EX_out_pc_inc, 
+            ID_EX_out_write_back_signals, ID_EX_out_memory_signals, ID_EX_out_excute_signals, EX_MEM_out_ALU_out, temp_data, 
+            EX_MEM_out_in_port_data, F_src1_sel, F_src2_sel, res_f, flag_reg, in_port_data, out_port_data, z, EX_MEM_in_registers_addr, 
+            EX_MEM_in_r_data1_in, EX_MEM_in_b_20_bits, EX_MEM_in_write_data, EX_MEM_in_alu_out, EX_MEM_in_in_data,
+            EX_MEM_in_write_back_signals, EX_MEM_in_memory_signals,
+            -- these just for testing, delet them after finishing
+            flags_z_n_c  ------------------ testing
+            );
+        EX_MEM_buff_com:  entity work.stage_buff generic map (167) port map(
+            clk, rst, stall, EX_MEM_in, EX_MEM_out
+            );
 
             
-        mem_com        : mem                            port map(clk, rst, EX_MEM_out_first_40_bits, EX_MEM_out_b_20_bits,
-                                                        EX_MEM_out_data_mem_in, EX_MEM_out_ALU_out, EX_MEM_out_in_port_data,
-                                                        EX_MEM_out_write_back_signals, EX_MEM_out_memory_signals,
-                                                        MEM_WB_in_first_40_bits, MEM_WB_in_wb_result, MEM_WB_in_write_back_signals,
-                                                        -- these just for testing, delet them after finishing
-                                                        inc_sp, dec_sp, sp  ------------------ testing
-                                                        );
+        mem_com        :  entity work.mem port map(
+            clk, rst, EX_MEM_out_first_40_bits, EX_MEM_out_b_20_bits, EX_MEM_out_data_mem_in, EX_MEM_out_ALU_out, 
+            EX_MEM_out_in_port_data, EX_MEM_out_write_back_signals, EX_MEM_out_memory_signals,
+            MEM_WB_in_first_40_bits, MEM_WB_in_wb_result, MEM_WB_in_write_back_signals,
+            -- these just for testing, delet them after finishing
+            inc_sp, dec_sp, sp  ------------------ testing
+            );
 
-        MEM_WB_buff_com: MEM_WB_buff generic map (77)    port map(clk, rst, stall, MEM_WB_in, MEM_WB_out);
+        MEM_WB_buff_com:  entity work.MEM_WB_buff generic map (77) port map(
+            clk, rst, stall, MEM_WB_in, MEM_WB_out
+            );
         
         -------------- forwarding unit ------------------------------
-        forward_unit_com: forward_unit port map(clk, rst, forward_enable, 
-                                                F_mem_to_IF, F_WB_to_IF, F_MEM_to_EX1, F_WB_to_EX1, F_MEM_to_EX2, F_WB_to_EX2,
-                                                IF_op_code, IF_last_6_bits, IF_Rdst, 
-                                                EX_MR, EX_read_from_stack, EX_src2, EX_src1, EX_dst,
-                                                MEM_dst, MEM_src, MEM_RW, MEM_swap, MEM_MR, MEM_WB_seg,
-                                                WB_dst, WB_RW);
+        forward_unit_com:  entity work.forward_unit port map(
+            clk, rst, forward_enable, F_mem_to_IF, F_WB_to_IF, F_MEM_to_EX1, F_WB_to_EX1, F_MEM_to_EX2, F_WB_to_EX2,
+            IF_op_code, IF_last_6_bits, IF_Rdst, EX_MR, EX_read_from_stack, EX_src2, EX_src1, EX_dst,
+            MEM_dst, MEM_src, MEM_RW, MEM_swap, MEM_MR, MEM_WB_seg, WB_dst, WB_RW
+            );
 
-        forward_WB_Buff_com: stage_buff generic map (36)   port map(clk, rst, stall, F_WB_in, F_WB_out);
+        forward_WB_Buff_com:  entity work.stage_buff generic map (36) port map(
+            clk, rst, stall, F_WB_in, F_WB_out
+            );
 
         -- forward initializations
             F_src1_sel(0) <= F_MEM_to_EX1;
@@ -379,7 +208,7 @@ architecture pipeline_arc of pipeline is
         ------------------------------------------------------------
         ---------------- hazard detection unit ---------------------
         --hazard_enable <= hazard_E;
-        --hazard_detection_unit_com: hazard_detection_unit port map (
+        --hazard_detection_unit_com:  entity work.hazard_detection_unit port map (
         --      clk, dec_stall,
         --      hazard_enable, EX_RW, EX_read_from_stack, EX_MR, WB_RW, '0', '0', MEM_RW ,
         --      MEM_MR,
@@ -406,7 +235,6 @@ architecture pipeline_arc of pipeline is
             ID_EX_in(28 downto 9)           <= ID_EX_in_decoder_out;
             ID_EX_in(60 downto 29)          <= ID_EX_in_rd_data2;
             ID_EX_in(92 downto 61)          <= ID_EX_in_rd_data1;
-            -- ID_EX_in(124 downto 93)         <= ID_EX_in_sp;
             ID_EX_in(124 downto 93)         <= ID_EX_in_pc;
             ID_EX_in(128 downto 125)        <= ID_EX_in_write_back_signals;
             ID_EX_in(134 downto 129)        <= ID_EX_in_memory_signals;
@@ -432,7 +260,6 @@ architecture pipeline_arc of pipeline is
             EX_MEM_in(60 downto 41)         <= EX_MEM_in_b_20_bits;
             EX_MEM_in(92 downto 61)         <= EX_MEM_in_write_data;
             EX_MEM_in(124 downto 93)        <= EX_MEM_in_alu_out;
-            -- EX_MEM_in(156 downto 125)       <= EX_MEM_in_sp;
             EX_MEM_in(156 downto 125)       <= EX_MEM_in_in_data;
             EX_MEM_in(160 downto 157)       <= EX_MEM_in_write_back_signals;
             EX_MEM_in(166 downto 161)       <= EX_MEM_in_memory_signals;
@@ -442,7 +269,6 @@ architecture pipeline_arc of pipeline is
             EX_MEM_out_b_20_bits            <= EX_MEM_out(60 downto 41);
             EX_MEM_out_data_mem_in          <= EX_MEM_out(92 downto 61);
             EX_MEM_out_ALU_out              <= EX_MEM_out(124 downto 93);
-            -- EX_MEM_out_sp                   <= EX_MEM_out(156 downto 125);
             EX_MEM_out_in_port_data         <= EX_MEM_out(156 downto 125);
             EX_MEM_out_write_back_signals   <= EX_MEM_out(160 downto 157);
             EX_MEM_out_memory_signals       <= EX_MEM_out(166 downto 161);

@@ -40,41 +40,6 @@ end entity;
 
 architecture excute_arc of excute is
 
-    component ALU IS
-        PORT(
-            ALU_signals : in STD_LOGIC_VECTOR (3  DOWNTO 0);
-            a,b : in STD_LOGIC_VECTOR (31  DOWNTO 0);
-            flag_in : in STD_LOGIC_VECTOR (2  DOWNTO 0);
-            ALU_out : out STD_LOGIC_VECTOR (31 DOWNTO 0);
-            flag_out : out STD_LOGIC_VECTOR (2  DOWNTO 0)
-            );
-    end component;
-
-    component sign_extend is
-        port(
-            A: in std_logic_vector(15 downto 0);
-            c: out std_logic_vector(31 downto 0)
-        );
-    end component;
-
-    component inc_dec is
-        port(
-            sel : std_logic;   -- 0 inc, 1 dec
-            num : std_logic;   -- 0 by 1, 1 by 2
-            A: in std_logic_vector(31 downto 0);
-            c: out std_logic_vector(31 downto 0)
-            );
-    end component;
-
-    component CCR IS       -- flag reg
-    port(
-        clk, rst :   in  STD_LOGIC;
-        input_vec   :   in std_logic_vector(2 downto 0);
-        output_vec  :   out std_logic_vector(2 downto 0)
-
-        );
-    end component;
-
     signal sign_extend_in : std_logic_vector(15 downto 0);
     signal  sign_extend_out, r_data1_in, r_data2_in, alu1_in, alu2_in, alu_data1_in, alu_data2_in, alu_out, sp, pc_inc, pc, write_data,
             flag_reg_out, in_data, out_data, memoey_data : std_logic_vector(31 downto 0);
@@ -94,10 +59,10 @@ begin
     -------------------------------- testing ---------------------------------------
     flags_z_n_c <= flag_out;
     -------------------------------- testing ---------------------------------------
-    sign_extend_com: sign_extend port map(sign_extend_in, sign_extend_out);
-    inc_dec_com: inc_dec port map('1','0',pc_inc, pc);
-    ALU_com: ALU port map(ALU_signals, alu_data1_in, alu_data2_in, flag_in, alu_out, flag_out);
-    CCR_com: CCR port map(clk, rst, flag_reg_in, flag_in);
+    sign_extend_com:  entity work.sign_extend port map(sign_extend_in, sign_extend_out);
+    inc_dec_com:  entity work.inc_dec port map('1','0',pc_inc, pc);
+    ALU_com:  entity work.ALU port map(ALU_signals, alu_data1_in, alu_data2_in, flag_in, alu_out, flag_out);
+    CCR_com:  entity work.CCR port map(clk, rst, flag_reg_in, flag_in);
     -- initializations
     b_20_bits          <= ID_EX_b_20_bits;
     r_data2_in         <= ID_EX_r_data2_in;

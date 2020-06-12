@@ -25,24 +25,6 @@ entity mem is
 end entity;
 
 architecture mem_arc of mem is
-    component memory is
-        generic (addr_width : integer := 20);
-
-        port(
-            clk, rst :   in std_logic;
-            R, W : in std_logic;
-            addr : in std_logic_vector(31 downto 0);
-            din : in std_logic_vector(31 downto 0);
-            dout : out std_logic_vector(31 downto 0)
-        );
-    end component;
-
-    component sp IS
-        PORT( clk, rst, inc, dec : IN std_logic;
-                q : OUT std_logic_vector(31 DOWNTO 0)
-        );
-    end component;
-
     
     -- signal instruction : std_logic_vector(15 downto 0);
     signal write_in_mem, read_from_mem, MR, MW, write_in_stack, read_from_stack, inc_sp, dec_sp : std_logic;
@@ -61,8 +43,8 @@ architecture mem_arc of mem is
         dec <= dec_sp;
         --------------------------- testing -------------------------------
         -- memory_com: memory generic map (12) port map(clk, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out); --just for testing
-        memory_com: memory generic map (12) port map(clk, rst, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out);
-        sp_com: sp port map(clk, rst, inc_sp, dec_sp, sp_pointer);
+        memory_com:  entity work.memory generic map (12) port map(clk, rst, read_from_mem, write_in_mem, mem_addr, data_mem_in, data_mem_out);
+        sp_com:  entity work.sp port map(clk, rst, inc_sp, dec_sp, sp_pointer);
 
         -- initializations
         b_20_bits          <= EX_MEM_b_20_bits;
