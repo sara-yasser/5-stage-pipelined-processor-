@@ -254,8 +254,8 @@ for instruction in lines:
                 outputIR = ''
                 outputIR += opcode[(myInstr+'1')]
                 # instruction[3][6:]
-                outputIR += reg[myReg]
                 outputIR += reg[myReg2]
+                outputIR += reg[myReg]
                 outputIR += insert_num[12:]
                 outputIR += '00'
                 output.append(outputIR)
@@ -288,11 +288,16 @@ for instruction in lines:
 
                 
             elif (myInstr == 'ADD') or (myInstr == 'SUB') or (myInstr == 'AND') or (myInstr == 'OR'):
+                # from Rdst,Rsrc1, Rsrc2
+                # to Rsrc1, Rsrc2, Rdst
                 outputIR = ''
                 outputIR += opcode[myInstr]
+                # outputIR += reg[myReg]
+                # outputIR += reg[myReg2]
+                # outputIR += reg[myReg3]
+                outputIR += reg[myReg3]
                 outputIR += reg[myReg]
                 outputIR += reg[myReg2]
-                outputIR += reg[myReg3]
                 if (myInstr in lastbits):
                     outputIR += '0' + lastbits[myInstr]
                 else:

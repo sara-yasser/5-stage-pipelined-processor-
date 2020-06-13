@@ -211,6 +211,7 @@ architecture pipeline_arc of pipeline is
 
         ---------------------------------------------------------------------------------------------------------
         ---------------- hazard detection unit ---------------------
+        hazard_enable <= hazard_E;
         HDU: entity work.HDU port map(
             clk, hazard_enable, IF_ID_in_instruction, IF_ID_out_instruction, decode_MR, decode_read_from_stack,
             ID_EX_in_dst_src, ID_EX_in_src1, ID_EX_in_src2, stall_IF_ID
