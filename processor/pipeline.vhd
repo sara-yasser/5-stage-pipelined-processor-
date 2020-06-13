@@ -158,7 +158,7 @@ architecture pipeline_arc of pipeline is
             clk, rst, stall, MEM_WB_in, MEM_WB_out
             );
         
-        -------------- forwarding unit ------------------------------
+        -------------------------------------------- forwarding unit -------------------------------------------------
         forward_unit_com:  entity work.forward_unit port map(
             clk, rst, forward_enable, F_mem_to_IF, F_WB_to_IF, F_MEM_to_EX1, F_WB_to_EX1, F_MEM_to_EX2, F_WB_to_EX2,
             IF_op_code, IF_last_6_bits, IF_Rdst, EX_MR, EX_read_from_stack, EX_src2, EX_src1, EX_dst,
@@ -205,7 +205,7 @@ architecture pipeline_arc of pipeline is
             WB_RW <= F_WB_out(3);
             temp_data <= F_WB_out(35 downto 4);
 
-        ------------------------------------------------------------
+        --------------------------------------------------------------------------------------------------------
         ---------------- hazard detection unit ---------------------
         --hazard_enable <= hazard_E;
         --hazard_detection_unit_com:  entity work.hazard_detection_unit port map (
@@ -219,7 +219,7 @@ architecture pipeline_arc of pipeline is
 
         --stall <= '1' when (stall_int > 0)
         --else'0';
-        ------------------------------------------------------------
+        ---------------------------------------------------------------------------------------------------------
         -- IF_ID in buff
             IF_ID_in(15 downto 0) <= IF_ID_in_instruction;
             IF_ID_in(47 downto 16) <= IF_ID_in_pc_incremented;
