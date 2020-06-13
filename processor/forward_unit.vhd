@@ -26,7 +26,8 @@ entity forward_unit is
         EX_MEM_memory_signal_WB : in std_logic_vector(1 downto 0);
 
         MEM_WB_out_Rdst  :   in std_logic_vector(2 downto 0);
-        MEM_WB_out_write_back_signals_RW_1 :   in std_logic
+        MEM_WB_out_write_back_signals_RW_1 :   in std_logic;
+        forward_imm1, forward_imm2 : out std_logic
       ) ;
 end entity;
 
@@ -37,12 +38,14 @@ begin
     forward_detection : process( clk )
         begin
             -- forward detection unit
-            forward_ex_mem_out_to_if <= '0';
-            forward_mem_wb_out_to_if <= '0';
-            forward_ex_mem_out_to_ex1 <= '0';
-            forward_mem_wb_out_to_ex1 <= '0'; 
-            forward_ex_mem_out_to_ex2 <= '0';
-            forward_mem_wb_out_to_ex2 <= '0';
+            forward_ex_mem_out_to_if    <= '0';
+            forward_mem_wb_out_to_if    <= '0';
+            forward_ex_mem_out_to_ex1   <= '0';
+            forward_mem_wb_out_to_ex1   <= '0'; 
+            forward_ex_mem_out_to_ex2   <= '0';
+            forward_mem_wb_out_to_ex2   <= '0';
+            forward_imm1                <= '0';
+            forward_imm2                <= '0';
             if enable_forward = '1' then
                 -- load
                 -- if (ID_EX_out_memory_read_5 = '1' or ID_EX_out_read_from_stack_2 = '1') and 
@@ -126,6 +129,21 @@ begin
                         forward_ex_mem_out_to_ex1 <= '0';
                         forward_mem_wb_out_to_ex1 <= '0';
                     end if ;
+                
+                -------------------------------------------------------------------
+                -- LDM
+                elsif (EX_MEM_memory_signal_WB = "11") then
+                    if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc2 then
+                        forward_imm2 <= '1';
+                    else
+                        forward_imm2 <= '0';
+                    end if ;
+                    
+                    if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc1 then
+                        forward_imm1 <= '1';
+                    else
+                        forward_imm1 <= '0';
+                    end if ;
                 end if;
                 -------------------------------------------------------------------
                 if rst = '1' then
@@ -135,6 +153,8 @@ begin
                     forward_mem_wb_out_to_ex1 <= '0'; 
                     forward_ex_mem_out_to_ex2 <= '0';
                     forward_mem_wb_out_to_ex2 <= '0';
+                    forward_imm1 <= '0';
+                    forward_imm2 <= '0';
                 end if ;
             end if;
         end process ; -- forward_detection
