@@ -104,6 +104,8 @@ architecture pipeline_arc of pipeline is
         signal temp_data : STD_LOGIC_VECTOR(31 downto 0);
 
     -- hazard
+        signal decode_MR, decode_read_from_stack, decode_RW : std_logic:='0';
+    -------------------------------------------
         signal dec_stall, hazard_enable, EX_RW : std_logic:='0';
         signal stall_int : integer:=0;
     -- these just for testing, delet them after finishing
@@ -114,11 +116,11 @@ architecture pipeline_arc of pipeline is
     begin
         
         fetch_com      :  entity work.fetch port map(                        
-            clk, rst, write_in_pc, read_same_inst, data_branch, w_data1, int_address,
+            clk, rst, write_in_pc, stall_IF_ID, data_branch, w_data1, int_address,
             R_dst, IF_ID_in_instruction, IF_ID_in_pc_incremented
             );
         IF_ID_buff_com :  entity work.IF_ID_buff port map(
-            clk, rst, read_same_inst, IF_ID_in, IF_ID_out
+            clk, rst, stall_IF_ID, IF_ID_in, IF_ID_out
             );
 
         decode_com     :  entity work.decode port map(
@@ -205,8 +207,18 @@ architecture pipeline_arc of pipeline is
             WB_RW <= F_WB_out(3);
             temp_data <= F_WB_out(35 downto 4);
 
-        --------------------------------------------------------------------------------------------------------
+        ---------------------------------------------------------------------------------------------------------
         ---------------- hazard detection unit ---------------------
+        HDU: entity work.HDU port map(
+            clk, hazard_enable, IF_ID_in_instruction, IF_ID_out_instruction, decode_MR, decode_read_from_stack,
+            ID_EX_in_dst_src, ID_EX_in_src1, ID_EX_in_src2, stall_IF_ID
+        );
+
+        -- initializations
+        decode_MR               <=  ID_EX_in_memory_signals(5);
+        decode_read_from_stack  <=  ID_EX_in_memory_signals(2);
+        decode_RW               <=  ID_EX_in_write_back_signals(1);
+        ---------------------------------------------------------------------------------------------------------
         --hazard_enable <= hazard_E;
         --hazard_detection_unit_com:  entity work.hazard_detection_unit port map (
         --      clk, dec_stall,
