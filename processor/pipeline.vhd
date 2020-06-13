@@ -91,7 +91,7 @@ architecture pipeline_arc of pipeline is
 
     -- forwarding unit
         signal forward_enable : std_logic:= '0';
-        signal F_mem_to_IF, F_WB_to_IF, F_MEM_to_EX1, F_WB_to_EX1, F_MEM_to_EX2, F_WB_to_EX2: std_logic:= '0';
+        signal F_mem_to_IF, F_WB_to_IF, F_MEM_to_EX1, F_WB_to_EX1, F_MEM_to_EX2, F_WB_to_EX2, forward_imm1, forward_imm2: std_logic:= '0';
         signal IF_op_code  : STD_LOGIC_VECTOR(3 downto 0);
         signal IF_last_6_bits : STD_LOGIC_VECTOR(5 downto 0);
         signal IF_Rdst, EX_src2, EX_src1, EX_dst, MEM_dst, MEM_src, WB_dst : STD_LOGIC_VECTOR(2 downto 0);
@@ -101,7 +101,7 @@ architecture pipeline_arc of pipeline is
         signal F_src1_sel, F_src2_sel                  : STD_LOGIC_VECTOR(1 downto 0);
 
         signal F_WB_in, F_WB_out : STD_LOGIC_VECTOR(35 downto 0);
-        signal temp_data : STD_LOGIC_VECTOR(31 downto 0);
+        signal temp_data, F_data_imm : STD_LOGIC_VECTOR(31 downto 0);
 
     -- hazard
         signal decode_MR, decode_read_from_stack, decode_RW : std_logic:='0';
@@ -133,13 +133,13 @@ architecture pipeline_arc of pipeline is
         ID_EX_buff_com :  entity work.stage_buff generic map (145) port map(
             clk, rst, stall, ID_EX_in, ID_EX_out
             );
-        
+
         excute_com     :  entity work.excute port map(
             clk, rst, ID_EX_out_registers_addr, ID_EX_out_b_20_bits, ID_EX_out_r_data2_in, ID_EX_out_r_data1_in, ID_EX_out_pc_inc, 
             ID_EX_out_write_back_signals, ID_EX_out_memory_signals, ID_EX_out_excute_signals, EX_MEM_out_ALU_out, temp_data, 
-            EX_MEM_out_in_port_data, F_src1_sel, F_src2_sel, res_f, flag_reg, in_port_data, out_port_data, z, EX_MEM_in_registers_addr, 
-            EX_MEM_in_r_data1_in, EX_MEM_in_b_20_bits, EX_MEM_in_write_data, EX_MEM_in_alu_out, EX_MEM_in_in_data,
-            EX_MEM_in_write_back_signals, EX_MEM_in_memory_signals,
+            EX_MEM_out_in_port_data, F_src1_sel, F_src2_sel, F_data_imm, forward_imm1, forward_imm2, res_f, flag_reg, in_port_data, 
+            out_port_data, z, EX_MEM_in_registers_addr, EX_MEM_in_r_data1_in, EX_MEM_in_b_20_bits, EX_MEM_in_write_data, 
+            EX_MEM_in_alu_out, EX_MEM_in_in_data, EX_MEM_in_write_back_signals, EX_MEM_in_memory_signals,
             -- these just for testing, delet them after finishing
             flags_z_n_c  ------------------ testing
             );
@@ -164,7 +164,7 @@ architecture pipeline_arc of pipeline is
         forward_unit_com:  entity work.forward_unit port map(
             clk, rst, forward_enable, F_mem_to_IF, F_WB_to_IF, F_MEM_to_EX1, F_WB_to_EX1, F_MEM_to_EX2, F_WB_to_EX2,
             IF_op_code, IF_last_6_bits, IF_Rdst, EX_MR, EX_read_from_stack, EX_src2, EX_src1, EX_dst,
-            MEM_dst, MEM_src, MEM_RW, MEM_swap, MEM_MR, MEM_WB_seg, WB_dst, WB_RW
+            MEM_dst, MEM_src, MEM_RW, MEM_swap, MEM_MR, MEM_WB_seg, WB_dst, WB_RW, forward_imm1, forward_imm2
             );
 
         forward_WB_Buff_com:  entity work.stage_buff generic map (36) port map(
@@ -206,6 +206,8 @@ architecture pipeline_arc of pipeline is
             WB_dst <= F_WB_out(2 downto 0);
             WB_RW <= F_WB_out(3);
             temp_data <= F_WB_out(35 downto 4);
+
+            F_data_imm <= "0000000000000000" & EX_MEM_out_b_20_bits(19 downto 4);
 
         ---------------------------------------------------------------------------------------------------------
         ---------------- hazard detection unit ---------------------
