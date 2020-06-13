@@ -129,10 +129,10 @@ begin
                         forward_ex_mem_out_to_ex1 <= '0';
                         forward_mem_wb_out_to_ex1 <= '0';
                     end if ;
-                
+                end if;
                 -------------------------------------------------------------------
                 -- LDM
-                elsif (EX_MEM_memory_signal_WB = "11") then
+                if (EX_MEM_memory_signal_WB = "11") then
                     if EX_MEM_out_Rdst = ID_EX_out_registers_addr_Rsrc2 then
                         forward_imm2 <= '1';
                     else
