@@ -13,7 +13,8 @@ entity decode IS
         IF_ID_instruction           : in std_logic_vector(15 downto 0);
         IF_ID_pc_incremented        : in std_logic_vector(31 downto 0);
 
-        data_branch                 : out STD_LOGIC_VECTOR(31 downto 0);
+        data_branch_out             : out STD_LOGIC_VECTOR(31 downto 0);
+        branch_seg_out              : out STD_LOGIC;
 
         ID_EX_dst_src               : out STD_LOGIC_VECTOR(2 downto 0);
         ID_EX_src2                  : out STD_LOGIC_VECTOR(2 downto 0);
@@ -37,9 +38,9 @@ signal last_6_bits : STD_LOGIC_VECTOR(5 DOWNTO 0);
 signal op_code : STD_LOGIC_VECTOR(3 DOWNTO 0);
 signal dst_src, src1, src2, ETC : STD_LOGIC_VECTOR(2 DOWNTO 0);
 signal IMM_EA : STD_LOGIC_VECTOR(11 DOWNTO 0);
-signal src, BE, branch_seg : STD_LOGIC:= '0';  -- need to look at later
+signal src, BE, B, branch_seg : STD_LOGIC:= '0';  -- need to look at later
 
-signal decode_signals :      STD_LOGIC_VECTOR(4 DOWNTO 0);
+signal decode_signals :      STD_LOGIC_VECTOR(5 DOWNTO 0);
 signal excute_signals :      STD_LOGIC_VECTOR(9 DOWNTO 0);
 signal memory_signals :      STD_LOGIC_VECTOR(5 DOWNTO 0);
 signal write_back_signals :  STD_LOGIC_VECTOR(3 DOWNTO 0);
@@ -47,7 +48,7 @@ signal write_back_signals :  STD_LOGIC_VECTOR(3 DOWNTO 0);
 signal decoder_out :  STD_LOGIC_VECTOR(19 DOWNTO 0);
 
 signal read_addr2 : STD_LOGIC_VECTOR(2 DOWNTO 0);
-signal rd_data1, rd_data2, sp, IF_ID_pc, ID_EX_pc_in : STD_LOGIC_VECTOR(31 DOWNTO 0);
+signal rd_data1, rd_data2, sp, IF_ID_pc, ID_EX_pc_in, data_branch : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 begin
     control_unit_com:  entity work.control_unit port map (clk, rst, op_code, last_6_bits, decode_signals, excute_signals, memory_signals, 
@@ -74,17 +75,20 @@ begin
     ETC         <=   decode_signals (2 downto 0);
     src         <=   decode_signals (3);
     BE          <=   decode_signals (4);
+    B           <=   decode_signals (5);
 
 
+    data_branch_out <= data_branch;
+    branch_seg_out <= branch_seg;
     -- muxes
     read_addr2 <= src2 when src = '0'
     else dst_src;
 
-    ID_EX_pc_in <= rd_data2 when branch_seg = '1'
-    else IF_ID_pc;
+    -- ID_EX_pc_in <= data_branch when branch_seg = '1'
+    -- else IF_ID_pc;
 
-    -- and gate
-    branch_seg <= z and BE;
+    -- branch signal
+    branch_seg <= (z and BE) or B;
     -- out buff
 
     ID_EX_dst_src            <= dst_src;
@@ -93,31 +97,9 @@ begin
     ID_EX_decoder_out        <= decoder_out;
     ID_EX_rd_data2           <= rd_data2;
     ID_EX_rd_data1           <= rd_data1;
-    -- ID_EX_sp                 <= sp;
-    ID_EX_pc                 <= ID_EX_pc_in;
+    ID_EX_pc                 <= IF_ID_pc;
     ID_EX_write_back_signals <= write_back_signals;
     ID_EX_memory_signals     <= memory_signals;
     ID_EX_excute_signals     <= excute_signals;
-
-    -- process (clk) is
-    -- begin
-    --     if rst = '1' then
-    --         ID_EX <= (others => '0');
-    --     else
-    --         if falling_edge(clk) then
-    --             ID_EX(2 downto 0) <= dst_src;
-    --             ID_EX(5 downto 3) <= src2;
-    --             ID_EX(8 downto 6) <= src1;
-    --             ID_EX(28 downto 9) <= decoder_out;
-    --             ID_EX(60 downto 29) <= rd_data2;
-    --             ID_EX(92 downto 61) <= rd_data1;
-    --             ID_EX(124 downto 93) <= sp;
-    --             ID_EX(156 downto 125) <= pc;
-    --             ID_EX(160 downto 157) <= write_back_signals;
-    --             ID_EX(166 downto 161) <= memory_signals;
-    --             ID_EX(176 downto 167) <= excute_signals;
-    --         end if;
-    --     end if;
-    -- end process;
 
 end architecture;

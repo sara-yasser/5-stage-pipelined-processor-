@@ -31,10 +31,10 @@ architecture fetch_arc of fetch is
 
 
         -- muxes
-        pc_branch_result <= pc_in when write_in_pc = '0'
+        pc_branch_result <= pc_in when write_in_pc = '0'            -- write in pc = external signal
         else write_data;
 
-        pc_data_in <= pc_branch_result when read_same_inst = '0'
+        pc_data_in <= pc_branch_result when read_same_inst = '0'    --read same inst = stall
         else pc_dec;
 
 

@@ -4,7 +4,7 @@ USE ieee.numeric_std.all;
 
 entity pipeline IS
 port(
-    clk, rst, forward_E, hazard_E, interrupt_sig, read_same_inst :                   in  STD_LOGIC;
+    clk, rst, forward_E, hazard_E, flush_E, interrupt_sig :                   in  STD_LOGIC;
     in_port : in STD_LOGIC_VECTOR(31 DOWNTO 0);
     out_port : out STD_LOGIC_VECTOR(31 DOWNTO 0);
     interrupt : out STD_LOGIC_VECTOR(31 DOWNTO 0)  -- remove this
@@ -83,7 +83,7 @@ architecture pipeline_arc of pipeline is
         signal w_data1, w_data2 : STD_LOGIC_VECTOR(31 DOWNTO 0):=(others => '0');
 
     -- general
-        signal stall, write_in_pc, z : std_logic:='0';
+        signal stall, write_in_pc, WB_write_in_pc, z, branch_seg_out, stall_IF : std_logic:='0';
         signal curr_pc_ID, curr_pc_IF : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal data_branch, int_address  : STD_LOGIC_VECTOR(31 downto 0):=(others => '0');
         signal R_dst : STD_LOGIC_VECTOR(2 downto 0);
@@ -108,6 +108,8 @@ architecture pipeline_arc of pipeline is
     -------------------------------------------
         signal dec_stall, hazard_enable, EX_RW : std_logic:='0';
         signal stall_int : integer:=0;
+    -- flush
+        signal flush : std_logic := '0';
     -- these just for testing, delet them after finishing
         signal R0, R1, R2, R3, R4, R5, R6, R7, sp : std_logic_vector(31 downto 0); ------------------ testing
         signal flags_z_n_c : STD_LOGIC_VECTOR(2 downto 0); ------------------ testing
@@ -116,7 +118,7 @@ architecture pipeline_arc of pipeline is
     begin
         
         fetch_com      :  entity work.fetch port map(                        
-            clk, rst, write_in_pc, stall_IF_ID, data_branch, w_data1, int_address,
+            clk, rst, write_in_pc, stall_IF, data_branch, w_data1, int_address,
             R_dst, IF_ID_in_instruction, IF_ID_in_pc_incremented
             );
         IF_ID_buff_com :  entity work.IF_ID_buff port map(
@@ -125,8 +127,8 @@ architecture pipeline_arc of pipeline is
 
         decode_com     :  entity work.decode port map(
             clk, rst, z, WB_signals, w_addr1, w_addr2, w_data1, w_data2, R_dst, IF_ID_out_instruction, IF_ID_out_pc_incremented, 
-            data_branch, ID_EX_in_dst_src, ID_EX_in_src2, ID_EX_in_src1, ID_EX_in_decoder_out, ID_EX_in_rd_data2, ID_EX_in_rd_data1, 
-            ID_EX_in_pc, ID_EX_in_write_back_signals, ID_EX_in_memory_signals, ID_EX_in_excute_signals,
+            data_branch, branch_seg_out, ID_EX_in_dst_src, ID_EX_in_src2, ID_EX_in_src1, ID_EX_in_decoder_out, ID_EX_in_rd_data2, 
+            ID_EX_in_rd_data1, ID_EX_in_pc, ID_EX_in_write_back_signals, ID_EX_in_memory_signals, ID_EX_in_excute_signals,
             -- these just for testing, delet them after finishing
             R0, R1, R2, R3, R4, R5, R6, R7 ------------------ testing
             );
@@ -196,9 +198,6 @@ architecture pipeline_arc of pipeline is
             MEM_MR <= EX_MEM_out_memory_signals(5);
             MEM_WB_seg <= EX_MEM_out_memory_signals(1 downto 0);
 
-            -- WB_dst <= w_addr1;
-            -- WB_RW <= WB_signals(1);
-
             F_WB_in(2 downto 0) <= w_addr1;
             F_WB_in(3) <= WB_signals(1);
             F_WB_in(35 downto 4) <= w_data1;
@@ -214,26 +213,13 @@ architecture pipeline_arc of pipeline is
         hazard_enable <= hazard_E;
         HDU: entity work.HDU port map(
             clk, hazard_enable, IF_ID_in_instruction, IF_ID_out_instruction, decode_MR, decode_read_from_stack,
-            ID_EX_in_dst_src, ID_EX_in_src1, ID_EX_in_src2, stall_IF_ID
+            ID_EX_in_dst_src, ID_EX_in_src1, ID_EX_in_src2, stall_IF
         );
 
         -- initializations
-        decode_MR               <=  ID_EX_in_memory_signals(5);
-        decode_read_from_stack  <=  ID_EX_in_memory_signals(2);
-        decode_RW               <=  ID_EX_in_write_back_signals(1);
-        ---------------------------------------------------------------------------------------------------------
-        --hazard_enable <= hazard_E;
-        --hazard_detection_unit_com:  entity work.hazard_detection_unit port map (
-        --      clk, dec_stall,
-        --      hazard_enable, EX_RW, EX_read_from_stack, EX_MR, WB_RW, '0', '0', MEM_RW ,
-        --      MEM_MR,
-        --      interrupt_sig,
-        --      EX_dst, IF_ID_out_instruction(8 downto 6), IF_ID_out_instruction(5 downto 3), IF_ID_out_instruction(11 downto 9),
-        --      IF_Rdst, MEM_dst, IF_op_code, IF_last_6_bits, stall_int
-        --    );
-
-        --stall <= '1' when (stall_int > 0)
-        --else'0';
+            decode_MR               <=  ID_EX_in_memory_signals(5);
+            decode_read_from_stack  <=  ID_EX_in_memory_signals(2);
+            decode_RW               <=  ID_EX_in_write_back_signals(1);
         ---------------------------------------------------------------------------------------------------------
         -- IF_ID in buff
             IF_ID_in(15 downto 0) <= IF_ID_in_instruction;
@@ -263,7 +249,6 @@ architecture pipeline_arc of pipeline is
             ID_EX_out_b_20_bits             <= ID_EX_out(28 downto 9);
             ID_EX_out_r_data2_in            <= ID_EX_out(60 downto 29);
             ID_EX_out_r_data1_in            <= ID_EX_out(92 downto 61);
-            -- ID_EX_out_sp                    <= ID_EX_out(124 downto 93);
             ID_EX_out_pc_inc                <= ID_EX_out(124 downto 93);
             ID_EX_out_write_back_signals    <= ID_EX_out(128 downto 125);
             ID_EX_out_memory_signals        <= ID_EX_out(134 downto 129);
@@ -299,14 +284,18 @@ architecture pipeline_arc of pipeline is
             w_data2                         <= MEM_WB_out(40 downto 9);
             w_data1                         <= MEM_WB_out(72 downto 41);
             WB_signals                      <= MEM_WB_out(74 downto 73);
-            write_in_pc                     <= MEM_WB_out(75);
+            WB_write_in_pc                  <= MEM_WB_out(75);
             res_f                           <= MEM_WB_out(76);
 
         -- genral
-        in_port_data    <= in_port;
-        out_port        <= out_port_data;
+            in_port_data    <= in_port;
+            out_port        <= out_port_data;
+
+            write_in_pc <= WB_write_in_pc or branch_seg_out;
+            flush <= branch_seg_out and flush_E;
+            stall_IF_ID <= flush or stall_IF;
         -- testing part will be removed
-        interrupt <= int_address; --output
+            interrupt <= int_address; --output
 
 end architecture;
 
