@@ -18,6 +18,7 @@ architecture inst_mem_arc of inst_mem is
     type ram_type is array (4095 downto 0) of std_logic_vector (15 downto 0);
     signal ram_single_port : ram_type;
     signal temp_addr : std_logic_vector(31 downto 0);
+    signal checker_int, addr_int : integer:=0;
 
     begin
         -- for i in 15 downto 0 loop            
@@ -50,8 +51,12 @@ architecture inst_mem_arc of inst_mem is
             -- if (rst = '1') then temp_addr <= (others => '0'); else temp_addr <= addr; end if ;
         end process;
 
+        checker_int <= to_integer(unsigned(addr));
+        addr_int <= to_integer(unsigned(addr)) when (checker_int < 4095) and (checker_int >= 0)
+        else 0;
+
         temp_addr <= addr;
-    dout<=ram_single_port(to_integer(unsigned(temp_addr)));
+    dout<=ram_single_port(addr_int);
     initial_pc <= ram_single_port(1) & ram_single_port(0);
     int_address <= ram_single_port(3) & ram_single_port(2);
 

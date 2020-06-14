@@ -120,7 +120,10 @@ with open(inputFileName, "r") as file:
             line = line.strip()
             
             #if it's a commented line, skip it
-            print("lineeeee", line)
+            # print("lineeeee", line)
+            if len(line) == 0:
+                continue
+
             if line[0] == '#':
                 continue
                 
@@ -203,7 +206,7 @@ for instruction in lines:
             print(myReg3)
 
         if (myInstr == '.ORG'):
-            addr = int(instruction[1]) - 1
+            addr = int(instruction[1], 16) - 1
             continue
         else:
             addr += 1
@@ -387,8 +390,8 @@ with open(outputFileName, "w") as file:
             string = idx + " " + line
             file.write(string + os.linesep)
         else:
-            string = idx + " " + "XXXXXXXXXXXXXXXX"
-            # string = idx + " " + "0000000000000000"
+            # string = idx + " " + "XXXXXXXXXXXXXXXX"
+            string = idx + " " + "0000000000000000"
             file.write(string + os.linesep)
         index += 1
         

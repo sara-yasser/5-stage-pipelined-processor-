@@ -22,7 +22,7 @@ architecture memory_arch of memory is
     begin
         checker_int <= to_integer(unsigned(addr));
 
-        addr_int <= to_integer(unsigned(addr)) when (checker_int < 2**addr_width-1)
+        addr_int <= to_integer(unsigned(addr)) when (checker_int < 2**addr_width-1) and (checker_int >= 0)
         else 0;
 
         process(clk, W, R, addr)
