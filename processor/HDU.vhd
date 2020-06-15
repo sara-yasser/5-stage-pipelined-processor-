@@ -1,7 +1,7 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE ieee.numeric_std.all;
-
+-- handle just load for now
 entity HDU is
     port (
         clk, enable_hazard :   in std_logic;
