@@ -1,7 +1,7 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE ieee.numeric_std.all;
-
+-- this module to help hazard detection unit
 entity srcs is
     port (
         instruction : in std_logic_vector(15 downto 0);
